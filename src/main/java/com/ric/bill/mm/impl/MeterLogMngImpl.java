@@ -196,6 +196,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	@Cacheable(cacheNames="rrr1", key="{ #rqn, #statusVol, #mc.getId(), #serv.getId(), #dt1, #dt2}")
 	public synchronized SumNodeVol getVolPeriod (int rqn, Integer statusVol, MeterContains mc, Serv serv, Date dt1, Date dt2) {
 		SumNodeVol amntSum = new SumNodeVol();
+		MLogs lastMlwithVol = null, lastMl = null;
 		//перебрать все лог.счетчики, доступные по объекту, сложить объемы
 		for (MeterLog mLog: mc.getMlog()) {
 			//log.info("check2 = {}", mLog.getServ());
@@ -205,8 +206,22 @@ public class MeterLogMngImpl implements MeterLogMng {
 				amntSum.addArea(tmp.getArea());
 				amntSum.addPers(tmp.getPers());
 				amntSum.addVol(tmp.getVol());
+				if ( tmp.getVol() != null) {
+					if (tmp.getVol() > 0D) {
+						// сохранить последний счетчик, если по нему есть объем
+						lastMlwithVol = mLog;
+					}
+				}
+				// сохранить последний счетчик
+				lastMl = mLog;
 			}
 		} 
+		// сохранить номер ввода последнего счетчика
+		if (lastMlwithVol != null) {
+			amntSum.setEntry(lastMlwithVol.getEntry());
+		} else if (lastMl != null) {
+			amntSum.setEntry(lastMl.getEntry());
+		}
 		
 		//вернуть объект, содержащий объемы
 		return amntSum;

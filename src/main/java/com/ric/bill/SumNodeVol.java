@@ -6,19 +6,35 @@ package com.ric.bill;
  * @author lev
  *
  */
+@SuppressWarnings("serial")
 public class SumNodeVol implements java.io.Serializable {
 
 	//значения за расчетный период:
-	private Double vol; // объем
-	private Double area; // площадь
-	private Double pers; // проживающие
-	private Double limit; // лимит ОДН (где есть)
+	// Объем
+	private Double vol; 
+	// Площадь
+	private Double area; 
+	// Проживающие
+	private Double pers; 
+	// Лимит ОДН (где есть)
+	private Double limit; 
+	// Номер ввода
+	private Integer entry; 
 	
 	public SumNodeVol(){
 		setVol(new Double(0));
 		setArea(new Double(0));
 		setPers(new Double(0));
 		setLimit(new Double(0));
+		setEntry(null);
+	}
+
+	public Integer getEntry() {
+		return entry;
+	}
+
+	public void setEntry(Integer entry) {
+		this.entry = entry;
 	}
 
 	public Double getVol() {

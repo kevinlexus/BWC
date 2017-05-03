@@ -33,63 +33,6 @@ import com.ric.bill.model.tr.Serv;
 public class Chrg implements java.io.Serializable, Simple {
 
 
-	public Chrg() {
-		
-	}
-			
-	// конструктор для окончательно рассчитанных данных (умноженная расценка на объем)
-	public Chrg(Kart kart, Serv serv, Org org, int status, String period,
-			BigDecimal sumFull, BigDecimal sumAmnt, BigDecimal vol,
-			BigDecimal price, BigDecimal stdt, Integer cntPers, BigDecimal area, Lst tp, 
-			Chng chng, Integer met, Date dt1, Date dt2) {
-		
-		setKart(kart);
-		setOrg(org);
-		setServ(serv);
-		setStatus(status);
-		setPeriod(period);
-		setSumFull(sumFull.doubleValue());
-		setSumAmnt(sumAmnt.doubleValue());
-		setVol(vol.doubleValue());
-		setPrice(price.doubleValue());
-		if (stdt != null) {
-			setStdt(stdt.doubleValue());
-		}
-		setCntPers(cntPers);
-		setTp(tp);
-		if (area != null) {
-			setArea(area.doubleValue());
-		}
-		setDt1(dt1);
-		setDt2(dt2);
-		setChng(chng);
-		setMet(met);
-	}
-
-	// конструктор для подготовительных данных, рассчитанных в потоке
-	public Chrg(Kart kart, Serv serv, Org org, int status, String period,
-			Double sumFull, Double sumAmnt, Double vol,
-			Double price, Double stdt, Integer cntPers, Double area, Lst tp, Date dt1, Date dt2, Integer met, Chng chng) {
-		
-		setKart(kart);
-		setOrg(org);
-		setServ(serv);
-		setStatus(status);
-		setPeriod(period);
-		setSumFull(sumFull);
-		setSumAmnt(sumAmnt);
-		setVol(vol);
-		setPrice(price);
-		setStdt(stdt);
-		setCntPers(cntPers);
-		setTp(tp);
-		setArea(area);
-		setDt1(dt1);
-		setDt2(dt2);
-		setChng(chng);
-		setMet(met);
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CHRG")
 	@SequenceGenerator(name="SEQ_CHRG", sequenceName="FN.SEQ_CHRG", allocationSize=10)	
@@ -159,7 +102,71 @@ public class Chrg implements java.io.Serializable, Simple {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_CHNG", referencedColumnName="ID")
 	private Chng chng; 
+
+	// Номер ввода
+	@Column(name = "ENTRY")
+	private Integer entry;
 	
+	public Chrg() {
+		
+	}
+			
+	// конструктор для окончательно рассчитанных данных (умноженная расценка на объем)
+	public Chrg(Kart kart, Serv serv, Org org, int status, String period,
+			BigDecimal sumFull, BigDecimal sumAmnt, BigDecimal vol,
+			BigDecimal price, BigDecimal stdt, Integer cntPers, BigDecimal area, Lst tp, 
+			Chng chng, Integer met, Integer entry, Date dt1, Date dt2) {
+		
+		setKart(kart);
+		setOrg(org);
+		setServ(serv);
+		setStatus(status);
+		setPeriod(period);
+		setSumFull(sumFull.doubleValue());
+		setSumAmnt(sumAmnt.doubleValue());
+		setVol(vol.doubleValue());
+		setPrice(price.doubleValue());
+		if (stdt != null) {
+			setStdt(stdt.doubleValue());
+		}
+		setCntPers(cntPers);
+		setTp(tp);
+		if (area != null) {
+			setArea(area.doubleValue());
+		}
+		setDt1(dt1);
+		setDt2(dt2);
+		setChng(chng);
+		setMet(met);
+		setEntry(entry);
+	}
+
+	// конструктор для подготовительных данных, рассчитанных в потоке
+	public Chrg(Kart kart, Serv serv, Org org, int status, String period,
+			Double sumFull, Double sumAmnt, Double vol,
+			Double price, Double stdt, Integer cntPers, Double area, Lst tp, 
+			Date dt1, Date dt2, Integer met, Integer entry, Chng chng) {
+		
+		setKart(kart);
+		setOrg(org);
+		setServ(serv);
+		setStatus(status);
+		setPeriod(period);
+		setSumFull(sumFull);
+		setSumAmnt(sumAmnt);
+		setVol(vol);
+		setPrice(price);
+		setStdt(stdt);
+		setCntPers(cntPers);
+		setTp(tp);
+		setArea(area);
+		setDt1(dt1);
+		setDt2(dt2);
+		setChng(chng);
+		setMet(met);
+		setEntry(entry);
+	}
+
 	public Integer getId() {
 		return this.id;
 	}
@@ -310,6 +317,14 @@ public class Chrg implements java.io.Serializable, Simple {
 
 	public void setMet(Integer met) {
 		this.met = met;
+	}
+
+	public Integer getEntry() {
+		return entry;
+	}
+
+	public void setEntry(Integer entry) {
+		this.entry = entry;
 	}
 
 	public boolean equals(Object o) {

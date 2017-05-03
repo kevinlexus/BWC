@@ -123,7 +123,7 @@ public class MeterLog extends Base implements java.io.Serializable, MLogs {
 
 	// № ввода
     @Column(name = "ENTRY", updatable = false, nullable = true)
-	private String entry;
+	private Integer entry;
     
 	public Integer getKlskObj() {
 		return klskObj;
@@ -197,11 +197,11 @@ public class MeterLog extends Base implements java.io.Serializable, MLogs {
 		this.outside = outside;
 	}
 
-	public String getEntry() {
+	public Integer getEntry() {
 		return entry;
 	}
 
-	public void setEntry(String entry) {
+	public void setEntry(Integer entry) {
 		this.entry = entry;
 	}
 
