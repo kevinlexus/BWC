@@ -97,14 +97,14 @@ public class Config {
 			log.error("Ошибка добавления path в Classpath");
 		}
 		// Распечатать Classpath
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		/*ClassLoader cl = ClassLoader.getSystemClassLoader();
         URL[] urls = ((URLClassLoader)cl).getURLs();
     	log.info("**** Check Classpath: START ****");
         for(URL url: urls){
         	log.info(url.getFile());
         }
     	log.info("**** Check Classpath: END ****");
-		
+		*/
 		
 		// Объект приложения, получить даты текущего периода
 		// TODO проверить RQN!
