@@ -73,14 +73,22 @@
 		    <artifactId>spring-tx</artifactId>
 		</dependency>
 
-		<!-- успешно добавил таким образом локальный JAR -->
+
+		<!-- mxparser -->
+		<dependency>
+		    <groupId>mxParser</groupId>
+		    <artifactId>org.mariuszgromada</artifactId>
+		    <version>1.0</version>
+		</dependency>
+
+		<!-- успешно добавил таким образом локальный JAR ВНИМАНИЕ! ТАК не желательно устанавливать! надо через mvn install:install-file 
 		<dependency>
 		    <groupId>mxParser</groupId>
 		    <artifactId>org.mariuszgromada</artifactId>
 		    <version>1.0</version>
 		    <scope>system</scope>
 		    <systemPath>${project.basedir}/src/main/resources/mxparser.jar</systemPath>
-		</dependency>
+		</dependency>-->
 
 
 </dependencies>

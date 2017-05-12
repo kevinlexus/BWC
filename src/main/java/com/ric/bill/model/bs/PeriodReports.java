@@ -43,8 +43,15 @@ public class PeriodReports implements java.io.Serializable {
     
     @ManyToOne(fetch = FetchType.LAZY) 
 	@JoinColumn(name="FK_REPORT", referencedColumnName="ID")
-	private Obj report; 
+	private Report report; 
     
+    
+	public PeriodReports(String mg, Date dt) {
+		super();
+		this.dt = dt;
+		this.mg = mg;
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -69,11 +76,11 @@ public class PeriodReports implements java.io.Serializable {
 		this.mg = mg;
 	}
 
-	public Obj getReport() {
+	public Report getReport() {
 		return report;
 	}
 
-	public void setReport(Obj report) {
+	public void setReport(Report report) {
 		this.report = report;
 	}
 

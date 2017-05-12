@@ -37,6 +37,7 @@ import com.ric.bill.excp.WrongDate;
 import com.ric.bill.mm.LstMng;
 import com.ric.bill.mm.OrgMng;
 import com.ric.bill.mm.PayordMng;
+import com.ric.bill.mm.ReportMng;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.bs.PeriodReports;
@@ -67,6 +68,8 @@ public class PayordMngImpl implements PayordMng {
 	private OrgMng orgMng;
 	@Autowired
 	private PaymentDetDAO paymentDetDao;
+	@Autowired
+	private ReportMng reportMng;
 	@Autowired
 	private ApplicationContext ctx;
 	@Autowired
@@ -679,6 +682,15 @@ public class PayordMngImpl implements PayordMng {
 					}
 				}
 				
+				// добавить периоды
+				if (!isEndMonth) {
+					// период - дата формирования
+					reportMng.addPeriodReport("RptPayDocList", null, genDt);					
+				} else {
+					// период - текущий и следующий месяц
+					reportMng.addPeriodReport("RptPayDocList", period, null);					
+					reportMng.addPeriodReport("RptPayDocList", periodNext, null);					
+				}
 			});
 			
 		}

@@ -1,23 +1,34 @@
 package com.ric.bill.model.bs;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.ric.bill.Storable;
 
 /**
- * Объект
+ * Отчет
  * 
  *
  */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "OBJ", schema="BS")
-public class Obj extends Base implements java.io.Serializable, Storable {
+public class Report extends Base implements java.io.Serializable, Storable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,6 +41,11 @@ public class Obj extends Base implements java.io.Serializable, Storable {
     @Column(name = "NAME", updatable = false, nullable = false)
 	private String name; //Наименование 
 
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="FK_REPORT", referencedColumnName="ID")
+	@Fetch(FetchMode.SUBSELECT)
+	private List<PeriodReports> period = new ArrayList<PeriodReports>(0);
+    
     public Integer getId() {
 		return this.id;
 	}
@@ -51,12 +67,20 @@ public class Obj extends Base implements java.io.Serializable, Storable {
 		this.name = name;
 	}
 
+	public List<PeriodReports> getPeriod() {
+		return period;
+	}
+	
+	public void setPeriod(List<PeriodReports> period) {
+		this.period = period;
+	}
+	
 	public boolean equals(Object o) {
 	    if (this == o) return true;
-	    if (o == null || !(o instanceof Obj))
+	    if (o == null || !(o instanceof Report))
 	        return false;
 
-	    Obj other = (Obj)o;
+	    Report other = (Report)o;
 
 	    if (id == other.getId()) return true;
 	    if (id == null) return false;

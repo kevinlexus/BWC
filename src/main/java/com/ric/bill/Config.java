@@ -87,7 +87,7 @@ public class Config {
 	
 	@PostConstruct
 	private void setUp() throws EmptyStorable {
-		log.info("Версия модуля начисления - {}", 1.8);
+		log.info("Версия модуля начисления - {}", "1.0.10");
 		
 		// Добавить path в Classpath, относительно нахождения Jar
 		try {
@@ -97,14 +97,14 @@ public class Config {
 			log.error("Ошибка добавления path в Classpath");
 		}
 		// Распечатать Classpath
-		/*ClassLoader cl = ClassLoader.getSystemClassLoader();
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
         URL[] urls = ((URLClassLoader)cl).getURLs();
     	log.info("**** Check Classpath: START ****");
         for(URL url: urls){
         	log.info(url.getFile());
         }
     	log.info("**** Check Classpath: END ****");
-		*/
+		
 		
 		// Объект приложения, получить даты текущего периода
 		// TODO проверить RQN!
