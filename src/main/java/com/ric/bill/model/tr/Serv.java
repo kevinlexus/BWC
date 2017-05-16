@@ -122,6 +122,11 @@ public class Serv extends Base implements java.io.Serializable, Storable {
 	@JoinColumn(name="FK_VRT", referencedColumnName="ID")
 	private Serv servVrt;
 	
+	// услуга содержащая расценку
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_PRICE", referencedColumnName="ID")
+	private Serv servPrice;
+
 	// иерархия услуги
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_SERV", referencedColumnName="ID")
@@ -270,6 +275,12 @@ public class Serv extends Base implements java.io.Serializable, Storable {
 		this.servSt = servSt;
 	}
 	
+	public Serv getServPrice() {
+		return servPrice;
+	}
+	public void setServPrice(Serv servPrice) {
+		this.servPrice = servPrice;
+	}
 	public Boolean getVrt() {
 		if (vrt==null) {
 			return false;

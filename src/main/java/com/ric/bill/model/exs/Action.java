@@ -1,16 +1,15 @@
 package com.ric.bill.model.exs;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.ric.bill.model.bs.Par;
 
 
 /**
@@ -26,26 +25,44 @@ public class Action implements java.io.Serializable  {
 	public Action() {
 	}
 
-	public Action(Eolink eolink, String action, String state) {
-		this.eolink = eolink;
-		this.action = action;
-		this.state = state;
-	}
-
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
-	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_ACTION", allocationSize=1)	
-    @Column(name = "id", unique=true, updatable = false, nullable = false)
+    @Column(name = "ID", unique=true, updatable = false, nullable = false)
 	private Integer id;
 
+	// Связь с внешним объектом
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID")
 	private Eolink eolink;
 	
-	private String action;
+	// Действие из SOAP
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_SOAP_ACT", referencedColumnName="ID")
+	private Par soapAct;
 
-	private String state;
+	// Родительское действие
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
+	private Action parentAction; 
 	
+	// CD состояния
+	@Column(name = "STATE", updatable = true, nullable = true)
+	private String state;
+
+	public Par getSoapAct() {
+		return soapAct;
+	}
+
+	public void setSoapAct(Par soapAct) {
+		this.soapAct = soapAct;
+	}
+
+	public Action getParentAction() {
+		return parentAction;
+	}
+
+	public void setParentAction(Action parentAction) {
+		this.parentAction = parentAction;
+	}
 
 	public Integer getId() {
 		return id;
@@ -55,14 +72,6 @@ public class Action implements java.io.Serializable  {
 		this.id = id;
 	}
 	
-	public String getAction() {
-		return action;
-	}
-
-	public void setAction(String action) {
-		this.action = action;
-	}
-
 	public String getState() {
 		return state;
 	}

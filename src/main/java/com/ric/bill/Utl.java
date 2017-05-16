@@ -2,6 +2,7 @@ package com.ric.bill;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -31,7 +32,36 @@ import lombok.extern.slf4j.Slf4j;
 public class Utl {
 
 	/**
-	 * вернуть второе значение, если первое пусто (аналог oracle NVL)
+	 * сравнить два параметра, с учётом их возможного null 
+	 * @param a - 1 значение
+	 * @param b - 2 значение
+	 * @return
+	 */
+	public static <T> boolean cmp(T a, T b) {
+		if (a == null && b == null) {
+			return true;
+		} else if (a != null && b != null) {
+			if (a.getClass() == BigDecimal.class) {
+				BigDecimal bd = (BigDecimal) a;
+				if (bd.compareTo((BigDecimal) b) == 0) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				if (a.equals(b)) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Вернуть второе значение, если первое пусто (аналог oracle NVL)
 	 * @param a - 1 значение
 	 * @param b - 2 значение
 	 * @return
@@ -42,7 +72,7 @@ public class Utl {
 
 
 	/**
-	 * вернуть, если дата находится в диапазоне периода
+	 * Вернуть, если дата находится в диапазоне периода
 	 * @param checkDt - проверяемая дата
 	 * @param dt1 - начало периода
 	 * @param dt2 - окончание периода

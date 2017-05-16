@@ -298,7 +298,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 							 || tp==1 && g.getTp().getCd().equals("Связь по площади и кол-во прож.")
 							 || tp==2 && g.getTp().getCd().equals("Расчетная связь ОДН")
 							 || tp==3 && g.getTp().getCd().equals("Расчетная связь пропорц.площади")) {
-								log.info("Check id={}", g.getSrc().getId());
+								//log.info("Check id={}", g.getSrc().getId());
 								delNodeVol(rqn, g.getSrc(), tp, dt1, dt2, status);
 					}
 				} catch (StackOverflowError e) {

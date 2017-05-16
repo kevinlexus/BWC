@@ -319,7 +319,7 @@ public class PayordMngImpl implements PayordMng {
 		} else {
 			payordFlow.setUk(null);
 		}
-		payordFlow.setSumma(p.getSumma());
+		payordFlow.setSumma((double)Math.round(p.getSumma() * 100d) / 100d ); // Округлить до 2 знаков
 		payordFlow.setNpp(p.getNpp());
 		payordFlow.setDt(p.getDt());
 		payordFlow.setSigned(p.getSigned());
