@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.ric.bill.Storable;
 import com.ric.bill.Utl;
+import com.ric.bill.dao.ActionParDAO;
 import com.ric.bill.dao.ParDAO;
 import com.ric.bill.excp.EmptyServ;
 import com.ric.bill.excp.EmptyStorable;
@@ -21,6 +22,7 @@ import com.ric.bill.mm.ParMng;
 import com.ric.bill.model.bs.Dw;
 import com.ric.bill.model.bs.Par;
 import com.ric.bill.model.exs.Action;
+import com.ric.bill.model.exs.ActionPar;
 
 
 @Service
@@ -31,14 +33,23 @@ public class ActionParMngImpl implements ActionParMng {
 	private ApplicationContext ctx;
 	@Autowired
 	private ParMng parMng;
+	@Autowired
+	private ActionParDAO actionParDao;
 
 	/**
 	 * получить значение параметра типа Double действия по CD свойства
+	 * @throws WrongGetMethod 
 	 */
-	public Double getDbl(Action action, String cd) {
-		Par par = parMng.getByCD(-1, cd);
-		
-		// TODO сделать реализацию!
+	public Double getDbl(Integer actionId, String parCd) throws WrongGetMethod {
+		Par par = parMng.getByCD(-1, parCd);
+		if (par.getTp().equals("NM")) {
+			ActionPar ap = actionParDao.getByActionCd(actionId, parCd);
+			if (ap!= null) {
+				return ap.getN1();
+			}
+		} else {
+			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
+		}
 		return null;
 	}
 

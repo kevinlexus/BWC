@@ -9,8 +9,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.ric.bill.model.bs.Par;
-
 
 /**
  * Действия над объектами 
@@ -34,26 +32,25 @@ public class Action implements java.io.Serializable  {
 	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID")
 	private Eolink eolink;
 	
-	// Действие из SOAP
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_SOAP_ACT", referencedColumnName="ID")
-	private Par soapAct;
-
 	// Родительское действие
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
 	private Action parentAction; 
 	
 	// CD состояния
-	@Column(name = "STATE", updatable = true, nullable = true)
+	@Column(name = "STATE")
 	private String state;
 
-	public Par getSoapAct() {
-		return soapAct;
+	// Заданное действие
+	@Column(name = "ACT")
+	private String act;
+
+	public String getAct() {
+		return act;
 	}
 
-	public void setSoapAct(Par soapAct) {
-		this.soapAct = soapAct;
+	public void setAct(String act) {
+		this.act = act;
 	}
 
 	public Action getParentAction() {
