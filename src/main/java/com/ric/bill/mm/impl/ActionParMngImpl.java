@@ -53,17 +53,27 @@ public class ActionParMngImpl implements ActionParMng {
 		return null;
 	}
 
-	@Override
 	public String getStr(Action act, String cd) {
 
 		// TODO сделать реализацию!
 		return null;
 	}
 
-	@Override
 	public Date getDate(Action act, String cd) {
 
 		// TODO сделать реализацию!
+		return null;
+	}
+
+	@Override
+	public String getStr(Integer actionId, String parCd) throws WrongGetMethod {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Date getDate(Integer actionId, String parCd) throws WrongGetMethod {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	
