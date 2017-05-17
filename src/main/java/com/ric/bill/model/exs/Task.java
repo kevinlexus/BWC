@@ -9,18 +9,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.ric.bill.model.bs.Lst;
+
 
 /**
- * Действия над объектами 
+ * Задание на выполнение обмена с ГИС ЖКХ
  * @author lev
  *
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "ACTION", schema="EXS")
-public class Action implements java.io.Serializable  {
+@Table(name = "TASK", schema="EXS")
+public class Task implements java.io.Serializable  {
 
-	public Action() {
+	public Task() {
 	}
 
 	@Id
@@ -35,29 +37,42 @@ public class Action implements java.io.Serializable  {
 	// Родительское действие
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
-	private Action parentAction; 
+	private Task parentAction; 
 	
 	// CD состояния
 	@Column(name = "STATE")
 	private String state;
 
 	// Заданное действие
-	@Column(name = "ACT")
-	private String act;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_ACT", referencedColumnName="ID")
+	private Lst act;
 
-	public String getAct() {
+	// от ГИС ЖКХ: Уникальный номер
+	@Column(name = "UNIQNUM")
+	private String un;
+
+	public String getUn() {
+		return un;
+	}
+
+	public void setUn(String un) {
+		this.un = un;
+	}
+
+	public Lst getAct() {
 		return act;
 	}
 
-	public void setAct(String act) {
+	public void setAct(Lst act) {
 		this.act = act;
 	}
 
-	public Action getParentAction() {
+	public Task getParentAction() {
 		return parentAction;
 	}
 
-	public void setParentAction(Action parentAction) {
+	public void setParentAction(Task parentAction) {
 		this.parentAction = parentAction;
 	}
 
@@ -87,10 +102,10 @@ public class Action implements java.io.Serializable  {
 
 	public boolean equals(Object o) {
 	    if (this == o) return true;
-	    if (o == null || !(o instanceof Action))
+	    if (o == null || !(o instanceof Task))
 	        return false;
 
-	    Action other = (Action)o;
+	    Task other = (Task)o;
 
 	    if (id == other.getId()) return true;
 	    if (id == null) return false;

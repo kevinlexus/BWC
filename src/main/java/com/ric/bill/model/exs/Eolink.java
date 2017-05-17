@@ -45,7 +45,7 @@ public class Eolink implements java.io.Serializable  {
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID", updatable = false)
 	@Fetch(FetchMode.SUBSELECT)
-	private List<Action> action = new ArrayList<Action>(0);
+	private List<Task> action = new ArrayList<Task>(0);
 	
 	// РЭУ в системе "Квартплата"
 	@Column(name = "REU", updatable = true, nullable = true)
@@ -108,11 +108,11 @@ public class Eolink implements java.io.Serializable  {
 		this.id = id;
 	}
 	
-	public List<Action> getAction() {
+	public List<Task> getAction() {
 		return action;
 	}
 
-	public void setAction(List<Action> action) {
+	public void setAction(List<Task> action) {
 		this.action = action;
 	}
 

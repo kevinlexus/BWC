@@ -3,9 +3,9 @@ package com.ric.bill.mm;
 import java.util.Date;
 
 import com.ric.bill.excp.WrongGetMethod;
-import com.ric.bill.model.exs.Action;
+import com.ric.bill.model.exs.Task;
 
-public interface ActionParMng {
+public interface TaskParMng {
 
 	public Double getDbl(Integer actionId, String parCd) throws WrongGetMethod;
 	public String getStr(Integer actionId, String parCd) throws WrongGetMethod;

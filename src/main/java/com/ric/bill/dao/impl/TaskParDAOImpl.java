@@ -6,14 +6,14 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.ric.bill.dao.ActionParDAO;
+import com.ric.bill.dao.TaskParDAO;
 import com.ric.bill.model.bs.Par;
-import com.ric.bill.model.exs.Action;
-import com.ric.bill.model.exs.ActionPar;
+import com.ric.bill.model.exs.Task;
+import com.ric.bill.model.exs.TaskPar;
 
 
 @Repository
-public class ActionParDAOImpl implements ActionParDAO {
+public class TaskParDAOImpl implements TaskParDAO {
 
 	//EntityManager - EM нужен на каждый DAO или сервис свой!
     @PersistenceContext
@@ -25,10 +25,11 @@ public class ActionParDAOImpl implements ActionParDAO {
      * @param parCd - Cd параметра
      */
 	@Override
-	public ActionPar getByActionCd(Integer actionId, String parCd) {
-		Query query =em.createQuery("select t from ActionPar t where t.id = :actionId and t.par.cd = :parCd");
-		query.setParameter("actionId", actionId);
-		return (ActionPar) query.getSingleResult();
+	public TaskPar getTask(Integer taskId, String parCd) {
+		Query query =em.createQuery("select t from TaskPar t where t.task.id = :taskId and t.par.cd = :parCd");
+		query.setParameter("taskId", taskId);
+		query.setParameter("parCd", parCd);
+		return (TaskPar) query.getSingleResult();
 	}
 
 }

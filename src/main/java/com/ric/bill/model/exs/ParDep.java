@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.bs.Par;
 
 
@@ -17,37 +19,29 @@ import com.ric.bill.model.bs.Par;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "ACTXPAR", schema="EXS")
-public class ActionPar implements java.io.Serializable  {
+@Table(name = "PARXDEP", schema="EXS")
+public class ParDep implements java.io.Serializable  {
 
-	public ActionPar() {
+	public ParDep() {
 	}
 
 	@Id
     @Column(name = "ID", unique=true, updatable = false, nullable = false)
 	private Integer id;
 
-	// Действие
+	// Действие из справочника
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_ACTION", referencedColumnName="ID")
-	private Action action;
+	@JoinColumn(name="FK_ACT", referencedColumnName="ID")
+	private Lst act;
 	
 	// Параметр, ассоциированный с ГИС ЖКХ
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_PAR", referencedColumnName="ID")
 	private Par par;
 
-	// Параметр типа Number
-	@Column(name = "N1", updatable = true, nullable = true)
-	private Double n1;
-	
-	// Параметр типа Varchar2
-	@Column(name = "S1", updatable = true, nullable = true)
-	private String s1;
-
-	// Параметр типа Date
-	@Column(name = "D1", updatable = true, nullable = true)
-	private String d1;
+	// Взято из источника
+	@Column(name = "PLACEFROM", updatable = true, nullable = true)
+	private String placeFrom;
 
 	public Integer getId() {
 		return id;
@@ -55,14 +49,6 @@ public class ActionPar implements java.io.Serializable  {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public Action getAction() {
-		return action;
-	}
-
-	public void setAction(Action action) {
-		this.action = action;
 	}
 
 	public Par getPar() {
@@ -73,36 +59,28 @@ public class ActionPar implements java.io.Serializable  {
 		this.par = par;
 	}
 
-	public Double getN1() {
-		return n1;
+	public Lst getAct() {
+		return act;
 	}
 
-	public void setN1(Double n1) {
-		this.n1 = n1;
+	public void setAct(Lst act) {
+		this.act = act;
 	}
 
-	public String getS1() {
-		return s1;
+	public String getPlaceFrom() {
+		return placeFrom;
 	}
 
-	public void setS1(String s1) {
-		this.s1 = s1;
-	}
-
-	public String getD1() {
-		return d1;
-	}
-
-	public void setD1(String d1) {
-		this.d1 = d1;
+	public void setPlaceFrom(String placeFrom) {
+		this.placeFrom = placeFrom;
 	}
 
 	public boolean equals(Object o) {
 	    if (this == o) return true;
-	    if (o == null || !(o instanceof ActionPar))
+	    if (o == null || !(o instanceof ParDep))
 	        return false;
 
-	    ActionPar other = (ActionPar)o;
+	    ParDep other = (ParDep)o;
 
 	    if (id == other.getId()) return true;
 	    if (id == null) return false;
