@@ -48,9 +48,13 @@ public class Task implements java.io.Serializable  {
 	@JoinColumn(name="FK_ACT", referencedColumnName="ID")
 	private Lst act;
 
-	// от ГИС ЖКХ: Уникальный номер
+	// От ГИС ЖКХ: Уникальный номер
 	@Column(name = "UNIQNUM")
 	private String un;
+
+	// Результат отправки
+	@Column(name = "RESULT")
+	private String result;
 
 	public String getUn() {
 		return un;
@@ -98,6 +102,14 @@ public class Task implements java.io.Serializable  {
 
 	public void setEolink(Eolink eolink) {
 		this.eolink = eolink;
+	}
+
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
 	}
 
 	public boolean equals(Object o) {
