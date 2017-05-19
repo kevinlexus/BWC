@@ -68,8 +68,8 @@ public class Eolink implements java.io.Serializable  {
 	private String lsk;
 	
 	// Подъезд в  системе "Квартплата"
-	@Column(name = "PODEZD", updatable = true, nullable = true)
-	private Integer podezd;
+	@Column(name = "ENTRY", updatable = true, nullable = true)
+	private Integer entry;
 	
 	// Услуга в системе "Квартплата" (для счетчика)
 	@Column(name = "USL", updatable = true, nullable = true)
@@ -156,12 +156,12 @@ public class Eolink implements java.io.Serializable  {
 		this.lsk = lsk;
 	}
 
-	public Integer getPodezd() {
-		return podezd;
+	public Integer getEntry() {
+		return entry;
 	}
 
-	public void setPodezd(Integer podezd) {
-		this.podezd = podezd;
+	public void setEntry(Integer entry) {
+		this.entry = entry;
 	}
 
 	public String getUsl() {

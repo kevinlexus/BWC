@@ -31,6 +31,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Utl {
 
+	
+	/**
+	 * Аналог LTRIM в Oracle
+	 * @param str - исходная строка
+	 * @return - усеченная слева строка
+	 */
+	public static String ltrim (String str) {
+		return str.replaceFirst("^0+", str);
+	}
+	
 	/**
 	 * сравнить два параметра, с учётом их возможного null 
 	 * @param a - 1 значение

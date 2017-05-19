@@ -34,10 +34,10 @@ public class Task implements java.io.Serializable  {
 	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID")
 	private Eolink eolink;
 	
-	// Родительское действие
+	// Родительское задание
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
-	private Task parentAction; 
+	private Task parentTask; 
 	
 	// CD состояния
 	@Column(name = "STATE")
@@ -68,12 +68,12 @@ public class Task implements java.io.Serializable  {
 		this.act = act;
 	}
 
-	public Task getParentAction() {
-		return parentAction;
+	public Task getParentTask() {
+		return parentTask;
 	}
 
-	public void setParentAction(Task parentAction) {
-		this.parentAction = parentAction;
+	public void setParentTask(Task parentTask) {
+		this.parentTask = parentTask;
 	}
 
 	public Integer getId() {

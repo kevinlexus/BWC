@@ -35,13 +35,13 @@ public class Ulist implements java.io.Serializable  {
     @Column(name = "id", unique=true, updatable = false, nullable = false)
 	private Integer id;
 
-	public Ulist(String cd, String name, String s1, Date dt1, Date dt2,
+	public Ulist(String cd, String name, String guid, Date dt1, Date dt2,
 			Boolean actual, UlistTp ulistTp, Integer npp, String value, Ulist parentUlist,
 			String refCode, String refGuid, String tp) {
 		super();
 		this.cd = cd;
 		this.name = name;
-		this.guid = s1;
+		this.guid = guid;
 		this.dt1 = dt1;
 		this.dt2 = dt2;
 		this.actual = actual;
