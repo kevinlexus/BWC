@@ -88,27 +88,6 @@ public class MeterLogMngImpl implements MeterLogMng {
 	}
 
 	/**
-	 * Получить список лог.счетчиков по определённому объекту, типу и услуге
-	 * @param mm - Объект
-	 * @param serv - Услуга
-	 * @param tp - Тип
-	 * @return
-	 */
-	/*@Cacheable("readOnlyCache")
-	public List<MLogs> getMetLogByServTp(MeterContains mm, Serv serv, String tp) {
-		List<MLogs> mLog = new ArrayList<MLogs>(); 
-		for (MLogs ml : mm.getMlog()) {
-			//по типу и услуге
-			if (ml.getTp().getCd().equals(tp)
-					&& ml.getServ().equals(serv)) {
-				mLog.add(ml);
-			}
-		}
-		return mLog;
-	}*/
-	
-	
-	/**
 	 * проверить существование хотя бы одного физ.счетчика по лиц.счету по данной услуге
 	 * @param rqn   - уникальный номер запроса
 	 * @param kart  - лиц.счет
@@ -123,14 +102,6 @@ public class MeterLogMngImpl implements MeterLogMng {
 			                       .filter(t -> t.getMeter().stream()
 			                    		   .anyMatch(d -> d.getExs().stream()
 			                    				   .anyMatch(v -> Utl.between(genDt, v.getDt1(), v.getDt2()) && v.getPrc() > 0d ) ) ).findAny();
-/*		} catch (Exception e) {
-			log.info("check={}", serv.getCd());
-			log.info(Arrays.toString(kart.getMlog().toArray()) );
-
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		//log.info("CHECK2! = {}", mLog.isPresent());
 		return mLog.isPresent();
 	}
 	
