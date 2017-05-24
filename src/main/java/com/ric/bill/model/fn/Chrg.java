@@ -124,8 +124,12 @@ public class Chrg implements java.io.Serializable, Simple {
 		setPeriod(period);
 		setSumFull(sumFull.doubleValue());
 		setSumAmnt(sumAmnt.doubleValue());
-		setVol(vol.doubleValue());
-		setPrice(price.doubleValue());
+		if (vol!=null) {
+			setVol(vol.doubleValue());
+		}
+		if (price!=null) {
+			setPrice(price.doubleValue());
+		}
 		if (stdt != null) {
 			setStdt(stdt.doubleValue());
 		}

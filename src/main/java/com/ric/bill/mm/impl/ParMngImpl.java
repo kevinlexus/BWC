@@ -90,6 +90,42 @@ public class ParMngImpl implements ParMng {
 		return null;
 	}
 
+	@Cacheable(cacheNames="rrr1", key="{#rqn, #st.getKlskId(), #cd}")
+	public Boolean getBool(int rqn, Storable st, String cd) throws EmptyStorable {
+		if (st == null) {
+			throw new EmptyStorable("Параметр st = null");
+		}
+		Par par = getByCD(rqn, cd);
+		try {
+			for (Dw d: st.getDw()) {
+    			//по соотв.периоду
+       				if (d.getPar().equals(par)) {
+						if (d.getPar().getTp().equals("BL")) {
+							if (d.getPar().getDataTp().equals("SI")) {
+								if (d.getN1() == null) {
+									return null;
+								} else if (d.getN1()==1) {
+									return true;
+								} else {
+									return false;
+								}
+							} else {
+									throw new WrongGetMethod("Попытка получить параметр "+cd+" не являющийся типом данного SI завершилась ошибкой");
+							}
+						} else {
+							throw new WrongGetMethod("Попытка получить параметр "+cd+" не являющийся типом BL завершилась ошибкой");
+						}
+					}
+			}
+			//если не найдено, то проверить, существует ли вообще этот параметр, в базе данных
+			if (!isExByCd(rqn, cd)) {
+				throw new WrongGetMethod("Параметр "+cd+" не существует в базе данных");
+			};
+		} catch (WrongGetMethod e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	/**
 	 * получить значение параметра типа Double объекта по CD свойства

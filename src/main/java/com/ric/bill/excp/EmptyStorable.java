@@ -1,7 +1,7 @@
 package com.ric.bill.excp;
 
 /**
- * Exception возникающий если задана пустая услуга 
+ * Exception возникающий если задан пустой объект хранения
  * @author lev
  *
  */
