@@ -38,7 +38,7 @@ public class Utl {
 	 * @return - усеченная слева строка
 	 */
 	public static String ltrim (String str) {
-		return str.replaceFirst("^0+", str);
+		return str.replaceFirst("^0+", "");
 	}
 	
 	/**

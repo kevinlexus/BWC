@@ -1,5 +1,7 @@
 package com.ric.bill.model.exs;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -48,13 +50,29 @@ public class Task implements java.io.Serializable  {
 	@JoinColumn(name="FK_ACT", referencedColumnName="ID")
 	private Lst act;
 
-	// От ГИС ЖКХ: Уникальный номер
+	// GUID объекта во внешней системе
+	@Column(name = "GUID", updatable = true, nullable = true)
+	private String guid;
+
+	// Уникальный номер объекта во внешней системе
 	@Column(name = "UNIQNUM")
 	private String un;
 
 	// Результат отправки
 	@Column(name = "RESULT")
 	private String result;
+
+	// Дата обновления
+	@Column(name = "DT1")
+	private Date updDt;
+
+	public Date getUpdDt() {
+		return updDt;
+	}
+
+	public void setUpdDt(Date updDt) {
+		this.updDt = updDt;
+	}
 
 	public String getUn() {
 		return un;
@@ -110,6 +128,14 @@ public class Task implements java.io.Serializable  {
 
 	public void setResult(String result) {
 		this.result = result;
+	}
+
+	public String getGuid() {
+		return guid;
+	}
+
+	public void setGuid(String guid) {
+		this.guid = guid;
 	}
 
 	public boolean equals(Object o) {

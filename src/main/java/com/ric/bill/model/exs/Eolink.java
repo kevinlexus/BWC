@@ -35,7 +35,6 @@ public class Eolink implements java.io.Serializable  {
 	public Eolink() {
 	}
 
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
 	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_EOLINK", allocationSize=1)	
@@ -83,6 +82,10 @@ public class Eolink implements java.io.Serializable  {
 	@Column(name = "GUID", updatable = true, nullable = true)
 	private String guid;
 	
+	// Уникальный номер объекта во внешней системе
+	@Column(name = "UNIQNUM")
+	private String un;
+
 	// ID объекта во внешней системе (алфавитно-цифровой)
 	@Column(name = "CD_EXT", updatable = true, nullable = true)
 	private String cdExt;
@@ -100,6 +103,14 @@ public class Eolink implements java.io.Serializable  {
 	private Integer appTp;
 	
 	
+	public String getUn() {
+		return un;
+	}
+
+	public void setUn(String un) {
+		this.un = un;
+	}
+
 	public Integer getId() {
 		return id;
 	}

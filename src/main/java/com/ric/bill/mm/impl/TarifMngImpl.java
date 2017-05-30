@@ -51,6 +51,9 @@ public class TarifMngImpl implements TarifMng {
 		// TODO - переписать на Java 8!
 		//Prop prop = getPropByCD(cd);//так и не понял, как быстрее, искать тариф предварительно getPropByCD, или непосредственно через.getCd()
 		//искать сперва по наборам тарифа объекта
+		//if (serv.getId()==106) {
+		//	log.info("getProp tc.id={}", tc.getKlskId());
+		//}
 			Boolean isChng = false;
 			Chng chng = null; 
 			// необходимо ли искать привязку тарифа к перерасчету
@@ -70,6 +73,9 @@ public class TarifMngImpl implements TarifMng {
 					//затем по строкам - составляющим тариф 
 					for (TarifServProp t : k.getTarprop()) {
 						if (Utl.between(genDt, t.getDt1(), t.getDt2())) {
+							//if (t.getServ().getId()==106) {
+							//	log.info("TarifServProp id={}, serv.id={}, prop.cd={}, n1={}", t.getId(), t.getServ().getId(), t.getProp().getCd(), t.getN1());
+							//}
 							if (t.getServ().equals(serv) && t.getProp().getCd().equals(cd)) {
 								return t.getN1();
 							}
