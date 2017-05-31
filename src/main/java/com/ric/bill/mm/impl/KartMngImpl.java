@@ -174,6 +174,8 @@ public class KartMngImpl implements KartMng {
 		cntPers.cnt=0; //кол-во человек
 		cntPers.cntVol=0; //кол-во чел. для определения объема
 		cntPers.cntEmpt=0; //кол-во чел. для анализа пустая ли квартира
+		cntPers.cntFact=0; // кол-во проживающих фактическое (без виртуальных +1 собственников, если никто не прописан)
+		cntPers.cntOwn=0; // кол-во собственников
 		//поиск сперва по постоянной регистрации 
 		for (Registrable p : rc.getReg()) {
 			if (p.getPers()!=null && !foundPers(counted, p.getPers())) {
@@ -184,11 +186,13 @@ public class KartMngImpl implements KartMng {
 							//временного отсутствия нет, считать проживающего
 							cntPers.cnt++;
 							cntPers.cntVol++;
+							cntPers.cntFact++;
 						}
 					} else {
 						//не проверять временное отсутствие, считать проживающего
 						cntPers.cnt++;
 						cntPers.cntVol++;
+						cntPers.cntFact++;
 					}
 					cntPers.cntEmpt++;
 				} else {
@@ -198,6 +202,7 @@ public class KartMngImpl implements KartMng {
 						if (serv.getInclPrsn()) {
 							cntPers.cnt++;
 							cntPers.cntVol++;
+							cntPers.cntFact++;
 						}
 						cntPers.cntEmpt++;
 					}
@@ -213,14 +218,17 @@ public class KartMngImpl implements KartMng {
 					if (serv.getInclPrsn()) {
 						cntPers.cnt++;
 						cntPers.cntVol++;
+						cntPers.cntFact++;
 					}
 				}
 			}		
 		}
 		
 		// если кол-во проживающих для объема установить невозможно, установить по кол-ву собственников
+		// здесь не считать кол-во прожив факт cntFact
 		if (cntPers.cntVol == 0) {
-			cntPers.cntVol = Utl.nvl(parMng.getDbl(rqn, calc.getKart(), "Количество собственников на ЛС", genDt), 0d).intValue();
+			cntPers.cntOwn = Utl.nvl(parMng.getDbl(rqn, calc.getKart(), "Количество собственников на ЛС", genDt), 0d).intValue();
+			cntPers.cntVol = cntPers.cntOwn;
 		}
 	}
 	

@@ -75,9 +75,13 @@ public class Chrg implements java.io.Serializable, Simple {
 	@Column(name = "STDT")
 	private Double stdt;
 	
-	// Кол-во проживающих на дату расчета
+	// Фактическое кол-во проживающих на дату расчета
 	@Column(name = "CNTPERS")
-	private Integer cntPers; 
+	private Integer cntFact; 
+
+	// Кол-во собственников на дату расчета
+	@Column(name = "CNTPERS2")
+	private Integer cntOwn; 
 
 	// Площадь на дату расчета
 	@Column(name = "AREA")
@@ -114,8 +118,8 @@ public class Chrg implements java.io.Serializable, Simple {
 	// конструктор для окончательно рассчитанных данных (умноженная расценка на объем)
 	public Chrg(Kart kart, Serv serv, Org org, int status, String period,
 			BigDecimal sumFull, BigDecimal sumAmnt, BigDecimal vol,
-			BigDecimal price, BigDecimal stdt, Integer cntPers, BigDecimal area, Lst tp, 
-			Chng chng, Integer met, Integer entry, Date dt1, Date dt2) {
+			BigDecimal price, BigDecimal stdt, Integer cntFact, BigDecimal area, Lst tp, 
+			Chng chng, Integer met, Integer entry, Date dt1, Date dt2, Integer cntOwn) {
 		
 		setKart(kart);
 		setOrg(org);
@@ -133,7 +137,8 @@ public class Chrg implements java.io.Serializable, Simple {
 		if (stdt != null) {
 			setStdt(stdt.doubleValue());
 		}
-		setCntPers(cntPers);
+		setCntFact(cntFact);
+		setCntOwn(cntOwn);
 		setTp(tp);
 		if (area != null) {
 			setArea(area.doubleValue());
@@ -148,8 +153,8 @@ public class Chrg implements java.io.Serializable, Simple {
 	// конструктор для подготовительных данных, рассчитанных в потоке
 	public Chrg(Kart kart, Serv serv, Org org, int status, String period,
 			Double sumFull, Double sumAmnt, Double vol,
-			Double price, Double stdt, Integer cntPers, Double area, Lst tp, 
-			Date dt1, Date dt2, Integer met, Integer entry, Chng chng) {
+			Double price, Double stdt, Integer cntFact, Double area, Lst tp, 
+			Date dt1, Date dt2, Integer met, Integer entry, Chng chng, Integer cntOwn) {
 		
 		setKart(kart);
 		setOrg(org);
@@ -161,7 +166,8 @@ public class Chrg implements java.io.Serializable, Simple {
 		setVol(vol);
 		setPrice(price);
 		setStdt(stdt);
-		setCntPers(cntPers);
+		setCntFact(cntFact);
+		setCntOwn(cntOwn);
 		setTp(tp);
 		setArea(area);
 		setDt1(dt1);
@@ -291,14 +297,6 @@ public class Chrg implements java.io.Serializable, Simple {
 		this.stdt = stdt;
 	}
 
-	public Integer getCntPers() {
-		return cntPers;
-	}
-
-	public void setCntPers(Integer cntPers) {
-		this.cntPers = cntPers;
-	}
-
 	public Chng getChng() {
 		return chng;
 	}
@@ -329,6 +327,23 @@ public class Chrg implements java.io.Serializable, Simple {
 
 	public void setEntry(Integer entry) {
 		this.entry = entry;
+	}
+
+	
+	public Integer getCntFact() {
+		return cntFact;
+	}
+
+	public void setCntFact(Integer cntFact) {
+		this.cntFact = cntFact;
+	}
+
+	public Integer getCntOwn() {
+		return cntOwn;
+	}
+
+	public void setCntOwn(Integer cntOwn) {
+		this.cntOwn = cntOwn;
 	}
 
 	public boolean equals(Object o) {
