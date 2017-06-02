@@ -66,6 +66,10 @@ public class Task implements java.io.Serializable  {
 	@Column(name = "DT1")
 	private Date updDt;
 
+	// Транспортный GUID объекта
+	@Column(name = "TGUID", updatable = true, nullable = true)
+	private String tguid;
+
 	public Date getUpdDt() {
 		return updDt;
 	}
@@ -136,6 +140,14 @@ public class Task implements java.io.Serializable  {
 
 	public void setGuid(String guid) {
 		this.guid = guid;
+	}
+
+	public String getTguid() {
+		return tguid;
+	}
+
+	public void setTguid(String tguid) {
+		this.tguid = tguid;
 	}
 
 	public boolean equals(Object o) {
