@@ -15,6 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.ric.bill.Simple;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.bs.Lst;
@@ -29,6 +32,7 @@ import com.ric.bill.model.tr.Serv;
  */
 @SuppressWarnings("serial")
 @Entity
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "CHRG", schema="FN")
 public class Chrg implements java.io.Serializable, Simple {
 

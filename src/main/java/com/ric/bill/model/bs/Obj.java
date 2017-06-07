@@ -7,6 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.ric.bill.Storable;
 
 /**
@@ -16,6 +19,7 @@ import com.ric.bill.Storable;
  */
 @SuppressWarnings("serial")
 @Entity
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "OBJ", schema="BS")
 public class Obj extends Base implements java.io.Serializable, Storable {
 

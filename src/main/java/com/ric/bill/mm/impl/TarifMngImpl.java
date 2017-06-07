@@ -94,9 +94,11 @@ public class TarifMngImpl implements TarifMng {
 	 * @return - свойство
 	 */
 	//@Cacheable(cacheNames="rrr1") 
-	@Cacheable(cacheNames="rrr3", key="{ #rqn,  #tc.getKlskId(), #serv.getId(), #genDt }") 
+	@Cacheable(cacheNames="rrr3", key="{#rqn,  #tc.getKlskId(), #serv.getId(), #genDt }") 
 	public /*synchronized*/ Org getOrg(Calc calc, int rqn, TarifContains tc, Serv serv, Date genDt) {
-
+		/*if (serv.getId()==480) {
+			log.info("Erfind set value: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}", rqn, calc.getKart().getLsk(), tc.getKlskId(), serv.getId(), genDt) ;
+		}*/
 		Boolean isChng = false;
 		Chng chng = null; 
 		// необходимо ли искать привязку тарифа к перерасчету
@@ -112,12 +114,24 @@ public class TarifMngImpl implements TarifMng {
 				for (TarifServProp t : k.getTarprop()) {
 					if (Utl.between(genDt, t.getDt1(), k.getDt2())) {
 						if (t.getServ().equals(serv) && t.getProp().getCd().equals("Поставщик")) {
+							/*if (serv.getId()==480 && tc.getKlskId() == 228 && t.getOrg().getId()==1824) {
+								log.info("area.id={}", calc.getArea().getId());
+								log.info("TarifKlsk.id={}", k.getId());
+								log.info("TarifServProp.id={}", t.getId());
+								log.info("Erfind_area3: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}", rqn, calc.getKart().getLsk(), calc.getArea().getKlskId(), serv.getId(), genDt );
+							}*/
+							/*if (serv.getId()==480) {
+								log.info("Erfind2 set value: rqn={}, klskId={}, serv.id={}, genDt={}, org={}", rqn, tc.getKlskId(), serv.getId(), genDt, t.getOrg().getId()) ;
+							}*/
 							return t.getOrg();
 						}
 					}
 				}
 			}
 		}
+		/*if (serv.getId()==480) {
+			log.info("Erfind_area4: rqn={}, klskId={}, serv.id={}, genDt={}", rqn, tc.getKlskId(), serv.getId(), genDt) ;
+		}*/
 		return null;
 		
 	}

@@ -18,6 +18,7 @@ import com.ric.bill.Simple;
 import com.ric.bill.model.ar.House;
 import com.ric.bill.model.bs.AddrTp;
 import com.ric.bill.model.bs.Org;
+import com.ric.bill.model.dc.Doc;
 import com.ric.bill.model.mt.MeterLog;
 
 /**
@@ -48,6 +49,11 @@ public class Ko implements java.io.Serializable, Simple {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="ID", referencedColumnName="FK_K_LSK", updatable = false, insertable = false)
 	private House house; 
+
+	// Документ (На самом деле, здесь OneToOne, но не смог реализовать, оставил так)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="ID", referencedColumnName="FK_K_LSK", updatable = false, insertable = false)
+	private Doc doc; 
 
 	// TODO можно добавить счетчик, и т.п.
 	
@@ -85,6 +91,14 @@ public class Ko implements java.io.Serializable, Simple {
 
 	public void setHouse(House house) {
 		this.house = house;
+	}
+
+	public Doc getDoc() {
+		return doc;
+	}
+
+	public void setDoc(Doc doc) {
+		this.doc = doc;
 	}
 
 	public boolean equals(Object o) {

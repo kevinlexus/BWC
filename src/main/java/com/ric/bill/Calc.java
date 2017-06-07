@@ -1,8 +1,7 @@
 package com.ric.bill;
 
+import java.io.Serializable;
 import java.util.Date;
-
-import lombok.extern.slf4j.Slf4j;
 
 import com.ric.bill.model.ar.Area;
 import com.ric.bill.model.ar.House;
@@ -14,7 +13,12 @@ import com.ric.bill.model.tr.Serv;
  * @author lev
  *
  */
-public final class Calc {
+public final class Calc implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4464281463197425559L;
+	
 	// рассчитываемая дата
 	private Date genDt;
 	// тип обработки расчёта

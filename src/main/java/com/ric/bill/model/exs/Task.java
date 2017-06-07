@@ -70,6 +70,10 @@ public class Task implements java.io.Serializable  {
 	@Column(name = "TGUID", updatable = true, nullable = true)
 	private String tguid;
 
+	// Тип информационной системы (0- "Квартплата", 1 - "Новая разработка")
+	@Column(name = "APP_TP", updatable = true, nullable = true)
+	private Integer appTp;
+
 	public Date getUpdDt() {
 		return updDt;
 	}
@@ -148,6 +152,14 @@ public class Task implements java.io.Serializable  {
 
 	public void setTguid(String tguid) {
 		this.tguid = tguid;
+	}
+
+	public Integer getAppTp() {
+		return appTp;
+	}
+
+	public void setAppTp(Integer appTp) {
+		this.appTp = appTp;
 	}
 
 	public boolean equals(Object o) {

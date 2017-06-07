@@ -7,6 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.ric.bill.Simple;
 import com.ric.bill.model.ar.House;
 
@@ -17,6 +20,7 @@ import com.ric.bill.model.ar.House;
  */
 @SuppressWarnings("serial")
 @Entity
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
 @Table(name = "ADDR_TP", schema="BS")
 public class AddrTp implements java.io.Serializable, Simple {
 

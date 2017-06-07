@@ -3,9 +3,7 @@ package com.ric.bill.model.mt;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.List;
 
-import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,16 +17,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.FilterDefs;
-import org.hibernate.annotations.Filters;
-import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.ric.bill.Storable;
-import com.ric.bill.model.ar.House;
 import com.ric.bill.model.bs.Base;
-import com.ric.bill.model.bs.Par;
 
 
 /**
@@ -38,6 +31,7 @@ import com.ric.bill.model.bs.Par;
  */
 @SuppressWarnings("serial")
 @Entity
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "METER", schema="MT")
 public class Meter extends Base implements java.io.Serializable, Storable {
 

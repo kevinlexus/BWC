@@ -20,6 +20,8 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.ric.bill.model.bs.AddrTp;
+import com.ric.bill.model.bs.Lst;
+import com.ric.bill.model.oralv.Ko;
 
 
 /**
@@ -91,18 +93,25 @@ public class Eolink implements java.io.Serializable  {
 	private String cdExt;
 
 	// Идентификатор объекта в новой разработке
-	@Column(name = "FK_KLSK", updatable = true, nullable = true)
-	private Integer fkKlsk;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_KLSK", referencedColumnName="ID")
+	private Ko ko;
 	
+	// Тип объекта (например "Договор") (используется для обмена с "Квартплатой") 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_OBJTP", referencedColumnName="ID", updatable = false)
-	private AddrTp addrTp;
+	private AddrTp objTp;
 	
 	// Тип информационной системы (0- "Квартплата", 1 - "Новая разработка")
 	@Column(name = "APP_TP", updatable = true, nullable = true)
 	private Integer appTp;
 	
-	
+	// Расширенный тип объекта (например "Договор управления") (используется для обмена с "Квартплатой")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_OBJTPX", referencedColumnName="ID")
+	private Lst objTpx;
+
+
 	public String getUn() {
 		return un;
 	}
@@ -207,14 +216,6 @@ public class Eolink implements java.io.Serializable  {
 		this.cdExt = cdExt;
 	}
 
-	public Integer getFkKlsk() {
-		return fkKlsk;
-	}
-
-	public void setFkKlsk(Integer fkKlsk) {
-		this.fkKlsk = fkKlsk;
-	}
-
 	public Integer getAppTp() {
 		return appTp;
 	}
@@ -223,12 +224,29 @@ public class Eolink implements java.io.Serializable  {
 		this.appTp = appTp;
 	}
 
-	public AddrTp getAddrTp() {
-		return addrTp;
+
+	public AddrTp getObjTp() {
+		return objTp;
 	}
 
-	public void setAddrTp(AddrTp addrTp) {
-		this.addrTp = addrTp;
+	public void setObjTp(AddrTp objTp) {
+		this.objTp = objTp;
+	}
+
+	public Lst getObjTpx() {
+		return objTpx;
+	}
+
+	public void setObjTpx(Lst objTpx) {
+		this.objTpx = objTpx;
+	}
+
+	public Ko getKo() {
+		return ko;
+	}
+
+	public void setKo(Ko ko) {
+		this.ko = ko;
 	}
 
 	public boolean equals(Object o) {

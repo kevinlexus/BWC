@@ -1,7 +1,6 @@
 package com.ric.bill.model.mt;
 
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -14,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.ric.bill.Simple;
 import com.ric.bill.model.bs.Lst;
 
@@ -25,6 +27,7 @@ import com.ric.bill.model.bs.Lst;
  */
 @SuppressWarnings("serial")
 @Entity
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
 @Table(name = "METER_LOG_GRAPH", schema="MT")
 public class MeterLogGraph implements java.io.Serializable, Simple {
 

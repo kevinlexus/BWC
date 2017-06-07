@@ -1,41 +1,47 @@
-package com.ric.bill.model.bs;
+package com.ric.bill.model.dc;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.ric.bill.Simple;
-import com.ric.bill.model.ar.House;
+import com.ric.bill.Storable;
+import com.ric.bill.model.bs.Base;
+import com.ric.bill.model.bs.Lst;
+import com.ric.bill.model.oralv.Ko;
 
 /**
- * Тип элемента списка
+ * Документ
  * 
  *
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
-@Table(name = "LISTTP", schema="BS")
-public class LstTp implements java.io.Serializable, Simple {
+@Table(name = "ORG", schema="DC")
+public class Doc extends Base implements java.io.Serializable, Storable {
 
+	// Id
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", updatable = false, nullable = false)
-	private Integer id; //id
+	private Integer id;
 
+	// CD
 	@Column(name = "CD", updatable = false, nullable = false)
-	private String cd; //cd 
+	private String cd; 
 
-    @Column(name = "NAME", updatable = false, nullable = false)
-	private String name; //Наименование 
+	// Наименование
+    @Column(name = "NAME")
+	private String name;  
+    
+    // Тип документа
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_DOCTP", referencedColumnName="ID")
+	private Lst tp; 
 
-    public Integer getId() {
+	public Integer getId() {
 		return this.id;
 	}
 	public void setId(Integer id) {
@@ -54,12 +60,14 @@ public class LstTp implements java.io.Serializable, Simple {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	@Override
 	public boolean equals(Object o) {
 	    if (this == o) return true;
-	    if (o == null || !(o instanceof LstTp))
+	    if (o == null || !(o instanceof Doc))
 	        return false;
 
-	    LstTp other = (LstTp)o;
+	    Doc other = (Doc)o;
 
 	    if (id == other.getId()) return true;
 	    if (id == null) return false;
@@ -68,6 +76,7 @@ public class LstTp implements java.io.Serializable, Simple {
 	    return id.equals(other.getId());
 	}
 
+	@Override
 	public int hashCode() {
 	    if (id != null) {
 	        return id.hashCode();
@@ -75,6 +84,6 @@ public class LstTp implements java.io.Serializable, Simple {
 	        return super.hashCode();
 	    }
 	}
-	
+
 }
 

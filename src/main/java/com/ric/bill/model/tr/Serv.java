@@ -19,6 +19,8 @@ import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 import com.ric.bill.Calc;
@@ -35,6 +37,7 @@ import com.ric.bill.model.mt.Meter;
  */
 @SuppressWarnings("serial")
 @Entity
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
 @Table(name = "SERV", schema="TR")
 public class Serv extends Base implements java.io.Serializable, Storable {
 

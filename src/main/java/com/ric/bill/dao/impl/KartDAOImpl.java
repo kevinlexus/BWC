@@ -87,7 +87,7 @@ public class KartDAOImpl implements KartDAO {
 						   "where k.fk_kw = kw.id "+
 						   "and h.id = kw.fk_house "+
 //						   "and o.reu in ('Z4', 'F4', 'J4', 'G4') /*'D8'*/ "+
-						   "and o.parent_id=u.id /*and h.id=7468*/ "+
+						   "and o.parent_id=u.id /*and h.id=7468*/ " + //and k.lsk between 1 and 40 "+
 						   "and k.fk_uk = u.id "+
 						   "and ? between k.dt1 and k.dt2 "+
 						   "order by k.lsk ",  STATEMENT_SQLMAP);

@@ -1,5 +1,6 @@
 package com.ric.bill;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
@@ -20,7 +21,12 @@ import com.ric.bill.model.fn.Chng;
 @Slf4j
 @Scope("prototype")
 @Service
-public class RequestConfig {
+public class RequestConfig implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8660269564151054878L;
+	
 	// тип операции (0-начисление, 1-перерасчет)
 	private Integer operTp;
 	// включить распределение?
