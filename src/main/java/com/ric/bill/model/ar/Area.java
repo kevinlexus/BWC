@@ -93,7 +93,31 @@ public class Area extends Base implements java.io.Serializable, Storable, TarifC
 		this.street = street;
 	}
 	
-	@Override
+
+	public boolean equals(Object o) {
+	    if (this == o) return true;
+	    if (o == null || !(o instanceof Area))
+	        return false;
+
+	    Area other = (Area)o;
+
+	    if (id == other.getId()) return true;
+	    if (id == null) return false;
+
+	    // equivalence by id
+	    return id.equals(other.getId());
+	}
+
+	public int hashCode() {
+	    if (id != null) {
+	        return id.hashCode();
+	    } else {
+	        return super.hashCode();
+	    }
+	}	
+
+	
+/*	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
@@ -118,7 +142,7 @@ public class Area extends Base implements java.io.Serializable, Storable, TarifC
 			return false;
 		}
 		return true;
-	}
+	}*/
 
 
 }

@@ -3,9 +3,13 @@ package com.ric.bill.mm.impl;
 import java.util.Date;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +37,6 @@ public class TarifMngImpl implements TarifMng {
 	@Autowired
 	private TarifDAO tarDao;
 
-    
 	//получить свойство тарифа по его CD
 	//@Cacheable(cacheNames="readOnlyCache", key="{ #cd }") - здесь не кэшируется, только в DAO
 	//public synchronized Prop getPropByCD(String cd) {
@@ -94,7 +97,8 @@ public class TarifMngImpl implements TarifMng {
 	 * @return - свойство
 	 */
 	//@Cacheable(cacheNames="rrr1") 
-	@Cacheable(cacheNames="rrr3", key="{#rqn,  #tc.getKlskId(), #serv.getId(), #genDt }") 
+	//@Cacheable(cacheNames="rrr3", key="{#rqn,  #tc.getKlskId(), #serv.getId(), #genDt }") 
+	@Cacheable(cacheNames="TarifMngImpl.getOrg", key="{#rqn,  #tc.getKlskId(), #serv.getId(), #genDt }") 
 	public /*synchronized*/ Org getOrg(Calc calc, int rqn, TarifContains tc, Serv serv, Date genDt) {
 		/*if (serv.getId()==480) {
 			log.info("Erfind set value: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}", rqn, calc.getKart().getLsk(), tc.getKlskId(), serv.getId(), genDt) ;

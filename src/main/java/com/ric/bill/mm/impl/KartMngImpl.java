@@ -417,30 +417,20 @@ public class KartMngImpl implements KartMng {
 	public /*synchronized*/ Org getOrg(int rqn, Calc calc, Serv serv, Date genDt) {
 		Org org;
 		
-
-		
 		//в начале ищем по дому
 		org=tarMng.getOrg(calc, rqn, calc.getHouse(), serv, genDt);
-/*			if (serv.getId()==480 && calc.getHouse().getKlskId() == 228) {
-			 log.info("Erfind_house: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}, org.id={}", rqn, calc.getKart().getLsk(), calc.getHouse().getKlskId(), serv.getId(), genDt, 
-					 org!=null ? org.getId():null );
-			}*/
 		if (org==null) {
 			//потом ищем по лиц. счету 
 			org=tarMng.getOrg(calc, rqn, calc.getKart(), serv, genDt);
-/*			if (serv.getId()==480 && calc.getKart().getKlskId() == 228) {
-				log.info("Erfind_ls: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}, org.id={}", rqn, calc.getKart().getLsk(), calc.getKart().getKlskId(), serv.getId(), genDt, 
-						org!=null ? org.getId():null);
-			}*/
 		}
 		if (org==null) {
 			//потом ищем по городу
-			/*if (serv.getId()==480 && calc.getArea().getKlskId() == 228) {
+/*			if (serv.getId()==480 && calc.getArea().getKlskId() == 228) {
 				log.info("Erfind_area1: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}, org.id={}", rqn, calc.getKart().getLsk(), calc.getArea().getKlskId(), serv.getId(), genDt, 
 						org!=null ? org.getId():null);
 			}*/
 			org=tarMng.getOrg(calc, rqn, calc.getArea(), serv, genDt);
-			/*if (serv.getId()==480 && calc.getArea().getKlskId() == 228) {
+/*			if (serv.getId()==480 && calc.getArea().getKlskId() == 228) {
 				log.info("Erfind_area2: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}, org.id={}", rqn, calc.getKart().getLsk(), calc.getArea().getKlskId(), serv.getId(), genDt, 
 						org!=null ? org.getId():null);
 			}*/
