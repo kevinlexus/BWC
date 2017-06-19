@@ -49,7 +49,7 @@ public class TarifMngImpl implements TarifMng {
 	 * @param cd - код свойства
 	 * @return - свойство
 	 */
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #tc.getKlskId(), #serv.getId(), #cd, #genDt }") 
+	@Cacheable(cacheNames="rrr1", key="{#rqn, #tc.getKo().getId(), #serv.getId(), #cd, #genDt }") 
 	public /*synchronized*/ Double getProp(Calc calc, int rqn, TarifContains tc, Serv serv, String cd, Date genDt) {
 		// TODO - переписать на Java 8!
 		//Prop prop = getPropByCD(cd);//так и не понял, как быстрее, искать тариф предварительно getPropByCD, или непосредственно через.getCd()
@@ -98,7 +98,7 @@ public class TarifMngImpl implements TarifMng {
 	 */
 	//@Cacheable(cacheNames="rrr1") 
 	//@Cacheable(cacheNames="rrr3", key="{#rqn,  #tc.getKlskId(), #serv.getId(), #genDt }") 
-	@Cacheable(cacheNames="TarifMngImpl.getOrg", key="{#rqn,  #tc.getKlskId(), #serv.getId(), #genDt }") 
+	@Cacheable(cacheNames="TarifMngImpl.getOrg", key="{#rqn,  #tc.getKo().getId(), #serv.getId(), #genDt }") 
 	public /*synchronized*/ Org getOrg(Calc calc, int rqn, TarifContains tc, Serv serv, Date genDt) {
 		/*if (serv.getId()==480) {
 			log.info("Erfind set value: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}", rqn, calc.getKart().getLsk(), tc.getKlskId(), serv.getId(), genDt) ;

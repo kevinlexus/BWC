@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.ric.bill.model.bs.Dw;
+import com.ric.bill.model.oralv.Ko;
 
 /**
  * Интерфейс - объект квартплаты
@@ -12,8 +13,10 @@ import com.ric.bill.model.bs.Dw;
  */
 public interface Storable  {
 	//klsk объекта (в каждом подклассе переписать методы!)
-	Integer getKlskId();
-	void setKlskId(Integer klsk);
+	//Integer getKlskId();
+	//void setKlskId(Integer klsk);
+	Ko getKo();
+	void setKo(Ko ko);
 	public List<Dw> getDw();
 	public void setDw(List<Dw> dw);
 	

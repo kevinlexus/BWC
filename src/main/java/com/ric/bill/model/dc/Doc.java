@@ -20,7 +20,7 @@ import com.ric.bill.model.oralv.Ko;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "ORG", schema="DC")
+@Table(name = "DOC", schema="DC")
 public class Doc extends Base implements java.io.Serializable, Storable {
 
 	// Id

@@ -71,7 +71,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param tp - Тип, если не указан - по всем
 	 * @return - искомый список
 	 */
-	@Cacheable(cacheNames="rrr1", key="{ #rqn, #mm.getKlskId(), #serv.getId(), #tp }") 
+	@Cacheable(cacheNames="rrr1", key="{ #rqn, #mm.getKo().getId(), #serv.getId(), #tp }") 
 	public List<MLogs> getAllMetLogByServTp(int rqn, MeterContains mm, Serv serv, String tp) {
 		List<MLogs> lstMlg = new ArrayList<MLogs>(0); 
 		for (MLogs ml : mm.getMlog()) {

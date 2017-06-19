@@ -19,8 +19,11 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.ric.bill.Storable;
 import com.ric.bill.model.bs.AddrTp;
+import com.ric.bill.model.bs.Base;
 import com.ric.bill.model.bs.Lst;
+import com.ric.bill.model.mt.MLogs;
 import com.ric.bill.model.oralv.Ko;
 
 
@@ -32,7 +35,7 @@ import com.ric.bill.model.oralv.Ko;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "EOLINK", schema="EXS")
-public class Eolink implements java.io.Serializable  {
+public class Eolink extends Base implements java.io.Serializable, Storable  {
 
 	public Eolink() {
 	}
@@ -92,11 +95,6 @@ public class Eolink implements java.io.Serializable  {
 	@Column(name = "CD_EXT", updatable = true, nullable = true)
 	private String cdExt;
 
-	// Идентификатор объекта в новой разработке
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_KLSK", referencedColumnName="ID")
-	private Ko ko;
-	
 	// Тип объекта (например "Договор") (используется для обмена с "Квартплатой") 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_OBJTP", referencedColumnName="ID", updatable = false)
@@ -239,14 +237,6 @@ public class Eolink implements java.io.Serializable  {
 
 	public void setObjTpx(Lst objTpx) {
 		this.objTpx = objTpx;
-	}
-
-	public Ko getKo() {
-		return ko;
-	}
-
-	public void setKo(Ko ko) {
-		this.ko = ko;
 	}
 
 	public boolean equals(Object o) {

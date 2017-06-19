@@ -32,6 +32,7 @@ import com.ric.bill.model.bs.Dw;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.fn.Chrg;
 import com.ric.bill.model.mt.MeterLog;
+import com.ric.bill.model.oralv.Ko;
 import com.ric.bill.model.ps.Reg;
 import com.ric.bill.model.ps.RegState;
 import com.ric.bill.model.tr.TarifKlsk;
@@ -59,7 +60,8 @@ parameters = {@ParamDef(name = "STATUS", type = "integer"),
 }
 )
 })
-public class Kart /*extends Base*/ implements java.io.Serializable, MeterContains, TarifContains, RegContains  {
+public class Kart implements java.io.Serializable, MeterContains, TarifContains, RegContains  {  /* extends Base не может наследовать Base, так как свой FK_KLSK_OBJ*/
+																								 /* пришлось сделать что метод getKlsk ссылается на klskObj из за тупости в архитектуре таблиц*/
 
 	public Kart() {
 	}
@@ -75,8 +77,10 @@ public class Kart /*extends Base*/ implements java.io.Serializable, MeterContain
 	@BatchSize(size = 20)
 	private List<Dw> dw = new ArrayList<Dw>(0);
 
-    @Column(name = "FK_KLSK_OBJ", updatable = false, nullable = false)
-    private Integer klskObj;
+	// Ko (На самом деле, здесь OneToOne, но не смог реализовать, оставил так)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="ID", updatable = false, insertable = false)
+	private Ko ko;
 	
 	public List<Dw> getDw() {
 		return dw;
@@ -85,14 +89,13 @@ public class Kart /*extends Base*/ implements java.io.Serializable, MeterContain
 		this.dw = dw;
 	}
 
-	public Integer getKlskId() { //пришлось сделать что метод getKlsk ссылается на klskObj из за тупости в архитектуре таблиц 
-		return klskObj;
+	public Ko getKo() {
+		return ko;
 	}
-	
-	public void setKlskId(Integer klsk) {
-		this.klskObj = klsk;
+	public void setKo(Ko ko) {
+		this.ko = ko;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_KW", referencedColumnName="ID", updatable = false, insertable = false)
 	private Kw kw;
@@ -233,13 +236,6 @@ public class Kart /*extends Base*/ implements java.io.Serializable, MeterContain
 
 	public void setUk(Org uk) {
 		this.uk = uk;
-	}
-
-	public Integer getKlskObj() {
-		return klskObj;
-	}
-	public void setKlskObj(Integer klskObj) {
-		this.klskObj = klskObj;
 	}
 
 	public Date getDt1() {
