@@ -5,7 +5,7 @@ import java.util.Date;
 import com.ric.bill.excp.WrongGetMethod;
 import com.ric.bill.model.exs.Task;
 
-public interface TaskParMng {
+public interface EolinkParMng {
 
 	public Double getDbl(Integer id, String parCd) throws WrongGetMethod;
 	public String getStr(Integer id, String parCd) throws WrongGetMethod;

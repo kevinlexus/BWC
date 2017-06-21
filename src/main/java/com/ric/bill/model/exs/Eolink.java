@@ -35,7 +35,7 @@ import com.ric.bill.model.oralv.Ko;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "EOLINK", schema="EXS")
-public class Eolink extends Base implements java.io.Serializable, Storable  {
+public class Eolink implements java.io.Serializable  {
 
 	public Eolink() {
 	}
@@ -49,7 +49,7 @@ public class Eolink extends Base implements java.io.Serializable, Storable  {
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID", updatable = false)
 	@Fetch(FetchMode.SUBSELECT)
-	private List<Task> action = new ArrayList<Task>(0);
+	private List<Task> task = new ArrayList<Task>(0);
 	
 	// РЭУ в системе "Квартплата"
 	@Column(name = "REU", updatable = true, nullable = true)
@@ -109,6 +109,10 @@ public class Eolink extends Base implements java.io.Serializable, Storable  {
 	@JoinColumn(name="FK_OBJTPX", referencedColumnName="ID")
 	private Lst objTpx;
 
+	// Идентификатор объекта связанного с EOLINK, в новой разработке
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="ID")
+	private Ko koObj;
 
 	public String getUn() {
 		return un;
@@ -127,11 +131,11 @@ public class Eolink extends Base implements java.io.Serializable, Storable  {
 	}
 	
 	public List<Task> getAction() {
-		return action;
+		return task;
 	}
 
 	public void setAction(List<Task> action) {
-		this.action = action;
+		this.task = action;
 	}
 
 	public String getReu() {
@@ -237,6 +241,23 @@ public class Eolink extends Base implements java.io.Serializable, Storable  {
 
 	public void setObjTpx(Lst objTpx) {
 		this.objTpx = objTpx;
+	}
+
+	
+	public List<Task> getTask() {
+		return task;
+	}
+
+	public void setTask(List<Task> task) {
+		this.task = task;
+	}
+
+	public Ko getKoObj() {
+		return koObj;
+	}
+
+	public void setKoObj(Ko koObj) {
+		this.koObj = koObj;
 	}
 
 	public boolean equals(Object o) {

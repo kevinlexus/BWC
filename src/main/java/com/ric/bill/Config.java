@@ -1,5 +1,9 @@
 package com.ric.bill;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -8,6 +12,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -61,18 +66,47 @@ public class Config {
 	String periodNext;
 	// Период -1 месяц 
 	String periodBack;
+	// Тип приложения
+	Integer appTp;
+	
+	// загрузить свойства
+	private void loadProp() {
+		Properties prop = new Properties();
+		InputStream input = null;
+		String filename = "config.properties";
+		input = Config.class.getClassLoader().getResourceAsStream(filename);
+		if(input==null){
+	            log.info("Unable to find properties file:{}", filename);
+		    return;
+		}
+		
+		try {
+			// загрузить свойства из файла
+			prop.load(input);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// получить свойства, сохранить, распечатать
+		String appTp = prop.getProperty("appTp");
+		log.info("Properties param appTp={}", appTp);
+		setAppTp(Integer.valueOf(appTp));
+	}
 	
 	// конструктор
 	public Config() {
-		TimeZone.setDefault(TimeZone.getTimeZone("GMT+7"));
+		// Загрузить параметры приложения
+		loadProp();
 		
+		TimeZone.setDefault(TimeZone.getTimeZone("GMT+7"));
 		//calendar = new GregorianCalendar(1940, Calendar.JANUARY, 1);
 		//calendar.clear(Calendar.ZONE_OFFSET);
 		firstDt = Utl.getFirstDt();//calendar.getTime();
 		//calendar = new GregorianCalendar(2940, Calendar.JANUARY, 1);
 		//calendar.clear(Calendar.ZONE_OFFSET);
 		lastDt = Utl.getLastDt();//calendar.getTime();
-		
 		workLst = new ArrayList<Integer>();
 	}
 	
@@ -106,10 +140,9 @@ public class Config {
         }
     	log.info("**** Check Classpath: END ****");
 		
-		
 		// Объект приложения, получить даты текущего периода
 		// TODO проверить RQN!
-		Obj obj = objMng.getByCD(-1, "Модуль начисления");
+    	Obj obj = objMng.getByCD(-1, "Модуль начисления");
 		
 		calendar = new GregorianCalendar();
 		//calendar = new GregorianCalendar(2015, Calendar.OCTOBER, 15);
@@ -122,14 +155,14 @@ public class Config {
 		calendar.setTime(parMng.getDate(-1, obj, "Конец расчетного периода"));
 		setCurDt2(calendar.getTime());
 		
-		//** здесь задаются периоды которые постоянны на всём времени работы программы!!! **// 
-		//задать текущий период в виде ГГГГММ
+		// здесь задаются периоды которые постоянны на всём времени работы программы!!! 
+		// задать текущий период в виде ГГГГММ
 		setPeriod(Utl.getPeriodByDate(getCurDt1()));
     	// период на 1 мес.вперед
 		setPeriodNext(Utl.addMonth(getPeriod(), 1));
     	// период на 1 мес.назад
 		setPeriodBack(Utl.addMonth(getPeriod(), -1));
-		
+
 		log.info("Начало расчетного периода = {}", getCurDt1());
 		log.info("Конец расчетного периода = {}", getCurDt2());
 	}
@@ -202,6 +235,14 @@ public class Config {
 
 	public void setPeriodBack(String periodBack) {
 		this.periodBack = periodBack;
+	}
+
+	public Integer getAppTp() {
+		return appTp;
+	}
+
+	public void setAppTp(Integer appTp) {
+		this.appTp = appTp;
 	}
 	
 }

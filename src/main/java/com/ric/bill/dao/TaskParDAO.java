@@ -6,6 +6,6 @@ import com.ric.bill.model.exs.TaskPar;
 public interface TaskParDAO {
 
 
-	public TaskPar getTask(Integer taskId, String parCd);
+	public TaskPar getTaskPar(Integer taskId, String parCd);
 	
 }

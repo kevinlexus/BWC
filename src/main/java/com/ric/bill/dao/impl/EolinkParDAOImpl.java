@@ -7,32 +7,29 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.ric.bill.dao.TaskParDAO;
-import com.ric.bill.model.ar.Kart;
-import com.ric.bill.model.bs.Par;
-import com.ric.bill.model.exs.Task;
-import com.ric.bill.model.exs.TaskPar;
+import com.ric.bill.dao.EolinkParDAO;
+import com.ric.bill.model.exs.EolinkPar;
 
 
 @Repository
-public class TaskParDAOImpl implements TaskParDAO {
+public class EolinkParDAOImpl implements EolinkParDAO {
 
 	//EntityManager - EM нужен на каждый DAO или сервис свой!
     @PersistenceContext
     private EntityManager em;
     
     /**
-     * Получить параметр по ID задания и cd параметра
+     * Получить параметр по ID Eolink и cd параметра
      * @param taskId - Id задания
      * @param parCd - Cd параметра
      */
 	@Override
-	public TaskPar getTaskPar(Integer taskId, String parCd) {
-		Query query =em.createQuery("select t from TaskPar t where t.task.id = :taskId and t.par.cd = :parCd");
+	public EolinkPar getEolinkPar(Integer taskId, String parCd) {
+		Query query =em.createQuery("select t from EolinkPar t where t.task.id = :taskId and t.par.cd = :parCd");
 		query.setParameter("taskId", taskId);
 		query.setParameter("parCd", parCd);
 		try {
-			return (TaskPar) query.getSingleResult();
+			return (EolinkPar) query.getSingleResult();
 		} catch (NoResultException e) {
 		  return null;
 		} 
