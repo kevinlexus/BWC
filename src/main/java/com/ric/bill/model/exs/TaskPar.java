@@ -5,9 +5,12 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.ric.bill.model.bs.Par;
@@ -23,10 +26,24 @@ import com.ric.bill.model.bs.Par;
 @Table(name = "TASKXPAR", schema="EXS")
 public class TaskPar implements java.io.Serializable  {
 
+	// Конструктор
 	public TaskPar() {
 	}
 
+	// Конструктор
+	public TaskPar(Task task, Par par, Double n1, String s1, Date d1) {
+		super();
+		this.task = task;
+		this.par = par;
+		this.n1 = n1;
+		this.s1 = s1;
+		this.d1 = d1;
+	}
+
+
 	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
+	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_TASKXPAR", allocationSize=1)	
     @Column(name = "ID", unique=true, updatable = false, nullable = false)
 	private Integer id;
 

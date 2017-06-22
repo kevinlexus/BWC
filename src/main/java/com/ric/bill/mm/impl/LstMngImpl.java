@@ -63,5 +63,11 @@ public class LstMngImpl implements LstMng {
 		return addrTpDao.getByTp(tp);
 	}
 
+    /* Получить тип адреса по CD
+	 * @param cd - CD типа адреса
+     */
+	public AddrTp getAddrTpByCD(String cd) {
+		return addrTpDao.getByCd(cd);
+	}
 
 }

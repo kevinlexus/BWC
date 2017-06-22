@@ -8,8 +8,6 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 
 import com.ric.bill.dao.TaskParDAO;
-import com.ric.bill.model.ar.Kart;
-import com.ric.bill.model.bs.Par;
 import com.ric.bill.model.exs.Task;
 import com.ric.bill.model.exs.TaskPar;
 
@@ -27,9 +25,9 @@ public class TaskParDAOImpl implements TaskParDAO {
      * @param parCd - Cd параметра
      */
 	@Override
-	public TaskPar getTaskPar(Integer taskId, String parCd) {
+	public TaskPar getTaskPar(Task task, String parCd) {
 		Query query =em.createQuery("select t from TaskPar t where t.task.id = :taskId and t.par.cd = :parCd");
-		query.setParameter("taskId", taskId);
+		query.setParameter("taskId", task.getId());
 		query.setParameter("parCd", parCd);
 		try {
 			return (TaskPar) query.getSingleResult();

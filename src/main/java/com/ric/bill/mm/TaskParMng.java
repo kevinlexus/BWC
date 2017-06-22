@@ -7,8 +7,11 @@ import com.ric.bill.model.exs.Task;
 
 public interface TaskParMng {
 
-	public Double getDbl(Integer id, String parCd) throws WrongGetMethod;
-	public String getStr(Integer id, String parCd) throws WrongGetMethod;
-	public Date getDate(Integer id, String parCd) throws WrongGetMethod;
+	public Double getDbl(Task task, String parCd) throws WrongGetMethod;
+	public Double setDbl(Task task, String parCd, Double val) throws WrongGetMethod;
+	public String getStr(Task task, String parCd) throws WrongGetMethod;
+	public Double setStr(Task task, String parCd, String val) throws WrongGetMethod;
+	public Date getDate(Task task, String parCd) throws WrongGetMethod;
+	public Double setDate(Task task, String parCd, Date val) throws WrongGetMethod;
 
 }

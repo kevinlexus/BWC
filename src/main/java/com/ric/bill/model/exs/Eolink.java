@@ -1,9 +1,5 @@
 package com.ric.bill.model.exs;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,23 +8,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import com.ric.bill.Storable;
 import com.ric.bill.model.bs.AddrTp;
-import com.ric.bill.model.bs.Base;
 import com.ric.bill.model.bs.Lst;
-import com.ric.bill.model.mt.MLogs;
 import com.ric.bill.model.oralv.Ko;
 
 
 /**
- * Действия над объектами 
+ * Связанный объект 
  * @author lev
  *
  */
@@ -40,17 +29,50 @@ public class Eolink implements java.io.Serializable  {
 	public Eolink() {
 	}
 
+
+	// Конструктор
+	public Eolink(String reu, String kul, String nd, String kw, String lsk,
+			Integer entry, String usl, Integer idCnt, String guid, String un,
+			String cdExt, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, Eolink parEolink) {
+		super();
+		this.reu = reu;
+		this.kul = kul;
+		this.nd = nd;
+		this.kw = kw;
+		this.lsk = lsk;
+		this.entry = entry;
+		this.usl = usl;
+		this.idCnt = idCnt;
+		this.guid = guid;
+		this.un = un;
+		this.cdExt = cdExt;
+		this.objTp = objTp;
+		this.appTp = appTp;
+		this.objTpx = objTpx;
+		this.koObj = koObj;
+		this.parEolink = parEolink;
+	}
+
+	// Конструктор
+	public Eolink(String guid, String un,
+			String cdExt, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj) {
+		super();
+		this.guid = guid;
+		this.un = un;
+		this.cdExt = cdExt;
+		this.objTp = objTp;
+		this.appTp = appTp;
+		this.objTpx = objTpx;
+		this.koObj = koObj;
+	}
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
 	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_EOLINK", allocationSize=1)	
     @Column(name = "id", unique=true, updatable = false, nullable = false)
 	private Integer id;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID", updatable = false)
-	@Fetch(FetchMode.SUBSELECT)
-	private List<Task> task = new ArrayList<Task>(0);
-	
 	// РЭУ в системе "Квартплата"
 	@Column(name = "REU", updatable = true, nullable = true)
 	private String reu;
@@ -114,6 +136,11 @@ public class Eolink implements java.io.Serializable  {
 	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="ID")
 	private Ko koObj;
 
+	// Родительский связаннй объект 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", updatable = false)
+	private Eolink parEolink;
+
 	public String getUn() {
 		return un;
 	}
@@ -130,14 +157,6 @@ public class Eolink implements java.io.Serializable  {
 		this.id = id;
 	}
 	
-	public List<Task> getAction() {
-		return task;
-	}
-
-	public void setAction(List<Task> action) {
-		this.task = action;
-	}
-
 	public String getReu() {
 		return reu;
 	}
@@ -244,20 +263,20 @@ public class Eolink implements java.io.Serializable  {
 	}
 
 	
-	public List<Task> getTask() {
-		return task;
-	}
-
-	public void setTask(List<Task> task) {
-		this.task = task;
-	}
-
 	public Ko getKoObj() {
 		return koObj;
 	}
 
 	public void setKoObj(Ko koObj) {
 		this.koObj = koObj;
+	}
+
+	public Eolink getParEolink() {
+		return parEolink;
+	}
+
+	public void setParEolink(Eolink parEolink) {
+		this.parEolink = parEolink;
 	}
 
 	public boolean equals(Object o) {

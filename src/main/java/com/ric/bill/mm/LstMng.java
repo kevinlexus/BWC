@@ -6,7 +6,6 @@ import com.ric.bill.model.ar.Area;
 import com.ric.bill.model.bs.AddrTp;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.oralv.Ko;
-import com.ric.bill.model.tr.Serv;
 
 public interface LstMng {
 	
@@ -15,5 +14,5 @@ public interface LstMng {
 	public List<Area> getAreaAll();
 	public List<Ko> getKoByAddrTpFlt(Integer addrTp, String flt);
 	public List<AddrTp> getAddrTpByTp(Integer tp);
-	
+	public AddrTp getAddrTpByCD(String cd);
 }

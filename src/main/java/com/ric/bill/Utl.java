@@ -21,6 +21,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -39,6 +41,17 @@ public class Utl {
 	 */
 	public static String ltrim (String str) {
 		return str.replaceFirst("^0+", "");
+	}
+	
+	/**
+	 * Аналог LPAD в Oracle
+	 * @param str - исходная строка
+	 * @param chr - символ, для добавления
+	 * @param cnt - кол-во символов
+	 * @return - строка с дополненными символами слева
+	 */
+	public static String lpad (String str, String chr, Integer cnt) {
+		return StringUtils.leftPad(str, cnt, chr);
 	}
 	
 	/**
