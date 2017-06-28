@@ -19,7 +19,7 @@ import org.hibernate.annotations.Immutable;
 @Entity
 @Immutable
 @Table(name = "V_SEC", schema="SEC")
-@IdClass(VsecId.class)
+@IdClass(VsecId.class) // суррогантый первичный ключ
 public class Vsec implements java.io.Serializable {
 
     @Id

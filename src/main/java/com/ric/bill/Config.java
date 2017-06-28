@@ -142,26 +142,29 @@ public class Config {
 		
 		// Объект приложения, получить даты текущего периода
 		// TODO проверить RQN!
-    	Obj obj = objMng.getByCD(-1, "Модуль начисления");
-		
-		calendar = new GregorianCalendar();
-		//calendar = new GregorianCalendar(2015, Calendar.OCTOBER, 15);
-		calendar.clear(Calendar.ZONE_OFFSET);
-		
-		obj.getDw().size();
-		
-		calendar.setTime(parMng.getDate(-1, obj, "Начало расчетного периода"));
-		setCurDt1(calendar.getTime());
-		calendar.setTime(parMng.getDate(-1, obj, "Конец расчетного периода"));
-		setCurDt2(calendar.getTime());
-		
-		// здесь задаются периоды которые постоянны на всём времени работы программы!!! 
-		// задать текущий период в виде ГГГГММ
-		setPeriod(Utl.getPeriodByDate(getCurDt1()));
-    	// период на 1 мес.вперед
-		setPeriodNext(Utl.addMonth(getPeriod(), 1));
-    	// период на 1 мес.назад
-		setPeriodBack(Utl.addMonth(getPeriod(), -1));
+    	if (getAppTp()==0) { 
+    		// приложение - новая разработка
+	    	Obj obj = objMng.getByCD(-1, "Модуль начисления");
+			
+			calendar = new GregorianCalendar();
+			//calendar = new GregorianCalendar(2015, Calendar.OCTOBER, 15);
+			calendar.clear(Calendar.ZONE_OFFSET);
+			
+			obj.getDw().size();
+			
+			calendar.setTime(parMng.getDate(-1, obj, "Начало расчетного периода"));
+			setCurDt1(calendar.getTime());
+			calendar.setTime(parMng.getDate(-1, obj, "Конец расчетного периода"));
+			setCurDt2(calendar.getTime());
+			
+			// здесь задаются периоды которые постоянны на всём времени работы программы!!! 
+			// задать текущий период в виде ГГГГММ
+			setPeriod(Utl.getPeriodByDate(getCurDt1()));
+	    	// период на 1 мес.вперед
+			setPeriodNext(Utl.addMonth(getPeriod(), 1));
+	    	// период на 1 мес.назад
+			setPeriodBack(Utl.addMonth(getPeriod(), -1));
+		}
 
 		log.info("Начало расчетного периода = {}", getCurDt1());
 		log.info("Конец расчетного периода = {}", getCurDt2());

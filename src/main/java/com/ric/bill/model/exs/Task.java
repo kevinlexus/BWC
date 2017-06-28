@@ -74,6 +74,10 @@ public class Task implements java.io.Serializable  {
 	@Column(name = "APP_TP", updatable = true, nullable = true)
 	private Integer appTp;
 
+	// Пользователь (специально не стал делать MANY TO ONE - так как возможно не будет таблицы, куда TO ONE)
+	@Column(name = "FK_USER", updatable = false, nullable = true)
+	private Integer fk_user;
+	
 	public Date getUpdDt() {
 		return updDt;
 	}
@@ -160,6 +164,14 @@ public class Task implements java.io.Serializable  {
 
 	public void setAppTp(Integer appTp) {
 		this.appTp = appTp;
+	}
+
+	public Integer getFk_user() {
+		return fk_user;
+	}
+
+	public void setFk_user(Integer fk_user) {
+		this.fk_user = fk_user;
 	}
 
 	public boolean equals(Object o) {

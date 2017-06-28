@@ -37,10 +37,11 @@ public class Utl {
 	/**
 	 * Аналог LTRIM в Oracle
 	 * @param str - исходная строка
+	 * @param chr - усекаемый символ
 	 * @return - усеченная слева строка
 	 */
-	public static String ltrim (String str) {
-		return str.replaceFirst("^0+", "");
+	public static String ltrim (String str, String chr) {
+		return str.replaceFirst("^"+chr+"+", "");
 	}
 	
 	/**
