@@ -94,7 +94,6 @@ public class Utl {
 		return (a == null) ? b : a;
 	}
 
-
 	/**
 	 * Вернуть, если дата находится в диапазоне периода
 	 * @param checkDt - проверяемая дата

@@ -50,9 +50,13 @@ public class Task implements java.io.Serializable  {
 	@JoinColumn(name="FK_ACT", referencedColumnName="ID")
 	private Lst act;
 
-	// GUID объекта во внешней системе
+	// GUID объекта присвоенный ГИС 
 	@Column(name = "GUID", updatable = true, nullable = true)
 	private String guid;
+
+	// GUID Задания, присвоенный ГИС
+	@Column(name = "MSGGUID", updatable = true, nullable = true)
+	private String msgGuid;
 
 	// Уникальный номер объекта во внешней системе
 	@Column(name = "UNIQNUM")
@@ -172,6 +176,14 @@ public class Task implements java.io.Serializable  {
 
 	public void setFk_user(Integer fk_user) {
 		this.fk_user = fk_user;
+	}
+
+	public String getMsgGuid() {
+		return msgGuid;
+	}
+
+	public void setMsgGuid(String msgGuid) {
+		this.msgGuid = msgGuid;
 	}
 
 	public boolean equals(Object o) {

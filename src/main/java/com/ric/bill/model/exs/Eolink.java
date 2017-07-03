@@ -141,6 +141,10 @@ public class Eolink implements java.io.Serializable  {
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", updatable = false)
 	private Eolink parEolink;
 
+	// ОГРН Организации
+	@Column(name = "OGRN", updatable = true, nullable = true)
+	private String ogrn;
+
 	public String getUn() {
 		return un;
 	}
@@ -277,6 +281,14 @@ public class Eolink implements java.io.Serializable  {
 
 	public void setParEolink(Eolink parEolink) {
 		this.parEolink = parEolink;
+	}
+
+	public String getOgrn() {
+		return ogrn;
+	}
+
+	public void setOgrn(String ogrn) {
+		this.ogrn = ogrn;
 	}
 
 	public boolean equals(Object o) {
