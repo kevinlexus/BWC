@@ -10,4 +10,5 @@ public interface TaskDAO {
 	public List<Task> getAllUnprocessed();
 	public List<Task> getByTaskAddrTp(Task task, String addrTp, String addrTpx);
 	public Task getByTguid(Task task, String tguid);
+	public Boolean getChildAnyErr(Task task);
 }

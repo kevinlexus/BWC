@@ -31,7 +31,8 @@ public class TaskDAOImpl implements TaskDAO {
      * Вернуть список необработанных заданий 
      */
     public List<Task> getAllUnprocessed() {
-			Query query =em.createQuery("from Task t where t.state in ('INS','ACK') and t.parentTask is null and t.fk_user in (5) ");
+			Query query =em.createQuery("select t from Task t left join t.depTask d where t.state in ('INS','ACK') and t.parentTask is null "
+					+ "and (t.depTask is null or t.depTask.state in ('ACP')) order by t.id");
 			return query.getResultList();
 	}
     
@@ -102,7 +103,30 @@ public class TaskDAOImpl implements TaskDAO {
 		query.setParameter("parentId", task.getId());
 		query.setParameter("tguid", tguid);
 		
-		return (Task) query.getSingleResult();
+		try {
+			return (Task) query.getSingleResult();
+		} catch (javax.persistence.NoResultException e) {
+			// не найден результат
+			log.error("Не найдено задание по TGUID={}", tguid);
+			return null;
+		}
 	}
     
+	/**
+	 * Вернуть наличие ошибки в любом дочернем задании
+	 * @param task - родительское задание
+	 * @return - наличие ошибки
+	 */
+	public Boolean getChildAnyErr(Task task) {
+		Query query =em.createQuery("from Task t where t.parentTask.id = :parentId and t.state = 'ERR' ");
+		query.setParameter("parentId", task.getId());
+		List<Task> lst;
+		try {
+			lst = query.getResultList();
+			return true;
+		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
+			// не найден результат
+			return false;
+		}
+	}
 }

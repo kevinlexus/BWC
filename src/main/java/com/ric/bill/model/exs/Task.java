@@ -1,17 +1,24 @@
 package com.ric.bill.model.exs;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.ric.bill.model.bs.Lst;
+import com.ric.bill.model.mt.Vol;
 
 
 /**
@@ -37,10 +44,15 @@ public class Task implements java.io.Serializable  {
 	private Eolink eolink;
 	
 	// Родительское задание
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
 	private Task parentTask; 
 	
+	// Ведущее задание, после выполнения которого, в статус "ACP", начнёт выполняться текущее
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="DEP_ID", referencedColumnName="ID")
+	private Task depTask; 
+
 	// CD состояния
 	@Column(name = "STATE")
 	private String state;
@@ -81,6 +93,11 @@ public class Task implements java.io.Serializable  {
 	// Пользователь (специально не стал делать MANY TO ONE - так как возможно не будет таблицы, куда TO ONE)
 	@Column(name = "FK_USER", updatable = false, nullable = true)
 	private Integer fk_user;
+	
+	// Параметры
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="FK_TASK", referencedColumnName="ID")
+	private List<TaskPar> taskPar = new ArrayList<TaskPar>(0);
 	
 	public Date getUpdDt() {
 		return updDt;
@@ -184,6 +201,22 @@ public class Task implements java.io.Serializable  {
 
 	public void setMsgGuid(String msgGuid) {
 		this.msgGuid = msgGuid;
+	}
+
+	public List<TaskPar> getTaskPar() {
+		return taskPar;
+	}
+
+	public void setTaskPar(List<TaskPar> taskPar) {
+		this.taskPar = taskPar;
+	}
+
+	public Task getDepTask() {
+		return depTask;
+	}
+
+	public void setDepTask(Task depTask) {
+		this.depTask = depTask;
 	}
 
 	public boolean equals(Object o) {
