@@ -50,7 +50,7 @@ public class PaymentDet implements java.io.Serializable, Simple {
 	@JoinColumn(name="FK_ORG", referencedColumnName="ID")
 	private Org org; 
 
-	// Сумма
+	// Сумма (включая пеню!)
 	@Column(name = "SUMMA")
 	private Double summa;
 	

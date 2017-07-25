@@ -37,7 +37,10 @@ public class TaskDAOImpl implements TaskDAO {
 	}
     
     /**
-     * Вернуть список заданий по ID родительского задания, по определённому типу объектов
+     * Вернуть список дочерних заданий по родительскому заданию, по определённому типу объектов
+     * @param task - родительское задание
+     * @param addrTp - тип объекта
+     * @param addrTp - уточняющий тип объекта
      */
     public List<Task> getByTaskAddrTp(Task task, String addrTp, String addrTpx) {
     	Query query = null;

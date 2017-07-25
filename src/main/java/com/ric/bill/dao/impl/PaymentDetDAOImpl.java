@@ -24,13 +24,17 @@ public class PaymentDetDAOImpl implements PaymentDetDAO {
     /**
 	 * Получить все платежи за выбранный период 
 	 * @param period - период
+	 * @param curDt1 - первая дата периода
+	 * @param curDt2 - последняя дата периода
+	 * @param genDt - дата инкассации, по которой отсечь платежи
 	 */
-	public List<PaymentDet> getPaymentDetByPeriod(String period) {
-		Date dt1 = Utl.getDateByPeriod(period);
-		Date dt2 = Utl.getLastDate(dt1);
-		Query query =em.createQuery("select t from PaymentDet t where t.payment.dtf between :dt1 and :dt2");
-		query.setParameter("dt1", dt1);
-		query.setParameter("dt2", dt2);
+	public List<PaymentDet> getPaymentDetByPeriod(String period, Date curDt1, Date curDt2, Date genDt) {
+		// получить первую дату периода
+		Query query =em.createQuery("select t from PaymentDet t join t.payment p where t.payment.dtf between :dt1 and :dt2 "
+				+ "and p.wpClct.dtClose between :dt1 and :dt4");
+		query.setParameter("dt1", curDt1);
+		query.setParameter("dt2", curDt2);
+		query.setParameter("dt4", genDt);
 		return query.getResultList();
 	}
 

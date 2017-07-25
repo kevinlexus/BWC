@@ -157,7 +157,7 @@ public List<ServDTO> getServDTOLst(List<Serv> lst) {
  */
 public KoDTO getKoDTO(Ko ko) {
 	KoDTO koDTO = null;
-	if ((ko.getAddrTp().getCd().equals("РКЦ") || ko.getAddrTp().getCd().equals("ЖЭО")
+	if ((ko.getAddrTp().getCd().equals("РКЦ") || ko.getAddrTp().getCd().equals("ЖЭО") || ko.getAddrTp().getCd().equals("Организация")
 		  	 || ko.getAddrTp().getCd().equals("РЭУ"))) {
 		koDTO = new KoDTO(ko.getId(), ko.getOrg().getCd(), ko.getOrg().getName(), ko.getAddrTp().getCd());
 		
@@ -205,9 +205,14 @@ public List<KoDTO> getKoDTOLst(List<Ko> lst) {
 										   t.getAddrTp().getCd()) )
 			.collect(Collectors.toList());*/
 	// Добавить РКЦ, ЖЭО, РЭУ, Дом
+	log.info("#################### Check2");
+
 	List<KoDTO> lst2 = lst.stream().map(t -> getKoDTO(t)).collect(Collectors.toList());
-	
+	log.info("#################### Check3");
+
 	lko.addAll(lst2);
+	log.info("#################### Check4");
+
 	return lko;
 }
 

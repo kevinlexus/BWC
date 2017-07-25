@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
@@ -28,9 +29,11 @@ public class PeriodReports implements java.io.Serializable {
 		
 	}
 	
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID", updatable = false, nullable = false)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_RELATE")
+	@SequenceGenerator(name="SEQ_RELATE", sequenceName="BS.SEQ_RELATE", allocationSize=1)	
+    @Column(name = "ID", unique=true, updatable = false, nullable = false)
 	private Integer id;
 	
     // дата отчёта

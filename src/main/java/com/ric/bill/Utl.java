@@ -303,6 +303,22 @@ public class Utl {
 	}
 	
 	/**
+	 * Заменить русские символы дней недели на английские
+	 * @param str - вх. символы
+	 * @return - исх.символы
+	 */
+	public static String convertDaysToEng(String str) {
+		str=str.replaceAll("Пн", "Mon");
+		str=str.replaceAll("Вт", "Tue");
+		str=str.replaceAll("Ср", "Wed");
+		str=str.replaceAll("Чт", "Thu");
+		str=str.replaceAll("Пт", "Fri");
+		str=str.replaceAll("Сб", "Sat");
+		str=str.replaceAll("Вс", "Sun");
+		return str;
+	}
+	
+	/**
 	 * Конвертировать дату в ГГГГММ
 	 * @param dt - дата вх.
 	 * @return

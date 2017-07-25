@@ -1,14 +1,22 @@
 package com.ric.bill.model.bs;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.ric.bill.Storable;
+import com.ric.bill.model.mt.Vol;
 import com.ric.bill.model.oralv.Ko;
 
 /**
@@ -23,14 +31,21 @@ public class Org extends Base implements java.io.Serializable, Storable {
 
 	@Id
     @Column(name = "ID", updatable = false, nullable = false)
-	private Integer id; //id
+	private Integer id;
 
+	// CD
 	@Column(name = "CD", updatable = false, nullable = false)
-	private String cd; //cd 
+	private String cd; 
 
+	// Наименование
     @Column(name = "NAME")
-	private String name; //Наименование 
+	private String name; 
 
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="FK_ORG", referencedColumnName="ID")
+	@BatchSize(size = 50)
+	private List<OrgTp> orgTp = new ArrayList<OrgTp>(0);
+    
 	public Integer getId() {
 		return this.id;
 	}
@@ -51,6 +66,12 @@ public class Org extends Base implements java.io.Serializable, Storable {
 		this.name = name;
 	}
 
+	public List<OrgTp> getOrgTp() {
+		return orgTp;
+	}
+	public void setOrgTp(List<OrgTp> orgTp) {
+		this.orgTp = orgTp;
+	}
 	@Override
 	public boolean equals(Object o) {
 	    if (this == o) return true;

@@ -53,6 +53,15 @@ public class Payment implements java.io.Serializable, Simple {
     @Column(name = "DTF")
     private Date dtf;
     
+	// Рабочее место, осуществившее сбор платежа
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_WP", referencedColumnName="ID")
+	private Wp wp; 
+
+	// Инкассация
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_COLLECT", referencedColumnName="ID")
+	private WpCollection wpClct; 
 
 	public Integer getId() {
 		return id;
@@ -86,6 +95,24 @@ public class Payment implements java.io.Serializable, Simple {
 		this.dtf = dtf;
 	}
 	
+	public Wp getWp() {
+		return wp;
+	}
+
+	public void setWp(Wp wp) {
+		this.wp = wp;
+	}
+
+
+	
+	public WpCollection getWpClct() {
+		return wpClct;
+	}
+
+	public void setWpClct(WpCollection wpClct) {
+		this.wpClct = wpClct;
+	}
+
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof Payment))
