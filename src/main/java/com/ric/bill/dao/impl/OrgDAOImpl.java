@@ -53,7 +53,7 @@ public class OrgDAOImpl implements OrgDAO {
 	 */
 	public List<Org> getOrgUkAll() {
 		
-		Query query =em.createQuery("select t from Org t join t.ko ko join ko.addrTp tp where tp.cd='ЖЭО' order by t.name");
+		Query query =em.createQuery("select t from Org t join t.orgTp otp join otp.addrTp atp where atp.cd='ЖЭО' order by t.name");
 		return query.getResultList();
 	}
 }

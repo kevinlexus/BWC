@@ -116,16 +116,14 @@ public class TarifMngImpl implements TarifMng {
 			if (isChng && k.getChng()!=null && k.getChng().equals(chng) || !isChng && k.getChng()==null) {
 				//затем по строкам - составляющим тариф 
 				for (TarifServProp t : k.getTarprop()) {
-					if (Utl.between(genDt, t.getDt1(), k.getDt2())) {
+					if (Utl.between(genDt, t.getDt1(), t.getDt2())) {
 						if (t.getServ().equals(serv) && t.getProp().getCd().equals("Поставщик")) {
-							/*if (serv.getId()==480 && tc.getKlskId() == 228 && t.getOrg().getId()==1824) {
-								log.info("area.id={}", calc.getArea().getId());
+							/* Если включить, покажет, откуда была извлечена организация
+							if (serv.getId()==32) {
 								log.info("TarifKlsk.id={}", k.getId());
 								log.info("TarifServProp.id={}", t.getId());
-								log.info("Erfind_area3: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}", rqn, calc.getKart().getLsk(), calc.getArea().getKlskId(), serv.getId(), genDt );
-							}*/
-							/*if (serv.getId()==480) {
-								log.info("Erfind2 set value: rqn={}, klskId={}, serv.id={}, genDt={}, org={}", rqn, tc.getKlskId(), serv.getId(), genDt, t.getOrg().getId()) ;
+								log.info("TarifServProp.dt1={}, dt2", t.getId());
+								log.info("Erfind2 set value: rqn={}, serv.id={}, genDt={}, org={}", rqn, serv.getId(), genDt, t.getOrg().getId()) ;
 							}*/
 							return t.getOrg();
 						}

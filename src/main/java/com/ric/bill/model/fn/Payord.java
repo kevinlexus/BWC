@@ -86,8 +86,8 @@ public class Payord implements java.io.Serializable, Simple {
 	private Lst periodTp; 
 
 	// Формулы платежки
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_PAYORD", referencedColumnName="ID")
+	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="FK_PAYORD", referencedColumnName="ID", updatable = false)
 	@Fetch(FetchMode.SUBSELECT)
 	private List<PayordCmp> payordCmp = new ArrayList<PayordCmp>(0);
 

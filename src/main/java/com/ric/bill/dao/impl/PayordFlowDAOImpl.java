@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 
 import com.ric.bill.dao.PayordFlowDAO;
+import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.fn.PayordFlow;
 
 
@@ -22,16 +23,18 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
 
     /**
      * Получить движения по всем платежкам по типу и периоду (используется ли?)
+     * @param uk - УК
      * @param tp - тип 
      * @param period - период
      * @return
      */
-    public List<PayordFlow> getPayordFlowByTpPeriod(Integer tp, String period) {
+    public List<PayordFlow> getPayordFlowByTpPeriod(Integer tp, Org uk, String period) {
 		Query query =em.createQuery("select t from PayordFlow t where "
-				+ "t.period = :period and t.tp = :tp "
+				+ "t.period = :period and t.tp = :tp and t.uk.id = :id "
 				+ "order by t.dt");
 		query.setParameter("period", period);
 		query.setParameter("tp", tp);
+		query.setParameter("id", uk.getId());
 		return query.getResultList();
 	}
 
@@ -61,27 +64,33 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
     
     /**
      * Получить движение по платежке, до определенной даты
+     * @param payordId - ID платежки
+     * @param uk - УК
+     * @param tp - тип
+     * @param dt - дата
      */
-    public List<PayordFlow> getPayordFlowBeforeDt(Integer payordId, Integer tp, Date dt) {
+    public List<PayordFlow> getPayordFlowBeforeDt(Integer payordId, Org uk, Integer tp, Date dt) {
 		Query query =em.createQuery("select t from PayordFlow t join t.payord p where p.id = :payordId "
-				+ "and t.dt <= :dt and t.tp = :tp "
+				+ "and t.dt <= :dt and t.tp = :tp and t.uk.id = :id "
 				+ "order by t.dt desc");
 		query.setParameter("payordId", payordId);
 		query.setParameter("dt", dt);
 		query.setParameter("tp", tp);
+		query.setParameter("id", uk.getId());
 		return query.getResultList();
 	}
 
     /**
      * Получить движение по платежке, до определенного периода даты (напр.для вычисления сальдо)
      */
-    public List<PayordFlow> getPayordFlowBeforePeriod(Integer payordId, Integer tp, String period) {
+    public List<PayordFlow> getPayordFlowBeforePeriod(Integer payordId, Org uk, Integer tp, String period) {
 		Query query =em.createQuery("select t from PayordFlow t join t.payord p where p.id = :payordId "
-				+ "and t.period <= :period and t.tp = :tp "
+				+ "and t.period <= :period and t.tp = :tp and t.uk.id = :id "
 				+ "order by t.period desc");
 		query.setParameter("payordId", payordId);
 		query.setParameter("period", period);
 		query.setParameter("tp", tp);
+		query.setParameter("id", uk.getId());
 		return query.getResultList();
 	}
 

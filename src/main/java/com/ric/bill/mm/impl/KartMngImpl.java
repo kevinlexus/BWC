@@ -413,7 +413,7 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 */
 	//@Cacheable(cacheNames="rrr1") 
-	@Cacheable(cacheNames="rrr3", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
+	//@Cacheable(cacheNames="rrr3", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
 	public /*synchronized*/ Org getOrg(int rqn, Calc calc, Serv serv, Date genDt) {
 		Org org;
 		

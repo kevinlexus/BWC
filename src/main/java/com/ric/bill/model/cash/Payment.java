@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import com.ric.bill.Simple;
 import com.ric.bill.model.ar.Kart;
+import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.mt.MeterLog;
 
 /**
@@ -63,6 +64,11 @@ public class Payment implements java.io.Serializable, Simple {
 	@JoinColumn(name="FK_COLLECT", referencedColumnName="ID")
 	private WpCollection wpClct; 
 
+	// Тип платежа
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_TP", referencedColumnName="ID")
+	private Lst tp; 
+	
 	public Integer getId() {
 		return id;
 	}
@@ -102,8 +108,6 @@ public class Payment implements java.io.Serializable, Simple {
 	public void setWp(Wp wp) {
 		this.wp = wp;
 	}
-
-
 	
 	public WpCollection getWpClct() {
 		return wpClct;
@@ -111,6 +115,15 @@ public class Payment implements java.io.Serializable, Simple {
 
 	public void setWpClct(WpCollection wpClct) {
 		this.wpClct = wpClct;
+	}
+
+	
+	public Lst getTp() {
+		return tp;
+	}
+
+	public void setTp(Lst tp) {
+		this.tp = tp;
 	}
 
 	public boolean equals(Object o) {
