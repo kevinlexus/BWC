@@ -148,6 +148,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 					    			lnkVol.addArea(t.getVol1());
 					    			lnkVol.addPers(t.getVol2());
 					    		} else if (t.getTp().getCd().equals("Лимит ОДН") ){
+	//				    			log.info("mLog.id={}, vol1={}", mLog.getId(), t.getVol1());
 					    			lnkVol.setLimit(t.getVol1()); //здесь set вместо add (будет одно значение) (как правило для ЛОДН счетчиков)
 					    		}
 							});

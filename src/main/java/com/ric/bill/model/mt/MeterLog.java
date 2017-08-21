@@ -4,6 +4,7 @@ package com.ric.bill.model.mt;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +39,11 @@ import com.ric.bill.model.tr.Serv;
 @Entity
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "METER_LOG", schema="MT")
+/*@Cacheable
+@org.hibernate.annotations.Cache(
+        usage = org.hibernate.annotations.CacheConcurrencyStrategy.NONSTRICT_READ_WRITE,
+        region = "com.myapp.model.ProductEntity2"
+)*/
 public class MeterLog extends Base implements java.io.Serializable, MLogs {
 
 	public MeterLog (){

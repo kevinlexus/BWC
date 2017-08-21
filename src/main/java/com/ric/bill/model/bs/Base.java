@@ -3,6 +3,7 @@ package com.ric.bill.model.bs;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -25,6 +26,11 @@ import com.ric.bill.model.oralv.Ko;
  */
 @MappedSuperclass
 @EqualsAndHashCode(callSuper=false)
+/*@Cacheable
+@org.hibernate.annotations.Cache(
+        usage = org.hibernate.annotations.CacheConcurrencyStrategy.NONSTRICT_READ_WRITE,
+        region = "com.myapp.model.ProductEntity"
+)*/
 public abstract class Base implements Storable {
 	
     @Column(name = "FK_K_LSK", updatable = false, nullable = false)

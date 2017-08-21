@@ -66,8 +66,8 @@ public class Config {
 	String periodNext;
 	// Период -1 месяц 
 	String periodBack;
-	// Тип приложения
-	Integer appTp;
+	// Тип приложения, по умолчанию - 0
+	Integer appTp = 0;
 	
 	// загрузить свойства
 	private void loadProp() {
@@ -76,7 +76,7 @@ public class Config {
 		String filename = "config.properties";
 		input = Config.class.getClassLoader().getResourceAsStream(filename);
 		if(input==null){
-	            log.info("Unable to find properties file:{}", filename);
+	            log.info("ERROR! Unable to find properties file:{}", filename);
 		    return;
 		}
 		
@@ -84,15 +84,16 @@ public class Config {
 			// загрузить свойства из файла
 			prop.load(input);
 
+			// получить свойства, сохранить, распечатать
+			String appTp = prop.getProperty("appTp");
+			log.info("Properties param appTp={}", appTp);
+			setAppTp(Integer.valueOf(appTp));
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		// получить свойства, сохранить, распечатать
-		String appTp = prop.getProperty("appTp");
-		log.info("Properties param appTp={}", appTp);
-		setAppTp(Integer.valueOf(appTp));
 	}
 	
 	// конструктор
@@ -121,8 +122,7 @@ public class Config {
 	
 	@PostConstruct
 	private void setUp() throws EmptyStorable {
-		log.info("Версия модуля начисления - {}", "1.0.13");
-		log.info("с вынесенным кол-вом собственников в отдельный столбец");
+		log.info("Версия модуля начисления - {}", "1.0.14");
 		 
 		// Добавить path в Classpath, относительно нахождения Jar
 		try {
@@ -138,10 +138,9 @@ public class Config {
         for(URL url: urls){
         	log.info(url.getFile());
         }
-    	log.info("**** Check Classpath: END ****");
+    	log.info("**** Check Classpath: END****");
 		
 		// Объект приложения, получить даты текущего периода
-		// TODO проверить RQN!
     	if (getAppTp()==0) { 
     		// приложение - новая разработка
 	    	Obj obj = objMng.getByCD(-1, "Модуль начисления");

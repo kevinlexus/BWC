@@ -73,7 +73,7 @@ public class KartMngImpl implements KartMng {
 	/**
 	 * Проверить наличие проживающего по постоянной регистрации или по временному присутствию на дату формирования! (на Calc.getGenDt())
 	 */
-	@Cacheable("rrr1")
+	@Cacheable("KartMngImpl.checkPersStatusExt")
 	private /*synchronized */boolean checkPersStatus (int rqn, Calc calc, RegContains regc, Pers p, String status, int tp, Date genDt) {
 		PersStatus ps = checkPersStatusExt(rqn, calc, regc, p, status, tp, genDt);
 		return ps.exist;
@@ -84,7 +84,7 @@ public class KartMngImpl implements KartMng {
 	 * Проверить наличие проживающего по постоянной регистрации или по временному присутствию на дату формирования! (на Calc.getGenDt())
 	 * и вернуть объект, содержащий наличие проживающего и его отношение к нанимателю
 	 */
-	@Cacheable("rrr1")
+	@Cacheable("KartMngImpl.checkPersStatus")
 	private /*synchronized */PersStatus checkPersStatusExt (int rqn, Calc calc, RegContains regc, Pers p, String status, int tp, Date genDt) {
 		Date dt1, dt2;
 		List<? extends Registrable> rg;
@@ -133,7 +133,7 @@ public class KartMngImpl implements KartMng {
 	/**
 	 * Проверить наличие проживающего при fk_pers = null на дату формирования! (на Calc.getGenDt())
 	 */
-	@Cacheable("rrr1")
+	@Cacheable("KartMngImpl.checkPersNullStatus")
 	private /*synchronized*/ boolean checkPersNullStatus (int rqn, Calc calc, Registrable reg, Date genDt) {
 		//проверить статус, даты
 		Date dt1, dt2;
@@ -169,7 +169,7 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 * @throws EmptyStorable 
 	 */
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #rc.getKo().getId(), #serv.getId(), #cntPers, #genDt}") 
+	@Cacheable(cacheNames="KartMngImpl.getCntPers", key="{#rqn, #rc.getKo().getId(), #serv.getId(), #cntPers, #genDt}") 
 	public void getCntPers(int rqn, Calc calc, RegContains rc, Serv serv, CntPers cntPers, Date genDt) throws EmptyStorable{
 		List<Pers> counted = new ArrayList<Pers>();
 		cntPers.cnt=0; //кол-во человек
@@ -242,7 +242,7 @@ public class KartMngImpl implements KartMng {
 	 * @param tp - тип норматива, 0 - для определения нормы и свыше, 1 - для определения объема
 	 * @throws EmptyServ 
 	 */
-	@Cacheable(cacheNames="rrr4", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") // сделал отдельный кэш, иначе валится с Cannot Cast Standart to Boolean! 
+	@Cacheable(cacheNames="KartMngImpl.getStandartVol", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") // сделал отдельный кэш, иначе валится с Cannot Cast Standart to Boolean! 
 	public Standart getStandartVol(int rqn, Calc calc, Serv serv, CntPers cntPers, Date genDt, int tp) throws EmptyStorable {
 		log.trace("STANDART1="+serv.getId()+" dt="+genDt);	
 		//получить услугу основную, для начисления
@@ -389,7 +389,7 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 */
 	//@Cacheable("rrr1")
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #cd, #genDt }") 
+	@Cacheable(cacheNames="KartMngImpl.getServPropByCD", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #cd, #genDt }") 
 	public /*synchronized*/ Double getServPropByCD(int rqn, Calc calc, Serv serv, String cd, Date genDt) { //убрал synchronized, получил - java.util.concurrent.ExecutionException: org.hibernate.exception.GenericJDBCException: could not initialize a collection
 		Double val;
 		//в начале ищем по дому
@@ -413,7 +413,7 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 */
 	//@Cacheable(cacheNames="rrr1") 
-	//@Cacheable(cacheNames="rrr3", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
+	@Cacheable(cacheNames="KartMngImpl.getOrg", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
 	public /*synchronized*/ Org getOrg(int rqn, Calc calc, Serv serv, Date genDt) {
 		Org org;
 		
@@ -446,7 +446,7 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 */
 	//@Cacheable("rrr1")
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
+	@Cacheable(cacheNames="KartMngImpl.getServ", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
 	public /*synchronized*/ boolean getServ(int rqn, Calc calc, Serv serv, Date genDt) {
 		boolean exs = false;
 		//искать свойство "Поставщик"
@@ -533,7 +533,7 @@ public class KartMngImpl implements KartMng {
 	 */
 	//@Cacheable("rrr1")
 	//@Cacheable(cacheNames="rrr1", key="{ #kart.getLsk() }") - НЕ КЭШИРОВАТЬ!!!
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #calc.getHouse().getId(), #calc.getKart().getLsk() }")
+	@Cacheable(cacheNames="KartMngImpl.getServAll", key="{#rqn, #calc.getHouse().getId(), #calc.getKart().getLsk() }")
 	public /*synchronized*/ List<Serv> getServAll(int rqn, Calc calc) {
 		List<Serv> lst = new ArrayList<Serv>();
 		// искать и добавить по наборам тарифа
@@ -560,7 +560,7 @@ public class KartMngImpl implements KartMng {
 	 * @param kart
 	 * @param genDt
 	 */
-	@Cacheable("rrr1")
+	@Cacheable("KartMngImpl.getCapPrivs")
 	public /*synchronized*/ double getCapPrivs(int rqn, Calc calc, RegContains rc, Date genDt) { //TODO! ВРЕМЕННО ВКЛЮЧИЛ кэш
 		boolean above70owner=false;
 		boolean above70=false;

@@ -3,6 +3,7 @@ package com.ric.bill.model.mt;
 
 import java.util.Date;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,6 +37,11 @@ import com.ric.bill.model.fn.Chng;
 @Entity
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "METER_VOL", schema="MT")
+/*@Cacheable
+@org.hibernate.annotations.Cache(
+        usage = org.hibernate.annotations.CacheConcurrencyStrategy.NONSTRICT_READ_WRITE,
+        region = "com.myapp.model.ProductEntity3"
+)*/
 public class Vol implements java.io.Serializable, Simple {
 
 	public Vol (){

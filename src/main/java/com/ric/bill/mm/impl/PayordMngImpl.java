@@ -536,7 +536,7 @@ public class PayordMngImpl implements PayordMng {
 		
 		// Получить наименование текущего дня недели
 		SimpleDateFormat formatter = new SimpleDateFormat("E");
-		String dayOfWeek = formatter.format(new Date());
+		String dayOfWeek = formatter.format(genDt);
 
 		String period = reqConfig.getPeriod();
 		String periodNext = reqConfig.getPeriodNext();
