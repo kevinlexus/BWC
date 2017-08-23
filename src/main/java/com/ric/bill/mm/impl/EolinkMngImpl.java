@@ -2,10 +2,13 @@ package com.ric.bill.mm.impl;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ric.bill.dao.EolinkDAO;
+import com.ric.bill.dao.EolinkToEolinkDAO;
 import com.ric.bill.mm.EolinkMng;
 import com.ric.bill.model.exs.Eolink;
 
@@ -16,9 +19,11 @@ public class EolinkMngImpl implements EolinkMng {
 
 	@Autowired
 	private EolinkDAO eolinkDao;
+	@Autowired
+	private EolinkToEolinkDAO eolinkToEolinkDao;
 
     /**
-     * Получить Связанный объект по GUID
+     * Получить Внешний объект по GUID
      * @param guid - GUID
      * @return
      */
@@ -29,7 +34,18 @@ public class EolinkMngImpl implements EolinkMng {
     }
     
     /**
-     * Получить Связанный объект по reu,kul,nd
+     * Получить Внешние объекты, связанные с данным
+     * @param eolink - Внешний объект
+     * @return
+     */
+    public List<Eolink> getLinkedEolink(Eolink eolink) {
+    	
+    	return eolinkToEolinkDao.getLinkedEolink(eolink);
+    	
+    }
+
+    /**
+     * Получить Внешний объект по reu,kul,nd
      * @param reu - REU из Квартплаты
      * @param kul - KUL из Квартплаты
      * @param nd -  ND из Квартплаты

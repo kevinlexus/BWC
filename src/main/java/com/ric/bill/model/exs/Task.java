@@ -218,7 +218,7 @@ public class Task implements java.io.Serializable  {
 	public void setDepTask(Task depTask) {
 		this.depTask = depTask;
 	}
-
+	
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof Task))
@@ -240,6 +240,7 @@ public class Task implements java.io.Serializable  {
 	        return super.hashCode();
 	    }
 	}
+
 
 }
 

@@ -162,13 +162,16 @@ public class PayordMngImpl implements PayordMng {
     // Добавить движение по платежке из DTO
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public PayordFlow addPayordFlowDto(PayordFlowDTO p) {
-		
+		// Получить конфиг запроса, чтобы взять текущий период
+		RequestConfig reqConfig = ctx.getBean(RequestConfig.class);
+		reqConfig.setUp(config, "0", "0", null, -1, "", "");
+
 		//PayordGrp grp = em.find(PayordGrp.class, p.getPayordGrpFk());
 		//Lst period =  em.find(Lst.class, p.getPeriodTpFk());
 		Payord payord = em.find(Payord.class, p.getPayordFk());
 		Org uk = em.find(Org.class, p.getUkFk());
 		PayordFlow payordFlow = new PayordFlow(payord, uk, p.getSumma(), p.getSumma1(), p.getSumma2(), 
-				p.getSumma3(), p.getSumma4(), p.getSumma5(), p.getSumma6(), p.getNpp(), p.getTp(), p.getPeriod(), p.getSigned(), false, p.getDt());
+				p.getSumma3(), p.getSumma4(), p.getSumma5(), p.getSumma6(), p.getNpp(), p.getTp(), reqConfig.getPeriod(), p.getSigned(), false, p.getDt());
 		em.persist(payordFlow);
 		
 		return payordFlow;
@@ -536,8 +539,8 @@ public class PayordMngImpl implements PayordMng {
 		
 		// Получить наименование текущего дня недели
 		SimpleDateFormat formatter = new SimpleDateFormat("E");
-		String dayOfWeek = formatter.format(genDt);
-
+		String dayOfWeek = Utl.convertDaysToEng(formatter.format(genDt));
+		
 		String period = reqConfig.getPeriod();
 		String periodNext = reqConfig.getPeriodNext();
 		
@@ -555,13 +558,15 @@ public class PayordMngImpl implements PayordMng {
 		
 		// Перебрать все платежки
 		for (Payord p :payordDao.getPayordAll()) {
-			log.info("Payord.id={}", p.getId());
+			log.info("dayOfWeek, selDays = {}", dayOfWeek);
 			if (p.getPeriodTp().getCd().equals("PAYORD_EVERYWEEK")) {
 			// Платежка раз в неделю (в определённый день)
 				if (p.getSelDays() == null) {
 					throw new WrongDate("При формировании платежки раз в неделю, не задан день формирования");
 				} else {
 					String selDays = Utl.convertDaysToEng(p.getSelDays());
+					log.info("dayOfWeek, selDays = {},{}", dayOfWeek, selDays);
+
 					if (selDays.contains(dayOfWeek)) {
 						// если текущий день недели в списке
 						AmntSummByUk amntSummByUk = new AmntSummByUk();

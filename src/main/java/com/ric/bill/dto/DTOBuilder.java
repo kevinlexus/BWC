@@ -46,7 +46,6 @@ KoDAO klskDao;
 @Autowired
 HouseMng houseMng;
 
-
 /**
  * Построить коллекцию DTO платежек	
  * @param lst

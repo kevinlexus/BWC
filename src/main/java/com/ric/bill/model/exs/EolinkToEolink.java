@@ -1,7 +1,5 @@
 package com.ric.bill.model.exs;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,36 +11,25 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.ric.bill.model.bs.Par;
-
 
 /**
- * Параметры по связанному объекту
+ * Связь внешних объектов друг с другом
  * @author lev
  *
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "EOLXPAR", schema="EXS")
-public class EolinkPar implements java.io.Serializable  {
+@Table(name = "EOLXEOL", schema="EXS")
+public class EolinkToEolink implements java.io.Serializable  {
 
 	// Конструктор
-	public EolinkPar() {
+	public EolinkToEolink() {
 	}
 
-	// Конструктор
-	public EolinkPar(Eolink eolink, Par par, Double n1, String s1, Date d1) {
-		super();
-		this.eolink = eolink;
-		this.par = par;
-		this.n1 = n1;
-		this.s1 = s1;
-		this.d1 = d1;
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
-	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_EOLXPAR", allocationSize=1)	
+	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_EOLXEOL", allocationSize=1)	
     @Column(name = "ID", unique=true, updatable = false, nullable = false)
 	private Integer id;
 
@@ -51,22 +38,10 @@ public class EolinkPar implements java.io.Serializable  {
 	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID")
 	private Eolink eolink;
 	
-	// Параметр, ассоциированный с ГИС ЖКХ
+	// Внешний объект, связанный с первым
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_PAR", referencedColumnName="ID")
-	private Par par;
-
-	// Параметр типа Number
-	@Column(name = "N1", updatable = true, nullable = true)
-	private Double n1;
-	
-	// Параметр типа Varchar2
-	@Column(name = "S1", updatable = true, nullable = true)
-	private String s1;
-
-	// Параметр типа Date
-	@Column(name = "D1", updatable = true, nullable = true)
-	private Date d1;
+	@JoinColumn(name="FK_EOLINK2", referencedColumnName="ID")
+	private Eolink lnkEolink;
 
 	public Integer getId() {
 		return id;
@@ -76,7 +51,6 @@ public class EolinkPar implements java.io.Serializable  {
 		this.id = id;
 	}
 
-
 	public Eolink getEolink() {
 		return eolink;
 	}
@@ -85,44 +59,20 @@ public class EolinkPar implements java.io.Serializable  {
 		this.eolink = eolink;
 	}
 
-	public Par getPar() {
-		return par;
+	public Eolink getLnkEolink() {
+		return lnkEolink;
 	}
 
-	public void setPar(Par par) {
-		this.par = par;
-	}
-
-	public Double getN1() {
-		return n1;
-	}
-
-	public void setN1(Double n1) {
-		this.n1 = n1;
-	}
-
-	public String getS1() {
-		return s1;
-	}
-
-	public void setS1(String s1) {
-		this.s1 = s1;
-	}
-
-	public Date getD1() {
-		return d1;
-	}
-
-	public void setD1(Date d1) {
-		this.d1 = d1;
+	public void setLnkEolink(Eolink lnkEolink) {
+		this.lnkEolink = lnkEolink;
 	}
 
 	public boolean equals(Object o) {
 	    if (this == o) return true;
-	    if (o == null || !(o instanceof EolinkPar))
+	    if (o == null || !(o instanceof EolinkToEolink))
 	        return false;
 
-	    EolinkPar other = (EolinkPar)o;
+	    EolinkToEolink other = (EolinkToEolink)o;
 
 	    if (id == other.getId()) return true;
 	    if (id == null) return false;
