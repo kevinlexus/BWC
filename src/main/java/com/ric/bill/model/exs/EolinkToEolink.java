@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.ric.bill.model.bs.Lst;
+
 
 /**
  * Связь внешних объектов друг с другом
@@ -25,7 +27,13 @@ public class EolinkToEolink implements java.io.Serializable  {
 	// Конструктор
 	public EolinkToEolink() {
 	}
-
+	
+	public EolinkToEolink(Eolink parent, Eolink child, Lst tp) {
+		super();
+		this.parent = parent;
+		this.child = child;
+		this.tp = tp;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
@@ -33,16 +41,21 @@ public class EolinkToEolink implements java.io.Serializable  {
     @Column(name = "ID", unique=true, updatable = false, nullable = false)
 	private Integer id;
 
-	// Внешний объект
+	// Родительский Внешний объект 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID")
-	private Eolink eolink;
+	@JoinColumn(name="FK_PARENT", referencedColumnName="ID")
+	private Eolink parent;
 	
-	// Внешний объект, связанный с первым
+	// Дочерний Внешний объект
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_EOLINK2", referencedColumnName="ID")
-	private Eolink lnkEolink;
+	@JoinColumn(name="FK_CHILD", referencedColumnName="ID")
+	private Eolink child;
 
+	// Тип связи
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_TP", referencedColumnName="ID")
+	private Lst tp; 
+	
 	public Integer getId() {
 		return id;
 	}
@@ -51,20 +64,28 @@ public class EolinkToEolink implements java.io.Serializable  {
 		this.id = id;
 	}
 
-	public Eolink getEolink() {
-		return eolink;
+	public Eolink getParent() {
+		return parent;
 	}
 
-	public void setEolink(Eolink eolink) {
-		this.eolink = eolink;
+	public void setParent(Eolink parent) {
+		this.parent = parent;
 	}
 
-	public Eolink getLnkEolink() {
-		return lnkEolink;
+	public Eolink getChild() {
+		return child;
 	}
 
-	public void setLnkEolink(Eolink lnkEolink) {
-		this.lnkEolink = lnkEolink;
+	public void setChild(Eolink child) {
+		this.child = child;
+	}
+
+	public Lst getTp() {
+		return tp;
+	}
+
+	public void setTp(Lst tp) {
+		this.tp = tp;
 	}
 
 	public boolean equals(Object o) {

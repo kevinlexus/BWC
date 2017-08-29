@@ -544,14 +544,15 @@ public class KartMngImpl implements KartMng {
 		// лиц.счета
 		lst = checkServ(calc, calc.getKart(), lst, "Поставщик", 0);
 
+		// УБРАТЬ позже, эта проверка работает в ChrgThr TODO 
 		// удалить отключенные услуги по наборам тарифа
 		// города:
-		lst = checkServ(calc, calc.getArea(), lst, "Отключение", 1);
+		/*lst = checkServ(calc, calc.getArea(), lst, "Отключение", 1);
 		// дома:
 		lst = checkServ(calc, calc.getHouse(), lst, "Отключение", 1);
 		// лиц.счета
 		lst = checkServ(calc, calc.getKart(), lst, "Отключение", 1);
-		
+		*/
 		return lst;
 	}
 

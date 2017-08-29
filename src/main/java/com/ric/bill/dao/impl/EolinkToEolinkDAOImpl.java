@@ -26,14 +26,26 @@ public class EolinkToEolinkDAOImpl implements EolinkToEolinkDAO {
      */
     public List<Eolink> getLinkedEolink(Eolink eolink) {
     	List<Eolink> lst; 
-		Query query =em.createQuery("select t.eolink2 from EolinkToEolink t where t.eolink.id = :id");
+		Query query =em.createQuery("select t.child from EolinkToEolink t where t.parent.id = :id");
 		query.setParameter("id", eolink.getId());
 		lst=query.getResultList();
-		query =em.createQuery("select t.eolink from EolinkToEolink t where t.eolink2.id = :id");
+		query =em.createQuery("select t.parent from EolinkToEolink t where t.child.id = :id");
 		query.setParameter("id", eolink.getId());
 		lst.addAll(query.getResultList());
 		return lst;
 	}
 
+    /**
+     * Получить родительские объекты по дочернему объекту и типу связи
+     * @param eolink - Вх. объект
+     * @return
+     */
+    public List<Eolink> getParentEolink(Eolink eolink, String tp) {
+    	List<Eolink> lst; 
+		Query query =em.createQuery("select t.parent from EolinkToEolink t where t.child.id = :id and t.tp.cd = :tp");
+		query.setParameter("id", eolink.getId());
+		query.setParameter("tp", tp);
+		return query.getResultList();
+	}
 
 }

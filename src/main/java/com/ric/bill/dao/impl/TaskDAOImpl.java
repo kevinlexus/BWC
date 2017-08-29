@@ -132,4 +132,15 @@ public class TaskDAOImpl implements TaskDAO {
 			return false;
 		}
 	}
+
+	/**
+	 * Вернуть все дочерние задания по заданному
+	 * @param task - родительское задание
+	 * @return - дочерние задания
+	 */
+	public List<Task> getChildTask(Task task) {
+		Query query =em.createQuery("from Task t where t.parentTask.id = :parentId");
+		query.setParameter("parentId", task.getId());
+		return query.getResultList();
+	}
 }

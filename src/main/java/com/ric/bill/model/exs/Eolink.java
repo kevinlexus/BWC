@@ -57,7 +57,7 @@ public class Eolink implements java.io.Serializable  {
 		this.appTp = appTp;
 		this.objTpx = objTpx;
 		this.koObj = koObj;
-		this.parEolink = parEolink;
+		this.parent = parEolink;
 	}
 
 	// Конструктор
@@ -143,10 +143,10 @@ public class Eolink implements java.io.Serializable  {
 	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="ID")
 	private Ko koObj;
 
-	// Родительский связаннй объект 
+	// Родительский связанный объект 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", updatable = false)
-	private Eolink parEolink;
+	private Eolink parent;
 
 	// ОГРН Организации
 	@Column(name = "OGRN", updatable = true, nullable = true)
@@ -157,6 +157,16 @@ public class Eolink implements java.io.Serializable  {
 	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID")
 	private List<EolinkPar> eolinkPar = new ArrayList<EolinkPar>(0);
 	
+	// Дочерние объекты, связанные через внешнюю таблицу
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="FK_CHILD", referencedColumnName="ID")
+	private List<Eolink> childLinked = new ArrayList<Eolink>(0);
+
+	// Родительские объекты, связанные через внешнюю таблицу
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="FK_PARENT", referencedColumnName="ID")
+	private List<Eolink> parentLinked = new ArrayList<Eolink>(0);
+
 	public String getUn() {
 		return un;
 	}
@@ -287,12 +297,12 @@ public class Eolink implements java.io.Serializable  {
 		this.koObj = koObj;
 	}
 
-	public Eolink getParEolink() {
-		return parEolink;
+	public Eolink getParent() {
+		return parent;
 	}
 
-	public void setParEolink(Eolink parEolink) {
-		this.parEolink = parEolink;
+	public void setParent(Eolink parEolink) {
+		this.parent = parEolink;
 	}
 
 	public String getOgrn() {
@@ -309,6 +319,23 @@ public class Eolink implements java.io.Serializable  {
 
 	public void setEolinkPar(List<EolinkPar> eolinkPar) {
 		this.eolinkPar = eolinkPar;
+	}
+
+	public List<Eolink> getChildLinked() {
+		return childLinked;
+	}
+
+
+	public void setChildLinked(List<Eolink> childLinked) {
+		this.childLinked = childLinked;
+	}
+
+	public List<Eolink> getParentLinked() {
+		return parentLinked;
+	}
+
+	public void setParentLinked(List<Eolink> parentLinked) {
+		this.parentLinked = parentLinked;
 	}
 
 	public boolean equals(Object o) {
