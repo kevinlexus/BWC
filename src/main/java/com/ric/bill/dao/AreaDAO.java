@@ -10,6 +10,6 @@ import com.ric.bill.model.tr.Serv;
 
 public interface AreaDAO {
 
-	public List<Area> getAll();
+	public List<Area> getAllHaveKlsk();
 	public Area getByKlsk(Integer klsk);
 }

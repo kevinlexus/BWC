@@ -32,7 +32,7 @@ public class EolinkDAOImpl implements EolinkDAO {
 	}
     
     /**
-     * Получить Связанный объект по GUID
+     * Получить объект по GUID
      * @param guid - GUID
      * @return
      */
@@ -47,7 +47,18 @@ public class EolinkDAOImpl implements EolinkDAO {
 	}
 
     /**
-     * Получить Связанный объект по reu,kul,nd
+     * Получить дочерние объекты по родительскому объекту
+     * @param parent - родительский объект
+     * @return
+     */
+    public List<Eolink> getChildByEolink(Eolink parent) {
+		Query query =em.createQuery("select t from Eolink t where t.parent.id = :id");
+		query.setParameter("id", parent.getId());
+		return query.getResultList();
+    }
+
+    /**
+     * Получить объект по reu,kul,nd
      * @param reu - REU из Квартплаты
      * @param kul - KUL из Квартплаты
      * @param nd -  ND из Квартплаты

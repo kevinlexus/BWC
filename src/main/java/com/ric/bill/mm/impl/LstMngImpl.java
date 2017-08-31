@@ -41,14 +41,6 @@ public class LstMngImpl implements LstMng {
 		return lstDao.getByTp(cdTp);
 	}
 
-    /*
-     * Получить все типы областей
-     * 
-     */
-	public List<Area> getAreaAll() {
-		return areaDao.getAll();
-	}
-
 	/**
 	 * Получить список типа Ko по типу адреса и фильтру по наименованию
 	 */

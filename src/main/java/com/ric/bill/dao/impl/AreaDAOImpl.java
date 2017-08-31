@@ -25,8 +25,8 @@ public class AreaDAOImpl implements AreaDAO {
      * Получить все типы областей
      * 
      */
-    public List<Area> getAll() {
-		Query query =em.createQuery("select t from Area t");
+    public List<Area> getAllHaveKlsk() {
+		Query query =em.createQuery("select t from Area t where t.klskId is not null");
 		return query.getResultList();
 	}
 
