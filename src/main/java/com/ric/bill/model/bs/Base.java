@@ -3,7 +3,6 @@ package com.ric.bill.model.bs;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;

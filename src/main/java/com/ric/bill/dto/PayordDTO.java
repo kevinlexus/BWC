@@ -2,8 +2,6 @@ package com.ric.bill.dto;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**

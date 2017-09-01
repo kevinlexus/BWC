@@ -3,8 +3,6 @@ package com.ric.bill.model.tr;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,17 +14,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.EqualsAndHashCode;
-
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
-import com.ric.bill.Calc;
 import com.ric.bill.Storable;
 import com.ric.bill.model.bs.Base;
-import com.ric.bill.model.mt.Meter;
 
 
 

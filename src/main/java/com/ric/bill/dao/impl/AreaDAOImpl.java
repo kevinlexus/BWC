@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import com.ric.bill.dao.AreaDAO;
 import com.ric.bill.model.ar.Area;
-import com.ric.bill.model.bs.Lst;
 
 
 @Repository
@@ -25,8 +24,9 @@ public class AreaDAOImpl implements AreaDAO {
      * Получить все типы областей
      * 
      */
-    public List<Area> getAllHaveKlsk() {
-		Query query =em.createQuery("select t from Area t where t.klskId is not null");
+    public List<Area> getAllHaveKlsk(Integer areaId) {
+		Query query =em.createQuery("select t from Area t where t.klskId is not null and (:areaId is null or t.id=:areaId)");
+		query.setParameter("areaId", areaId);
 		return query.getResultList();
 	}
 

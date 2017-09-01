@@ -11,9 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Repository;
 
-import com.ric.bill.Utl;
 import com.ric.bill.dao.PaymentDetDAO;
-import com.ric.bill.mm.impl.PayordMngImpl;
 import com.ric.bill.model.cash.PaymentDet;
 
 

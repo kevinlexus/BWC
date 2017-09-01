@@ -1,12 +1,7 @@
 package com.ric.bill.model.ar;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
@@ -24,17 +19,10 @@ import javax.persistence.Table;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.FilterDefs;
-import org.hibernate.annotations.Filters;
-import org.hibernate.annotations.ParamDef;
-
 import com.ric.bill.MeterContains;
 import com.ric.bill.TarifContains;
 import com.ric.bill.model.bs.Base;
 import com.ric.bill.model.mt.MeterLog;
-import com.ric.bill.model.tr.Serv;
 import com.ric.bill.model.tr.TarifKlsk;
 
 /**

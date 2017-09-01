@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import com.ric.bill.Simple;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.bs.Lst;
-import com.ric.bill.model.mt.MeterLog;
 
 /**
  * Заголовок платежа

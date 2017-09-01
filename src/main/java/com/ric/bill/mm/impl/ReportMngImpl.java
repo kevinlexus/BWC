@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ric.bill.dao.ReportDAO;
 import com.ric.bill.dto.PeriodReportsDTO;
 import com.ric.bill.mm.ReportMng;
-import com.ric.bill.model.bs.Obj;
 import com.ric.bill.model.bs.PeriodReports;
 import com.ric.bill.model.bs.Report;
 

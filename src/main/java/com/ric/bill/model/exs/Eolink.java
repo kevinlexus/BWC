@@ -16,8 +16,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.BatchSize;
-
 import com.ric.bill.model.bs.AddrTp;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.oralv.Ko;

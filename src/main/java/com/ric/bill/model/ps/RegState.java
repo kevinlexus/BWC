@@ -12,12 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.springframework.cache.annotation.Cacheable;
-
-import com.ric.bill.Simple;
-import com.ric.bill.model.ar.House;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.bs.Lst;
 

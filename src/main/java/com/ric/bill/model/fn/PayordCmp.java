@@ -15,7 +15,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.ric.bill.Simple;
-import com.ric.bill.model.ar.Area;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.oralv.Ko;

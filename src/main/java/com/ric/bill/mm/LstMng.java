@@ -2,7 +2,6 @@ package com.ric.bill.mm;
 
 import java.util.List;
 
-import com.ric.bill.model.ar.Area;
 import com.ric.bill.model.bs.AddrTp;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.oralv.Ko;

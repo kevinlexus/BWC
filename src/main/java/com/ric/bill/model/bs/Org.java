@@ -9,15 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.BatchSize;
 
 import com.ric.bill.Storable;
-import com.ric.bill.model.mt.Vol;
-import com.ric.bill.model.oralv.Ko;
 
 /**
  * Организация

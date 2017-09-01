@@ -8,18 +8,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.LazyToOne;
-import org.hibernate.annotations.LazyToOneOption;
 
 import com.ric.bill.Simple;
 import com.ric.bill.model.ar.House;
 import com.ric.bill.model.bs.AddrTp;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.dc.Doc;
-import com.ric.bill.model.mt.MeterLog;
 
 /**
  * Справочник всех объектов Klsk Objects - KO

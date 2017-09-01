@@ -11,7 +11,6 @@ import com.ric.bill.dao.AreaDAO;
 import com.ric.bill.dao.KoDAO;
 import com.ric.bill.dao.LstDAO;
 import com.ric.bill.mm.LstMng;
-import com.ric.bill.model.ar.Area;
 import com.ric.bill.model.bs.AddrTp;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.oralv.Ko;

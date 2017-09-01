@@ -9,9 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.ric.bill.Calc;
 import com.ric.bill.Simple;
-import com.ric.bill.model.ar.House;
 
 /**
  * Персона

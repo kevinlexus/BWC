@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.ric.bill.excp.WrongGetMethod;
 import com.ric.bill.model.exs.Eolink;
-import com.ric.bill.model.exs.Task;
 
 public interface EolinkParMng {
 

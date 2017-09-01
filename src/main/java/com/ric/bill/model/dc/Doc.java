@@ -11,7 +11,6 @@ import javax.persistence.Table;
 import com.ric.bill.Storable;
 import com.ric.bill.model.bs.Base;
 import com.ric.bill.model.bs.Lst;
-import com.ric.bill.model.oralv.Ko;
 
 /**
  * Документ

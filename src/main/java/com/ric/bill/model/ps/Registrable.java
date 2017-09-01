@@ -2,7 +2,6 @@ package com.ric.bill.model.ps;
 
 import java.util.Date;
 
-import com.ric.bill.Simple;
 import com.ric.bill.model.bs.Lst;
 
 public interface Registrable {

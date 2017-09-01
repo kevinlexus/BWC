@@ -1,7 +1,5 @@
 package com.ric.bill;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -10,10 +8,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -68,6 +64,8 @@ public class Config {
 	String periodBack;
 	// Тип приложения, по умолчанию - 0
 	Integer appTp = 0;
+	// Запретить начислять по лиц.счетам, если формируется глобальное начисление
+	Boolean isRestrictChrgLsk = false;
 	
 	// загрузить свойства
 	private void loadProp() {
@@ -246,5 +244,14 @@ public class Config {
 	public void setAppTp(Integer appTp) {
 		this.appTp = appTp;
 	}
+
+	public Boolean getIsRestrictChrgLsk() {
+		return isRestrictChrgLsk;
+	}
+
+	public void setIsRestrictChrgLsk(Boolean isRestrictChrgLsk) {
+		this.isRestrictChrgLsk = isRestrictChrgLsk;
+	}
+
 	
 }

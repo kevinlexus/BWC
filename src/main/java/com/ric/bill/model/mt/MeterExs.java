@@ -1,7 +1,6 @@
 package com.ric.bill.model.mt;
 
 
-import java.math.BigDecimal;
 import java.sql.Date;
 
 import javax.persistence.Column;

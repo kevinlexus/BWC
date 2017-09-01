@@ -1,8 +1,6 @@
 package com.ric.bill.model.cash;
 
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,7 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.ric.bill.Simple;
-import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.tr.Serv;
 

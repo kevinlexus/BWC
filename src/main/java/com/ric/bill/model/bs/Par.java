@@ -10,10 +10,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.ric.bill.Calc;
 import com.ric.bill.Simple;
-import com.ric.bill.model.ar.House;
-import com.ric.bill.model.ps.Pers;
 
 /**
  * Параметр

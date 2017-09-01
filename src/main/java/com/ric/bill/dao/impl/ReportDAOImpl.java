@@ -11,15 +11,10 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import com.ric.bill.dao.LstDAO;
 import com.ric.bill.dao.ReportDAO;
 import com.ric.bill.dto.PeriodReportsDTO;
-import com.ric.bill.model.ar.Kart;
-import com.ric.bill.model.bs.Lst;
-import com.ric.bill.model.bs.Obj;
 import com.ric.bill.model.bs.PeriodReports;
 import com.ric.bill.model.bs.Report;
 

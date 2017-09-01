@@ -14,7 +14,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.ric.bill.Simple;
-import com.ric.bill.model.ar.House;
 
 /**
  * Элемент списка

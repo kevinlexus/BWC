@@ -11,8 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.ric.bill.Simple;
-import com.ric.bill.model.ar.House;
 import com.ric.bill.model.bs.Lst;
 
 /**

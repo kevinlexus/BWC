@@ -10,11 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ric.bill.Utl;
 import com.ric.bill.dao.AreaDAO;
 import com.ric.bill.dao.KoDAO;
 import com.ric.bill.dao.OrgDAO;
-import com.ric.bill.dao.impl.KoDAOImpl;
 import com.ric.bill.mm.HouseMng;
 import com.ric.bill.model.ar.Area;
 import com.ric.bill.model.bs.AddrTp;

@@ -12,13 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.BatchSize;
-
 import com.ric.bill.model.bs.Lst;
-import com.ric.bill.model.mt.Vol;
 
 
 /**
