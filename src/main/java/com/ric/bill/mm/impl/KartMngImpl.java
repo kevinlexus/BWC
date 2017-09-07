@@ -361,25 +361,6 @@ public class KartMngImpl implements KartMng {
 		
 	}
 
-
-	/**
-	 * Получить текущую УК, к которой сейчас привязан лиц.счет через lskxorg
-	 * @param kart - лиц.счет
-	 * @param genDt - дата выборки
-	 */
-/*	public synchronized Org getUk(Kart kart, Date genDt) {
-		for (Lskxorg lxo: kart.getLskxorg()) {
-			if (Utl.between(genDt, lxo.getDt1(), lxo.getDt2())) {
-				if (lxo.getUk() == null) {
-					log.trace("CHEEEEEEEEEEEEK Lsk="+lxo.getLsk(), 2);
-				}
-				return lxo.getUk();
-			}			
-		}
-		return null;
-	}*/
-	
-	
 	/**
 	 * Найти значение свойства типа Double услуги (по лиц.счету!)
 	 * @param Kart - Лиц.счет
@@ -388,7 +369,6 @@ public class KartMngImpl implements KartMng {
 	 * @param genDt - Дата выборки
 	 * @return
 	 */
-	//@Cacheable("rrr1")
 	@Cacheable(cacheNames="KartMngImpl.getServPropByCD", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #cd, #genDt }") 
 	public /*synchronized*/ Double getServPropByCD(int rqn, Calc calc, Serv serv, String cd, Date genDt) { //убрал synchronized, получил - java.util.concurrent.ExecutionException: org.hibernate.exception.GenericJDBCException: could not initialize a collection
 		Double val;
@@ -412,7 +392,6 @@ public class KartMngImpl implements KartMng {
 	 * @param genDt - Дата выборки
 	 * @return
 	 */
-	//@Cacheable(cacheNames="rrr1") 
 	@Cacheable(cacheNames="KartMngImpl.getOrg", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
 	public /*synchronized*/ Org getOrg(int rqn, Calc calc, Serv serv, Date genDt) {
 		Org org;
@@ -445,7 +424,6 @@ public class KartMngImpl implements KartMng {
 	 * @param genDt - Дата выборки
 	 * @return
 	 */
-	//@Cacheable("rrr1")
 	@Cacheable(cacheNames="KartMngImpl.getServ", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
 	public /*synchronized*/ boolean getServ(int rqn, Calc calc, Serv serv, Date genDt) {
 		boolean exs = false;
@@ -531,8 +509,6 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 * @throws EmptyServ 
 	 */
-	//@Cacheable("rrr1")
-	//@Cacheable(cacheNames="rrr1", key="{ #kart.getLsk() }") - НЕ КЭШИРОВАТЬ!!!
 	@Cacheable(cacheNames="KartMngImpl.getServAll", key="{#rqn, #calc.getHouse().getId(), #calc.getKart().getLsk() }")
 	public /*synchronized*/ List<Serv> getServAll(int rqn, Calc calc) {
 		List<Serv> lst = new ArrayList<Serv>();

@@ -27,7 +27,7 @@ import com.ric.bill.model.sec.Vsec;
 	     * Проверить доступна ли пользователю привилегия по объекту, роли, действию 
 	     * @param vol - объект объема
 	     */
-		@Cacheable(cacheNames="wipein1min") // пока сделал wipein1min
+		@Cacheable(cacheNames="VsecDAOImpl.getPrivByUserRoleAct")
 	    public List<Vsec> getPrivByUserRoleAct(String userCd, String roleCd, String actCd) {
 	    	log.info("userCd={}, roleCd={}, actCd={}", userCd, roleCd, actCd);
 			Query query =em.createQuery("from Vsec t where upper(t.userCd)=upper(:usercd) and t.roleCd=:rolecd and t.actCd=:actcd");

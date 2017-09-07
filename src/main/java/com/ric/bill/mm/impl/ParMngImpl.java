@@ -32,16 +32,15 @@ public class ParMngImpl implements ParMng {
 	private ParDAO pDao;
 	
 	//получить параметр по его CD
-	//@Cacheable(cacheNames="readOnlyCache", key="{ #cd }") - здесь не кэшируется, только в DAO
-	public/* synchronized */Par getByCD(int rqn, String cd) {
+	public Par getByCD(int rqn, String cd) {
 		return pDao.getByCd(rqn, cd);
 	}
 
 	/**
 	 * Узнать существует ли параметр по его CD
 	 */
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #cd }")
-	public/* synchronized */boolean isExByCd(int rqn, String cd) {
+	@Cacheable(cacheNames="ParMngImpl.isExByCd", key="{#rqn, #cd }")
+	public boolean isExByCd(int rqn, String cd) {
 		Par p = getByCD(rqn, cd);
 		if (p != null) {
 			return true;
@@ -51,7 +50,7 @@ public class ParMngImpl implements ParMng {
 	}
 
 
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #st.getKo().getId(), #cd, #genDt }")
+	@Cacheable(cacheNames="ParMngImpl.getBool1", key="{#rqn, #st.getKo().getId(), #cd, #genDt }")
 	public Boolean getBool(int rqn, Storable st, String cd, Date genDt) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
@@ -90,7 +89,7 @@ public class ParMngImpl implements ParMng {
 		return null;
 	}
 
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #st.getKo().getId(), #cd}")
+	@Cacheable(cacheNames="ParMngImpl.getBool2", key="{#rqn, #st.getKo().getId(), #cd}")
 	public Boolean getBool(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
@@ -131,7 +130,7 @@ public class ParMngImpl implements ParMng {
 	 * получить значение параметра типа Double объекта по CD свойства
 	 * внимание! дату важно передавать, а не получать из Calc.getGenDt(), так как она влияет на кэш!
 	 */
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #st.getKo().getId(), #cd, #genDt }")
+	@Cacheable(cacheNames="ParMngImpl.getDbl1", key="{#rqn, #st.getKo().getId(), #cd, #genDt }")
 	public/* synchronized*/ Double getDbl(int rqn, Storable st, String cd, Date genDt) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
@@ -173,8 +172,7 @@ public class ParMngImpl implements ParMng {
 	 * получить значение параметра типа Double объекта по CD свойства, без указания даты
 	 * @throws EmptyServ 
 	 */
-	//@Cacheable(cacheNames="rrr1")
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #st.getKo().getId(), #cd }")
+	@Cacheable(cacheNames="ParMngImpl.getDbl2", key="{#rqn, #st.getKo().getId(), #cd }")
 	public /*synchronized*/ Double getDbl(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
@@ -207,7 +205,7 @@ public class ParMngImpl implements ParMng {
 	/**
 	 * получить значение параметра типа Double объекта по CD свойства, без указания даты
 	 */
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #st.getKo().getId(), #cd }")
+	@Cacheable(cacheNames="ParMngImpl.getDate", key="{#rqn, #st.getKo().getId(), #cd }")
 	public /*synchronized*/ Date getDate(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
@@ -279,8 +277,7 @@ public class ParMngImpl implements ParMng {
 	 * получить значение параметра типа String объекта по CD свойства
 	 * @throws EmptyStorable 
 	 */
-	//@Cacheable(cacheNames="rrr1")
-	@Cacheable(cacheNames="rrr1", key="{ #rqn, #st.getKo().getId(), #cd, #genDt }")
+	@Cacheable(cacheNames="ParMngImpl.getStr1", key="{ #rqn, #st.getKo().getId(), #cd, #genDt }")
 	public /*synchronized*/ String getStr(int rqn, Storable st, String cd, Date genDt) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
@@ -318,8 +315,7 @@ public class ParMngImpl implements ParMng {
 	 * получить значение параметра типа String объекта по CD свойства, без указания даты
 	 * @throws EmptyStorable 
 	 */
-	//@Cacheable("rrr1")
-	@Cacheable(cacheNames="rrr1", key="{ #rqn, #st.getKo().getId(), #cd }")
+	@Cacheable(cacheNames="ParMngImpl.getStr2", key="{ #rqn, #st.getKo().getId(), #cd }")
 	public /*synchronized*/ String getStr(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");

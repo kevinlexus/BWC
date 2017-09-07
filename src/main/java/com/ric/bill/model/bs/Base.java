@@ -25,11 +25,6 @@ import com.ric.bill.model.oralv.Ko;
  */
 @MappedSuperclass
 @EqualsAndHashCode(callSuper=false)
-/*@Cacheable
-@org.hibernate.annotations.Cache(
-        usage = org.hibernate.annotations.CacheConcurrencyStrategy.NONSTRICT_READ_WRITE,
-        region = "com.myapp.model.ProductEntity"
-)*/
 public abstract class Base implements Storable {
 	
     @Column(name = "FK_K_LSK", updatable = false, nullable = false)

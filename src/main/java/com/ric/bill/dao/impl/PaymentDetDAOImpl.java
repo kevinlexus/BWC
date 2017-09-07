@@ -33,14 +33,14 @@ public class PaymentDetDAOImpl implements PaymentDetDAO {
 	public List<PaymentDet> getPaymentDetByPeriod(String period, Date curDt1, Date curDt2, Date trimDt) {
 		// получить первую дату периода
 		Query query =em.createQuery("select t from PaymentDet t join t.payment p join p.wp e "
-				+ "left join p.wpClct d where t.payment.dtf between :dt1 and :dt2 "
-				+ "and (e.id = 5000 and t.payment.dtf between :dt1 and :trimDt "
-				+ "or e.id <> 5000 and d.dtClose between :dt1 and :trimDt) "); // wp.id=5000 - это гениальное творчество Мишы и Димана
+				+ "left join p.wpClct d where trunc(t.payment.dtf) between :dt1 and :dt2 "
+				+ "and (e.id in (600, 5000) and trunc(t.payment.dtf) between :dt1 and :trimDt " // Сбер, Web
+				+ "or e.id not in (600, 5000) and trunc(d.dtClose) between :dt1 and :trimDt) "); // Кроме Сбер, Web, wp.id=5000 - это гениальное творчество Мишы и Димана
 		query.setParameter("dt1", curDt1);
 		query.setParameter("dt2", curDt2);
 		query.setParameter("trimDt", trimDt);
 		
-		//log.info("dt1={}, dt2={}, dt4={}", curDt1, curDt2, genDt);
+		//log.info("dt1={}, dt2={}, trimDt={}", curDt1, curDt2, trimDt);
 		
 		return query.getResultList();
 	}

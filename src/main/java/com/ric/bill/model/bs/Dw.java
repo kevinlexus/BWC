@@ -24,11 +24,6 @@ import com.ric.bill.Simple;
 @Entity
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "U_HFPXKLSK", schema="ORALV")
-/*@Cacheable
-@org.hibernate.annotations.Cache(
-        usage = org.hibernate.annotations.CacheConcurrencyStrategy.NONSTRICT_READ_WRITE,
-        region = "com.myapp.model.ProductEntity4"
-)*/
 public class Dw implements java.io.Serializable, Simple {
 
 	public Dw() {

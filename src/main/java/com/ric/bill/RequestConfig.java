@@ -67,7 +67,7 @@ public class RequestConfig implements Serializable {
 	 * @param dt1 - заданная принудительно начальная дата начисления
 	 * @param dt2 - заданная принудительно конечная дата начисления
 	 */
-	public void setUp(Config config, String dist, String tp, Integer chngId, int rqn, String genDt1, String genDt2) {
+	public void setUp(Config config, String dist, String tp, Integer chngId, int rqn, Date genDt1, Date genDt2) {
 		// установить текущий номер запроса
 		setRqn(rqn);
 		// основные настройки
@@ -110,10 +110,13 @@ public class RequestConfig implements Serializable {
     	// прочие настройки
 		if (operTp==0) {
 			//начисление
-			if (genDt1.length() > 0 && genDt2.length() > 0) {
-				Date dt1 = Utl.getDateFromStr(genDt1);
-				Date dt2 = Utl.getDateFromStr(genDt2);
-
+			//if (genDt1.length() > 0 && genDt2.length() > 0) {
+			if (genDt1 != null && genDt2 != null) {
+				//Date dt1 = Utl.getDateFromStr(genDt1);
+				//Date dt2 = Utl.getDateFromStr(genDt2);
+				Date dt1 = genDt1;
+				Date dt2 = genDt2;
+				
 				log.info("ВНИМАНИЕ! Для расчета RQN={}, заданы следующие даты расчета: dt1={}, dt2={}", rqn, dt1, dt2);
 
 				// установить даты периода из параметров

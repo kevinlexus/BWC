@@ -20,7 +20,7 @@ public class ParDAOImpl implements ParDAO {
     private EntityManager em;
     
 	@SuppressWarnings("unchecked")
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #cd }")
+	@Cacheable(cacheNames="ParDAOImpl.getByCd", key="{#rqn, #cd }")
 	public/* synchronized */Par getByCd(int rqn, String cd) {
 		Query query =em.createQuery("from Par t where t.cd = :cd");
 		query.setParameter("cd", cd);
@@ -32,7 +32,7 @@ public class ParDAOImpl implements ParDAO {
 	}
 
 	//работает это медленнее чем была итерация по всем параметрам объекта!
-	@Cacheable(cacheNames="rrr1", key="{#rqn, #id, #cd, #dataTp }")
+	@Cacheable(cacheNames="ParDAOImpl.checkPar", key="{#rqn, #id, #cd, #dataTp }")
 	public/* synchronized */boolean checkPar(int rqn, int id, String cd, String dataTp) {
 		Query query =em.createQuery("from Par t where t.id = :id and t.cd=:cd and t.dataTp=:dataTp");
 		query.setParameter("id", id);

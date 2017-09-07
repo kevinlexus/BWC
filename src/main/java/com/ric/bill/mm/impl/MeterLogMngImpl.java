@@ -48,30 +48,13 @@ public class MeterLogMngImpl implements MeterLogMng {
     private EntityManager em;
 
 	/**
-	 * Получить список лог.счетчиков по определённому объекту, и типу
-	 * @param mm - Объект
-	 * @param tp - Тип
-	 * @return
-	 */
-	/*@Cacheable("readOnlyCache")
-	public List<MLogs> getMetLogByTp(MeterContains mm, String tp) {
-		List<MLogs> mLog = new ArrayList<MLogs>(); 
-		for (MLogs ml : mm.getMlog()) {
-			if (ml.getTp().getCd().equals(tp)) {
-				mLog.add(ml);
-			}
-		}
-		return mLog;
-	}*/
-	
-	/**
 	 * Получить все лог.счетчики по определённому объекту, типу и услуге
 	 * @param - Объект
 	 * @param serv - Услуга
 	 * @param tp - Тип, если не указан - по всем
 	 * @return - искомый список
 	 */
-	@Cacheable(cacheNames="rrr1", key="{ #rqn, #mm.getKo().getId(), #serv.getId(), #tp }") 
+	@Cacheable(cacheNames="MeterLogMngImpl.getAllMetLogByServTp", key="{ #rqn, #mm.getKo().getId(), #serv.getId(), #tp }") 
 	public List<MLogs> getAllMetLogByServTp(int rqn, MeterContains mm, Serv serv, String tp) {
 		List<MLogs> lstMlg = new ArrayList<MLogs>(0); 
 		for (MLogs ml : mm.getMlog()) {
@@ -95,7 +78,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param genDt - дата проверки
 	 * @return - существует/нет
 	 */
-	@Cacheable(cacheNames="rrr2", key="{ #rqn, #kart.getLsk(), #serv.getId(), #genDt}")
+	@Cacheable(cacheNames="MeterLogMngImpl.checkExsKartMet", key="{ #rqn, #kart.getLsk(), #serv.getId(), #genDt}")
 	public boolean checkExsKartMet(int rqn, Kart kart, Serv serv, Date genDt) {
 		Optional<MeterLog> mLog;
 			mLog = kart.getMlog().stream().filter(t -> t.getServ().equals(serv))
@@ -109,7 +92,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * проверить существование физ.счетчика (обычно для поиска счетчика ОДПУ
 	 * @param mLog
 	 */
-	@Cacheable(cacheNames="rrr1", key="{ #rqn, #mLog.getId(), #genDt}")
+	@Cacheable(cacheNames="MeterLogMngImpl.checkExsMet", key="{ #rqn, #mLog.getId(), #genDt}")
 	public boolean checkExsMet(int rqn, MLogs mLog, Date genDt) {
     	// проверить существование хотя бы одного из физ счетчиков, по этому лог.сч.
     	for (Meter m: mLog.getMeter()) {
@@ -133,7 +116,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param dt2 - кон.период
 	 * @return - возвращаемый объем
 	 */
-	@Cacheable(cacheNames="rrr3", key="{ #rqn, #statusVol, #mLog.getId(), #tp, #dt1, #dt2}")
+	@Cacheable(cacheNames="MeterLogMngImpl.getVolPeriod1", key="{ #rqn, #statusVol, #mLog.getId(), #tp, #dt1, #dt2}")
     public  SumNodeVol getVolPeriod(int rqn, Integer statusVol, MLogs mLog, int tp, Date dt1, Date dt2) {
 		SumNodeVol lnkVol = new SumNodeVol();
 		/* Java 8 */
@@ -165,7 +148,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param dt2 - кон.период
 	 * @return - возвращаемый объем
 	 */
-	@Cacheable(cacheNames="rrr1", key="{ #rqn, #statusVol, #mc.getId(), #serv.getId(), #dt1, #dt2}")
+	@Cacheable(cacheNames="MeterLogMngImpl.getVolPeriod2", key="{ #rqn, #statusVol, #mc.getId(), #serv.getId(), #dt1, #dt2}")
 	public synchronized SumNodeVol getVolPeriod (int rqn, Integer statusVol, MeterContains mc, Serv serv, Date dt1, Date dt2) {
 		SumNodeVol amntSum = new SumNodeVol();
 		MLogs lastMlwithVol = null, lastMl = null;
@@ -207,7 +190,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param tp - тип счетчика
 	 * @return лог.счетчик
 	 */
-	@Cacheable("rrr1") 
+	@Cacheable("MeterLogMngImpl.getLinkedNode") 
 	public MLogs getLinkedNode(int rqn, MLogs mLog, String tp, Date genDt) {
 		MLogs lnkMLog = null;
 		//найти прямую связь (направленную внутрь или наружу, не важно) указанного счетчика со счетчиком указанного типа 
@@ -243,7 +226,7 @@ public class MeterLogMngImpl implements MeterLogMng {
      * @return 
      * @throws CyclicMeter 
      */
-	@Cacheable("rrr1") // пока оставил кэширование, не должно мешать 
+	@Cacheable("MeterLogMngImpl.delNodeVol") // пока оставил кэширование, не должно мешать 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED) //  ПРИМЕНЯТЬ ТОЛЬКО НА PUBLIC МЕТОДЕ!!! http://stackoverflow.com/questions/4396284/does-spring-transactional-attribute-work-on-a-private-method
 	public void delNodeVol(int rqn, MLogs mLog, int tp, Date dt1, Date dt2, Integer status) throws CyclicMeter {
 
@@ -289,22 +272,10 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param mLog - Счетчик
 	 * @return
 	 */
-//	 НЕ ВЗЛЕТЕЛО, медленно выполняется, чем mLog.getKart()
-	//@Cacheable(cacheNames="rrr1", key="{ #mLog.getId() }")
-	@Cacheable(cacheNames="rrr1") 
+	@Cacheable(cacheNames="MeterLogMngImpl.getKart") 
 	public /*synchronized*/ Kart getKart(int rqn, MLogs mLog) {
 		return mDao.getKart(rqn, mLog);
 	}
-	/**
-	 * Получить дом, содержащий указанный счетчик
-	 * @param mLog - Счетчик
-	 * @return
-	 */
-	/* НЕ ВЗЛЕТЕЛО, медленно выполняется, чем mLog.getHouse()
-	public House getHouse(MLogs mLog) {
-		return mDao.getHouse(mLog);
-	}
-	*/
 
 
 	

@@ -30,23 +30,19 @@ public class ServMngImpl implements ServMng {
     @PersistenceContext
     private EntityManager em;
 	
-	//да, да, кэш на уровне DAO! (быстрее работает)
-	//@Cacheable(cacheNames="readOnlyCache", key="{ #serv.getId() }") 
-	public /*synchronized */Serv findMain(Serv serv) {
+	public Serv findMain(Serv serv) {
 		return sDao.findMain(serv);
 	}
 
-	//@Cacheable(cacheNames="readOnlyCache")
-	public /*synchronized */List<Serv> findForDistVol() {
+	public List<Serv> findForDistVol() {
 		return sDao.findForDistVol();
 	}
 
-	public /*synchronized */List<Serv> findForDistVolForKart() {
+	public List<Serv> findForDistVolForKart() {
 		return sDao.findForDistVolForKart();
 	}
 
-	//@Cacheable(cacheNames="readOnlyCache", key="{ #cd }")
-	public /*synchronized */Serv getByCD(String cd) {
+	public Serv getByCD(String cd) {
 		return sDao.getByCD(cd);
 	}
 
@@ -58,8 +54,8 @@ public class ServMngImpl implements ServMng {
 	 * @throws TooManyRecursiveCalls 
 	 * @throws NotFoundUpperLevel 
 	 */
-	@Cacheable(cacheNames="neverWipe", key="{ #serv.getId(), #tp }")
-	public /*synchronized */Serv getUpper(Serv serv, String tp) throws TooManyRecursiveCalls, NotFoundUpperLevel {
+	@Cacheable(cacheNames="ServMngImpl.getUpper", key="{ #serv.getId(), #tp }")
+	public Serv getUpper(Serv serv, String tp) throws TooManyRecursiveCalls, NotFoundUpperLevel {
 		Lst tpTree = lstMng.getByCD(tp);
 		for(ServTree rec : serv.getServTree()) {
 			if (rec.getTp().equals(tpTree) && rec.getServ().equals(serv)) {
@@ -76,8 +72,8 @@ public class ServMngImpl implements ServMng {
 	 * @return - искомая запись
 	 * @throws TooManyRecursiveCalls 
 	 */
-	@Cacheable(cacheNames="neverWipe", key="{ #servTree.getId(), #tp }")
-	public /*synchronized*/ ServTree getUpperTree(ServTree servTree, String tp, int itr) throws TooManyRecursiveCalls {
+	@Cacheable(cacheNames="ServMngImpl.getUpperTree", key="{ #servTree.getId(), #tp }")
+	public ServTree getUpperTree(ServTree servTree, String tp, int itr) throws TooManyRecursiveCalls {
 		itr++;
 		if (itr > 1000) {
 			throw new TooManyRecursiveCalls("На записи иерархии id="+servTree.getId()+" обнаружено превышение числа рекурсий");

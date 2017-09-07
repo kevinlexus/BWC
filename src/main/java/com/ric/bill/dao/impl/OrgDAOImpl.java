@@ -25,7 +25,7 @@ public class OrgDAOImpl implements OrgDAO {
     private EntityManager em;
     
 	//работает это медленнее чем была итерация по всем параметрам объекта!
-	@Cacheable(cacheNames="rrr1", key="{#klsk }")
+	@Cacheable(cacheNames="OrgDAOImpl.getByKlsk", key="{#klsk }")
 	public Org getByKlsk(int klsk) {
 		
 		log.trace("Org klsk={}", klsk);
