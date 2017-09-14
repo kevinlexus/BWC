@@ -68,8 +68,6 @@ public class PayordMngImpl implements PayordMng {
 	@Autowired
 	private PayordFlowDAO payordFlowDao;
 	@Autowired
-	private LstMng lstMng;
-	@Autowired
 	private OrgMng orgMng;
 	@Autowired
 	private PaymentDetDAO paymentDetDao;
@@ -676,7 +674,9 @@ public class PayordMngImpl implements PayordMng {
 
 				// distinct список УК
 				List<Org> ukLst = orgMng.getOrgUkAll();
-				ukLst.stream().forEach(uk -> {
+				//ukLst.stream().forEach(uk -> {
+				for (Org uk : ukLst) {
+					//log.info("Check uk.id={}",uk.getId());
 					// По каждой УК, за период:
 					// получить сборы по всем маркерам
 					BigDecimal summa1 = calcMark(markLst, amntSummByUk, p, uk);
@@ -714,17 +714,19 @@ public class PayordMngImpl implements PayordMng {
 
 					if (isEndMonth) {
 						// Итоговое формирование по концу месяца
-						PayordFlow flow;
+						
 						// удалить уже сформир.сальдо
 						List<PayordFlow> lst = p.getPayordFlow().stream()
-								.filter(t -> t.getTp() == 0 && t.getPeriod().equals(periodNext))
+								.filter(t -> t.getTp() == 0 && t.getPeriod().equals(periodNext)	
+								&& t.getPayord().equals(p)	&& t.getUk().equals(uk))
 								.collect(Collectors.toList());
 						for (Iterator<PayordFlow> iterator = lst.iterator(); iterator.hasNext();) {
 							p.getPayordFlow().remove(iterator.next());
 						}
+						
 						// добавить сальдо, если изменилось
 						if (!summa6.equals(insal) && summa6.compareTo(BigDecimal.ZERO) != 0) {
-							flow = new PayordFlow(p, uk, summa6.doubleValue(), null, null, null, null, null, null, null,
+							PayordFlow flow = new PayordFlow(p, uk, summa6.doubleValue(), null, null, null, null, null, null, null,
 									0, periodNext, false, false, null);
 							p.getPayordFlow().add(flow);
 						}
@@ -751,17 +753,23 @@ public class PayordMngImpl implements PayordMng {
 							log.info("Сальдо по бух insal={}, summa1={}, summa2={}, summa3={}, summa4={}, summa5={}, summa6={}", insal,
 								summa1, summa2, summa3, summa4, summa5, summa6);
 						}
+
 						// удалить уже сформир.сальдо по бухг.
-						lst = p.getPayordFlow().stream().filter(t -> t.getTp() == 1 && t.getPeriod().equals(periodNext))
+						lst = p.getPayordFlow().stream().filter(t -> t.getTp() == 1 && t.getPeriod().equals(periodNext)
+								&& t.getPayord().equals(p)	&& t.getUk().equals(uk))
 								.collect(Collectors.toList());
 						for (Iterator<PayordFlow> iterator = lst.iterator(); iterator.hasNext();) {
 							p.getPayordFlow().remove(iterator.next());
 						}
+							
 						// добавить сальдо, если изменилось
 						if (!summa6.equals(insal) && summa6.compareTo(BigDecimal.ZERO) != 0) {
-							flow = new PayordFlow(p, uk, summa6.doubleValue(), null, null, null, null, null, null, null,
+							PayordFlow flow = new PayordFlow(p, uk, summa6.doubleValue(), null, null, null, null, null, null, null,
 									1, periodNext, false, false, null);
 							p.getPayordFlow().add(flow);
+							//if (p.getId()==244 && uk.getId()==1832) {
+								//log.info("Check p.id={}, uk.id={}, periodNext={}", p.getId(), uk.getId(), periodNext);
+							//}
 						}
 					} else {
 
@@ -797,11 +805,9 @@ public class PayordMngImpl implements PayordMng {
 						reportMng.addPeriodReport("RptPayDocList", period, null);
 						reportMng.addPeriodReport("RptPayDocList", periodNext, null);
 					}
-				});
+				}; // ##
 
 			}
-			// } //##
-			// }
 		}
 		
 		long endTime1 = System.currentTimeMillis() - beginTime;

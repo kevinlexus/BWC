@@ -8,10 +8,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.ric.bill.model.bs.Lst;
@@ -30,7 +33,29 @@ public class Task implements java.io.Serializable  {
 	public Task() {
 	}
 
+	
+	public Task(Eolink eolink, Task parent, Task depTask, String state, Lst act, String guid, String msgGuid,
+			String un, String result, Date updDt, String tguid, Integer appTp, Integer fk_user) {
+		super();
+		this.eolink = eolink;
+		this.parent = parent;
+		this.depTask = depTask;
+		this.state = state;
+		this.act = act;
+		this.guid = guid;
+		this.msgGuid = msgGuid;
+		this.un = un;
+		this.result = result;
+		this.updDt = updDt;
+		this.tguid = tguid;
+		this.appTp = appTp;
+		this.fk_user = fk_user;
+	}
+
+
 	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
+	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_TASK", allocationSize=1)	
     @Column(name = "ID", unique=true, updatable = false, nullable = false)
 	private Integer id;
 
@@ -42,7 +67,12 @@ public class Task implements java.io.Serializable  {
 	// Родительское задание
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
-	private Task parentTask; 
+	private Task parent; 
+	
+	// Дочерние задания
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
+	private List<Task> child = new ArrayList<Task>(0);
 	
 	// Ведущее задание, после выполнения которого, в статус "ACP", начнёт выполняться текущее
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -119,12 +149,12 @@ public class Task implements java.io.Serializable  {
 		this.act = act;
 	}
 
-	public Task getParentTask() {
-		return parentTask;
+	public Task getParent() {
+		return parent;
 	}
 
-	public void setParentTask(Task parentTask) {
-		this.parentTask = parentTask;
+	public void setParent(Task parent) {
+		this.parent = parent;
 	}
 
 	public Integer getId() {
@@ -214,7 +244,15 @@ public class Task implements java.io.Serializable  {
 	public void setDepTask(Task depTask) {
 		this.depTask = depTask;
 	}
-	
+
+	public List<Task> getChild() {
+		return child;
+	}
+
+	public void setChild(List<Task> child) {
+		this.child = child;
+	}
+
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof Task))

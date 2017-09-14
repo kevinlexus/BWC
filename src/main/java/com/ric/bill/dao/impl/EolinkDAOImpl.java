@@ -51,11 +51,11 @@ public class EolinkDAOImpl implements EolinkDAO {
      * @param parent - родительский объект
      * @return
      */
-    public List<Eolink> getChildByEolink(Eolink parent) {
+    /*public List<Eolink> getChildByEolink(Eolink parent) {
 		Query query =em.createQuery("select t from Eolink t where t.parent.id = :id");
 		query.setParameter("id", parent.getId());
 		return query.getResultList();
-    }
+    }*/
 
     /**
      * Получить объект по reu,kul,nd

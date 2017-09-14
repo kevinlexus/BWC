@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import com.ric.bill.model.bs.AddrTp;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.oralv.Ko;
+import com.ric.bill.model.sec.User;
 
 
 /**
@@ -38,7 +39,7 @@ public class Eolink implements java.io.Serializable  {
 	// Конструктор
 	public Eolink(String reu, String kul, String nd, String kw, String lsk,
 			Integer entry, String usl, Integer idCnt, String guid, String un,
-			String cdExt, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, Eolink parEolink) {
+			String cdExt, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, Eolink parEolink, User user) {
 		super();
 		this.reu = reu;
 		this.kul = kul;
@@ -56,11 +57,12 @@ public class Eolink implements java.io.Serializable  {
 		this.objTpx = objTpx;
 		this.koObj = koObj;
 		this.parent = parEolink;
+		this.user = user;
 	}
 
 	// Конструктор
 	public Eolink(String guid, String un,
-			String cdExt, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj) {
+			String cdExt, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, User user) {
 		super();
 		this.guid = guid;
 		this.un = un;
@@ -69,6 +71,7 @@ public class Eolink implements java.io.Serializable  {
 		this.appTp = appTp;
 		this.objTpx = objTpx;
 		this.koObj = koObj;
+		this.user = user;
 	}
 
 
@@ -150,11 +153,21 @@ public class Eolink implements java.io.Serializable  {
 	@Column(name = "OGRN", updatable = true, nullable = true)
 	private String ogrn;
 
+	// Пользователь создавший запись
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_USER", referencedColumnName="ID")
+	private User user;
+
 	// Параметры
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID")
 	private List<EolinkPar> eolinkPar = new ArrayList<EolinkPar>(0);
 	
+	// Дочерние объекты
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
+	private List<Eolink> child = new ArrayList<Eolink>(0);
+
 	// Дочерние объекты, связанные через внешнюю таблицу
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="FK_CHILD", referencedColumnName="ID")
@@ -164,6 +177,14 @@ public class Eolink implements java.io.Serializable  {
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="FK_PARENT", referencedColumnName="ID")
 	private List<Eolink> parentLinked = new ArrayList<Eolink>(0);
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public String getUn() {
 		return un;
@@ -323,7 +344,6 @@ public class Eolink implements java.io.Serializable  {
 		return childLinked;
 	}
 
-
 	public void setChildLinked(List<Eolink> childLinked) {
 		this.childLinked = childLinked;
 	}
@@ -334,6 +354,14 @@ public class Eolink implements java.io.Serializable  {
 
 	public void setParentLinked(List<Eolink> parentLinked) {
 		this.parentLinked = parentLinked;
+	}
+
+	public List<Eolink> getChild() {
+		return child;
+	}
+
+	public void setChild(List<Eolink> child) {
+		this.child = child;
 	}
 
 	public boolean equals(Object o) {

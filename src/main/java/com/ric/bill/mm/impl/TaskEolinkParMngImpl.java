@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ric.bill.Utl;
 import com.ric.bill.dao.EolinkParDAO;
 import com.ric.bill.dao.TaskParDAO;
 import com.ric.bill.excp.WrongGetMethod;
@@ -140,7 +141,7 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public void acceptPar(Task task) {
-		log.info("Перемещение параметров по task.id={}", task.getId());
+		log.trace("Перемещение параметров по task.id={}", task.getId());
 		task.getTaskPar().stream().forEach(t-> {
 			EolinkPar ep = task.getEolink().getEolinkPar().stream().filter(e-> e.getPar().equals(t.getPar())).findAny().orElse(null);
 			if (ep==null) {
@@ -148,13 +149,28 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 				ep = new EolinkPar(task.getEolink(), t.getPar(), t.getN1(), t.getS1(), t.getD1());
 				em.persist(ep);
 			} else {
-				//Параметр есть, обновить
+				//Параметр есть, и изменился, обновить
 				if (ep.getPar().getTp().equals("NM")) {
-					ep.setN1(t.getN1());
+					Double eVal = Utl.nvl(ep.getN1(), 0D);
+					Double tVal = Utl.nvl(t.getN1(), 0D);
+					
+					if (!eVal.equals(tVal)) {
+						ep.setN1(t.getN1());
+					}
 				} else if (ep.getPar().getTp().equals("ST")) {
-					ep.setS1(t.getS1());
+					String eVal = Utl.nvl(ep.getS1(), "");
+					String tVal = Utl.nvl(t.getS1(), "");
+					
+					if (!eVal.equals(tVal)) {
+						ep.setS1(t.getS1());
+					}
 				} else if (ep.getPar().getTp().equals("DT")) {
-					ep.setD1(t.getD1());
+					Date eVal = Utl.nvl(ep.getD1(), null);
+					Date tVal = Utl.nvl(t.getD1(), null);
+					
+					if (!eVal.equals(tVal)) {
+						ep.setD1(t.getD1());
+					}
 				}
 			}
 			

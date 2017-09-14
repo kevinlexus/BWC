@@ -31,7 +31,7 @@ public class TaskDAOImpl implements TaskDAO {
      * Вернуть список необработанных заданий 
      */
     public List<Task> getAllUnprocessed() {
-			Query query =em.createQuery("select t from Task t left join t.depTask d where t.state in ('INS','ACK') and t.parentTask is null "
+			Query query =em.createQuery("select t from Task t left join t.depTask d where t.state in ('INS','ACK') and t.parent is null "
 					+ "and (t.depTask is null or t.depTask.state in ('ACP')) order by t.id");
 			return query.getResultList();
 	}
@@ -49,7 +49,7 @@ public class TaskDAOImpl implements TaskDAO {
     		if (addrTpx != null) {
     			// заполнен уточняющий тип
     			if (addrTp.equals("Документ")) {
-        			query = em.createQuery("from Task t where t.parentTask.id = :parentId and t.eolink.objTp.cd = :addrTp and t.eolink.objTpx.cd = :addrTpx");
+        			query = em.createQuery("from Task t where t.parent.id = :parentId and t.eolink.objTp.cd = :addrTp and t.eolink.objTpx.cd = :addrTpx");
         			query.setParameter("parentId", task.getId());
         			query.setParameter("addrTp", addrTp);
         			query.setParameter("addrTpx", addrTpx);
@@ -58,7 +58,7 @@ public class TaskDAOImpl implements TaskDAO {
     			}
     		} else {
     			// не заполнен уточняющий тип
-    			query =em.createQuery("from Task t where t.parentTask.id = :parentId and t.eolink.objTp.cd = :addrTp");
+    			query =em.createQuery("from Task t where t.parentid = :parentId and t.eolink.objTp.cd = :addrTp");
     			query.setParameter("parentId", task.getId());
     			query.setParameter("addrTp", addrTp);
     		}
@@ -68,8 +68,8 @@ public class TaskDAOImpl implements TaskDAO {
     			// заполнен уточняющий тип
     			if (addrTp.equals("Документ")) {
     				// TODO: Не проверял запрос! возможно не будет работать, доделать его!
-        			query =em.createQuery("from Task t where t.parentTask.id = :parentId and t.eolink.ko.addrTp.cd = :addrTp and t.eolink.ko.doc.tp = :addrTpx");
-        			query.setParameter("parentId", task.getParentTask().getId());
+        			query =em.createQuery("from Task t where t.parent.id = :parentId and t.eolink.ko.addrTp.cd = :addrTp and t.eolink.ko.doc.tp = :addrTpx");
+        			query.setParameter("parentId", task.getParent().getId());
         			query.setParameter("addrTp", addrTp);
         			query.setParameter("addrTpx", addrTpx);
     			} else {
@@ -78,8 +78,8 @@ public class TaskDAOImpl implements TaskDAO {
     			
     		} else {
     			// не заполнен уточняющий тип
-    			query =em.createQuery("from Task t where t.parentTask.id = :parentId and t.eolink.ko.addrTp.cd = :addrTp");
-    			query.setParameter("parentId", task.getParentTask().getId());
+    			query =em.createQuery("from Task t where t.parent.id = :parentId and t.eolink.ko.addrTp.cd = :addrTp");
+    			query.setParameter("parentId", task.getParent().getId());
     			query.setParameter("addrTp", addrTp);
     		}
     	}
@@ -102,7 +102,7 @@ public class TaskDAOImpl implements TaskDAO {
 	 * @param - tguid - транспортный GUID
 	 */
 	public Task getByTguid(Task task, String tguid) {
-		Query query =em.createQuery("from Task t where (t.parentTask.id = :parentId or t.id = :parentId) and t.tguid = :tguid");
+		Query query =em.createQuery("from Task t where (t.parent.id = :parentId or t.id = :parentId) and t.tguid = :tguid");
 		query.setParameter("parentId", task.getId());
 		query.setParameter("tguid", tguid);
 		
@@ -121,7 +121,7 @@ public class TaskDAOImpl implements TaskDAO {
 	 * @return - наличие ошибки
 	 */
 	public Boolean getChildAnyErr(Task task) {
-		Query query =em.createQuery("from Task t where t.parentTask.id = :parentId and t.state = 'ERR' ");
+		Query query =em.createQuery("from Task t where t.parent.id = :parentId and t.state = 'ERR' ");
 		query.setParameter("parentId", task.getId());
 		List<Task> lst;
 		try {
@@ -138,9 +138,9 @@ public class TaskDAOImpl implements TaskDAO {
 	 * @param task - родительское задание
 	 * @return - дочерние задания
 	 */
-	public List<Task> getChildTask(Task task) {
-		Query query =em.createQuery("from Task t where t.parentTask.id = :parentId");
+/*	public List<Task> getChildTask(Task task) {
+		Query query =em.createQuery("from Task t where t.parent.id = :parentId");
 		query.setParameter("parentId", task.getId());
 		return query.getResultList();
-	}
+	}*/
 }

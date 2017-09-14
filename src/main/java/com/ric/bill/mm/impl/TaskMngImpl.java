@@ -51,7 +51,7 @@ public class TaskMngImpl implements TaskMng {
     public void clearAllResult(Task task) {
     	Task foundTask = em.find(Task.class, task.getId());
     	setResult(foundTask, null);
-    	taskDao.getChildTask(foundTask).stream().forEach(t-> {
+    	foundTask.getChild().stream().forEach(t-> {
     		setResult(t, null);
     	});
 	}
