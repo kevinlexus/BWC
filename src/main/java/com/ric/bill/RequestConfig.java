@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -55,10 +56,12 @@ public class RequestConfig implements Serializable {
 		
     @PersistenceContext
     private EntityManager em;
+	@Autowired
+	private Config config;
 	
 	/**
 	 * инициализация
-	 * @param config
+	 * @param config - Зачем здесь config во входящих параметрах? убрать! TODO
 	 * @param chng - объект перерасчета
 	 * @param dist - признак распределения
 	 * @param tp - тип операции
@@ -67,7 +70,7 @@ public class RequestConfig implements Serializable {
 	 * @param dt1 - заданная принудительно начальная дата начисления
 	 * @param dt2 - заданная принудительно конечная дата начисления
 	 */
-	public void setUp(Config config, String dist, String tp, Integer chngId, int rqn, Date genDt1, Date genDt2) {
+	public void setUp(/*Config config, */String dist, String tp, Integer chngId, int rqn, Date genDt1, Date genDt2) {
 		// установить текущий номер запроса
 		setRqn(rqn);
 		// основные настройки

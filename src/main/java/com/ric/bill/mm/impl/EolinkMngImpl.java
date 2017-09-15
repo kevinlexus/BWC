@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ric.bill.dao.EolinkDAO;
 import com.ric.bill.dao.EolinkToEolinkDAO;
@@ -56,6 +58,18 @@ public class EolinkMngImpl implements EolinkMng {
 	public Eolink getEolinkByReuKulNdTp(String reu, String kul, String nd, 
 			String kw, String entry, String tp) {
 		return eolinkDao.getEolinkByReuKulNdTp(reu, kul, nd, kw, entry, tp);
+	}
+	
+	
+	/* Поменять статус "актив" всех дочерних объектов по типу
+	 * @param - eolink - объект
+	 * @param - tp - тип объекта
+	 */
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor=Exception.class) //rollbackFor=Exception.class - означает, что все исключения, выбрасываемые данным методом, должны приводить к откату транзакции. 	
+	public void setChildActive(Eolink eolink, String tp, boolean isActive) {
+		eolink.getChild().stream().forEach(t-> {
+			t.setIsInactive(!isActive);
+		});
 	}
 	
 }

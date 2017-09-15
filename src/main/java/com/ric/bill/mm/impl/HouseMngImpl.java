@@ -30,8 +30,8 @@ public class HouseMngImpl implements HouseMng {
      * @param - areaId - Id города
      * @param - dt1 - дата выборки
      */
-    public synchronized List<House> findAll2(Integer houseId, Integer areaId, Date dt1) {
-		return hDao.findAll2(houseId, areaId, dt1);
+    public synchronized List<House> findAll2(Integer houseId, Integer areaId, Integer tempLskId, Date dt1) {
+		return hDao.findAll2(houseId, areaId, tempLskId, dt1);
 	}
 
     /**

@@ -46,7 +46,15 @@ public class HouseDAOImpl implements HouseDAO {
 
 	}
 
-	public List<House> findAll2(Integer houseId, Integer areaId, Date dt1) {
+	/**
+	 * Поиск домов по условию
+	 * @param houseId - наличию ID дома
+	 * @param areaId - наличию ID области
+	 * @param tempLskId - наличию ID списка лиц.счетов
+	 * @param dt1 - даты расчета (не используется при списке лиц.счетов)
+	 * @return
+	 */
+	public List<House> findAll2(Integer houseId, Integer areaId, Integer tempLskId, Date dt1) {
 		@SqlResultSetMapping(name= STATEMENT_SQLMAP, classes = { //эту часть кода можно закинуть в любое место
 		        @ConstructorResult(targetClass = ResultSet.class,
 		            columns = {
@@ -69,7 +77,7 @@ public class HouseDAOImpl implements HouseDAO {
 						   "and h.fk_street = s.id and s.fk_area = ? "+
 						   "and k.fk_uk = u.id "+
 						   "order by h.id ",  STATEMENT_SQLMAP);
-				q.setParameter(1, dt1/*config.getCurDt1()*/, TemporalType.DATE);
+				q.setParameter(1, dt1, TemporalType.DATE);
 				q.setParameter(2, areaId);
 			} else if (houseId != null) {
 				// по дому
@@ -81,8 +89,18 @@ public class HouseDAOImpl implements HouseDAO {
 						   "and o.parent_id=u.id and h.id=? "+
 						   "and k.fk_uk = u.id "+
 						   "order by h.id ",  STATEMENT_SQLMAP);
-				q.setParameter(1, dt1/*config.getCurDt1()*/, TemporalType.DATE);
+				q.setParameter(1, dt1, TemporalType.DATE);
 				q.setParameter(2, houseId);
+			} else if (tempLskId != null) {
+				// по списку лиц.счетов, без контроля даты!!!
+				q = em.createNativeQuery("select distinct h.id "+
+						   "from ar.house h, ar.kart k, ar.kw kw, bs.org o, bs.org u, fn.temp_lsk tm  "+
+						   "where k.fk_kw = kw.id and k.lsk=tm.lsk and tm.fk_id=? "+
+						   "and h.id = kw.fk_house "+
+						   "and o.parent_id=u.id "+
+						   "and k.fk_uk = u.id "+
+						   "order by h.id ",  STATEMENT_SQLMAP);
+				q.setParameter(1, tempLskId);
 			} else {
 				// весь фонд
 				q = em.createNativeQuery("select distinct h.id "+
@@ -93,7 +111,7 @@ public class HouseDAOImpl implements HouseDAO {
 						   "and k.fk_uk = u.id "+
 						   "and ? between k.dt1 and k.dt2 "+
 						   "order by h.id ",  STATEMENT_SQLMAP);
-				q.setParameter(1, dt1/*config.getCurDt1()*/, TemporalType.DATE);
+				q.setParameter(1, dt1, TemporalType.DATE);
 			}
 			
 			List<ResultSet> lst = q.getResultList();

@@ -172,7 +172,7 @@ public class PayordMngImpl implements PayordMng {
 		Date dt1 = parMng.getDate(-1, obj, "Начало расчетного периода");
 		Date dt2 = parMng.getDate(-1, obj, "Конец расчетного периода");
 		RequestConfig reqConfig = ctx.getBean(RequestConfig.class);
-		reqConfig.setUp(config, "0", "0", null, -1, dt1, dt2);
+		reqConfig.setUp(/*config, */"0", "0", null, -1, dt1, dt2);
 
 		//PayordGrp grp = em.find(PayordGrp.class, p.getPayordGrpFk());
 		//Lst period =  em.find(Lst.class, p.getPeriodTpFk());
@@ -534,7 +534,7 @@ public class PayordMngImpl implements PayordMng {
 		Date dt1 = parMng.getDate(-1, obj, "Начало расчетного периода");
 		Date dt2 = parMng.getDate(-1, obj, "Конец расчетного периода");
 		RequestConfig reqConfig = ctx.getBean(RequestConfig.class);
-		reqConfig.setUp(config, "0", "0", null, -1, dt1, dt2);
+		reqConfig.setUp(/*config, */"0", "0", null, -1, dt1, dt2);
 		
 		// Даты текущего периода
 		Date curDt1 = reqConfig.getCurDt1(); 

@@ -16,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.ric.bill.model.bs.AddrTp;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.oralv.Ko;
@@ -178,6 +180,10 @@ public class Eolink implements java.io.Serializable  {
 	@JoinColumn(name="FK_PARENT", referencedColumnName="ID")
 	private List<Eolink> parentLinked = new ArrayList<Eolink>(0);
 
+	@Type(type= "org.hibernate.type.NumericBooleanType")
+	@Column(name = "INACTIVE", nullable = true)
+	private Boolean isInactive;
+	
 	public User getUser() {
 		return user;
 	}
@@ -362,6 +368,14 @@ public class Eolink implements java.io.Serializable  {
 
 	public void setChild(List<Eolink> child) {
 		this.child = child;
+	}
+
+	public Boolean getIsInactive() {
+		return isInactive;
+	}
+
+	public void setIsInactive(Boolean isInactive) {
+		this.isInactive = isInactive;
 	}
 
 	public boolean equals(Object o) {

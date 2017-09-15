@@ -37,7 +37,15 @@ public class KartDAOImpl implements KartDAO {
     	
     }
     
-	public List<Kart> findAll(Integer houseId, Integer areaId, Date dt1) {
+    /**
+     * Получить список лиц.счетов
+     * @param houseId
+     * @param areaId
+     * @param tempLskId
+     * @param dt1
+     * @return
+     */
+	public List<Kart> findAll(Integer houseId, Integer areaId, Integer tempLskId, Date dt1) {
 		@SqlResultSetMapping(name= STATEMENT_SQLMAP, classes = { //эту часть кода можно закинуть в любое место
 		        @ConstructorResult(targetClass = ResultSetKlsk.class,
 		            columns = {
@@ -80,6 +88,12 @@ public class KartDAOImpl implements KartDAO {
 				q.setParameter(1, dt1,//config.getCurDt1(), 
 						TemporalType.DATE);
 				q.setParameter(2, houseId);
+			} else if (tempLskId != null) {
+				// по списку лиц.счетов
+				q = em.createNativeQuery("select t.lsk "+
+						   "from fn.temp_lsk t where t.fk_id=?"+
+						   "order by t.lsk ",  STATEMENT_SQLMAP);
+				q.setParameter(1, tempLskId);
 			} else {
 				// весь фонд
 				q = em.createNativeQuery("select distinct k.lsk "+
