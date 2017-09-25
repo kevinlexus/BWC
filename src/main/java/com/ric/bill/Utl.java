@@ -256,13 +256,25 @@ public class Utl {
 	}
 
 	/**
-	 * Вернуть строку по формату
+	 * Вернуть дату в виде строки по формату
 	 * @param dt
 	 * @return
 	 */
 	public static String getStrFromDate(Date dt) {
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+		String str = formatter.format(dt);
+		return str;
+	}
+
+	/**
+	 * Вернуть дату в виде строки по определенному формату
+	 * @param dt
+	 * @return
+	 */
+	public static String getStrFromDate(Date dt, String format) {
+		
+		SimpleDateFormat formatter = new SimpleDateFormat(format);
 		String str = formatter.format(dt);
 		return str;
 	}

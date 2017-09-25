@@ -18,6 +18,8 @@ import com.ric.bill.excp.WrongGetMethod;
 import com.ric.bill.mm.ParMng;
 import com.ric.bill.mm.TaskParMng;
 import com.ric.bill.model.bs.Par;
+import com.ric.bill.model.exs.Eolink;
+import com.ric.bill.model.exs.EolinkPar;
 import com.ric.bill.model.exs.Task;
 import com.ric.bill.model.exs.TaskPar;
 
@@ -38,6 +40,73 @@ public class TaskParMngImpl implements TaskParMng {
 	private TaskParDAO taskParDao;
 
 	/**
+	 * получить значение параметра типа Boolean связанного объекта по CD свойства
+	 * @param eolink - связанный объект
+	 * @param parCd - CD параметра
+	 * @throws WrongGetMethod 
+	 */
+	public Boolean getBool(Task task, String parCd) throws WrongGetMethod {
+		Par par = parMng.getByCD(-1, parCd);
+		if (par == null){
+			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
+		} else if (par.getTp().equals("BL") && par.getDataTp().equals("SI")) {
+			TaskPar ap = taskParDao.getTaskPar(task, parCd);
+			if (ap!= null) {
+				if (ap.getN1() != null) {
+					if (ap.getN1() == 1) {
+						return true;
+					} else {
+						return false;
+					}
+				} else {
+					return null;
+				}
+			}
+		} else {
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
+		}
+		return null;
+	}
+	
+	/**
+	 * установить значение параметра типа Boolean связанного объекта по CD свойства
+	 * в случае отсутствия - создать
+	 * @param eolink - связанный объект
+	 * @param parCd - CD параметра
+	 * @param val - значение
+	 * @throws WrongGetMethod 
+	 */
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	public void setBool(Task task, String parCd, Boolean val) throws WrongGetMethod {
+		Par par = parMng.getByCD(-1, parCd);
+		if (par == null){
+			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
+		} else if (par.getTp().equals("BL") && par.getDataTp().equals("SI")) {
+			TaskPar ap = taskParDao.getTaskPar(task, parCd);
+			Double val1 = null;
+			if (val != null) {
+				if (val) {
+					val1 = 1D;
+				} else {
+					val1 = 0D;
+				}
+			}
+			
+			if (ap!= null) {
+				// сохранить значение
+				ap.setN1(val1);
+			} else {
+				// создать значение
+				ap = new TaskPar(task, par, val1, null, null);
+				em.persist(ap);
+			}
+		} else {
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
+		}
+	}
+
+	
+	/**
 	 * получить значение параметра типа Double задания по CD свойства
 	 * @param task - задание
 	 * @param parCd - CD параметра
@@ -47,13 +116,13 @@ public class TaskParMngImpl implements TaskParMng {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
 			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
-		} else if (par.getTp().equals("NM")) {
+		} else if (par.getTp().equals("NM") && par.getDataTp().equals("SI")) {
 			TaskPar ap = taskParDao.getTaskPar(task, parCd);
 			if (ap!= null) {
 				return ap.getN1();
 			}
 		} else {
-			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
 		}
 		return null;
 	}
@@ -70,7 +139,7 @@ public class TaskParMngImpl implements TaskParMng {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
 			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
-		} else if (par.getTp().equals("NM")) {
+		} else if (par.getTp().equals("NM") && par.getDataTp().equals("SI")) {
 			TaskPar ap = taskParDao.getTaskPar(task, parCd);
 			if (ap!= null) {
 				// сохранить значение
@@ -81,7 +150,7 @@ public class TaskParMngImpl implements TaskParMng {
 				em.persist(ap);
 			}
 		} else {
-			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
 		}
 		return null;
 	}
@@ -96,13 +165,13 @@ public class TaskParMngImpl implements TaskParMng {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
 			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
-		} else if (par.getTp().equals("ST")) {
+		} else if (par.getTp().equals("ST") && par.getDataTp().equals("SI")) {
 			TaskPar ap = taskParDao.getTaskPar(task, parCd);
 			if (ap!= null) {
 				return ap.getS1();
 			}
 		} else {
-			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
 		}
 		return null;
 	}
@@ -119,7 +188,7 @@ public class TaskParMngImpl implements TaskParMng {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
 			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
-		} else if (par.getTp().equals("ST")) {
+		} else if (par.getTp().equals("ST") && par.getDataTp().equals("SI")) {
 			TaskPar ap = taskParDao.getTaskPar(task, parCd);
 			if (ap!= null) {
 				// сохранить значение
@@ -130,7 +199,7 @@ public class TaskParMngImpl implements TaskParMng {
 				em.persist(ap);
 			}
 		} else {
-			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
 		}
 		return null;
 	}
@@ -145,13 +214,13 @@ public class TaskParMngImpl implements TaskParMng {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
 			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
-		} else if (par.getTp().equals("DT")) {
+		} else if (par.getTp().equals("DT") && par.getDataTp().equals("SI")) {
 			TaskPar ap = taskParDao.getTaskPar(task, parCd);
 			if (ap!= null) {
 				return ap.getD1();
 			}
 		} else {
-			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
 		}
 		return null;
 	}
@@ -168,7 +237,7 @@ public class TaskParMngImpl implements TaskParMng {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
 			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
-		} else if (par.getTp().equals("DT")) {
+		} else if (par.getTp().equals("DT") && par.getDataTp().equals("SI")) {
 			TaskPar ap = taskParDao.getTaskPar(task, parCd);
 			if (ap!= null) {
 				// сохранить значение
@@ -179,7 +248,7 @@ public class TaskParMngImpl implements TaskParMng {
 				em.persist(ap);
 			}
 		} else {
-			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
 		}
 		return null;
 	}

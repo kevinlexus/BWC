@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ric.bill.Config;
 import com.ric.bill.dao.AreaDAO;
 import com.ric.bill.dao.KoDAO;
 import com.ric.bill.dao.OrgDAO;
@@ -17,6 +16,7 @@ import com.ric.bill.dto.DTOBuilder;
 import com.ric.bill.dto.KoDTO;
 import com.ric.bill.mm.SecMng;
 import com.ric.bill.model.sec.Vsec;
+import com.ric.bill.Config;
 
 @Service
 @Slf4j

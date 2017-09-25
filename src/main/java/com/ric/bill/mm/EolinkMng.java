@@ -10,6 +10,6 @@ public interface EolinkMng {
 	public List<Eolink> getLinkedEolink(Eolink eolink);
 	public Eolink getEolinkByReuKulNdTp(String reu, String kul, String nd, 
 			String kw, String entry, String tp);
-	public void setChildActive(Eolink eolink, String tp, boolean isActive);
+	public void setChildActive(Eolink eolink, String tp, Integer status);
 
 }

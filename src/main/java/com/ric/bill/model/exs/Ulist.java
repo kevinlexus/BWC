@@ -47,7 +47,7 @@ public class Ulist implements java.io.Serializable  {
 		this.actual = actual;
 		this.ulistTp = ulistTp;
 		this.npp = npp;
-		this.value = value;
+		this.s1 = value;
 		this.parentUlist = parentUlist;
 		this.refCode = refCode;
 		this.refGuid = refGuid;
@@ -64,7 +64,7 @@ public class Ulist implements java.io.Serializable  {
 	
 	// Значение элемента
 	@Column(name = "S1", updatable = true, nullable = true)
-	private String value;
+	private String s1;
 	
 	// ИЗ ГИС ЖКХ: GUID элемента
 	@Column(name = "GUID", updatable = true, nullable = true)
@@ -212,11 +212,11 @@ public class Ulist implements java.io.Serializable  {
 	}
 
 	public String getValue() {
-		return value;
+		return s1;
 	}
 
 	public void setValue(String value) {
-		this.value = value;
+		this.s1 = value;
 	}
 
 	public String getRefCode() {

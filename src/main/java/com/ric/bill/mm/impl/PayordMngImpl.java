@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ric.bill.Config;
 import com.ric.bill.RequestConfig;
 import com.ric.bill.Utl;
 import com.ric.bill.dao.PaymentDetDAO;
@@ -52,6 +51,7 @@ import com.ric.bill.model.fn.PayordFlow;
 import com.ric.bill.model.fn.PayordGrp;
 import com.ric.bill.model.oralv.Ko;
 import com.ric.bill.model.tr.Serv;
+import com.ric.bill.Config;
 
 @Service
 @Slf4j

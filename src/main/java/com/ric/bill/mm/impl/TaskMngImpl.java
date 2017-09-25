@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ric.bill.Utl;
 import com.ric.bill.dao.TaskDAO;
 import com.ric.bill.mm.TaskMng;
 import com.ric.bill.model.exs.Eolink;
@@ -61,15 +62,20 @@ public class TaskMngImpl implements TaskMng {
 	 * @param eolink - Объект
 	 * @param guid - GUID, полученный от ГИС
 	 * @param un - уникальный номер, полученный от ГИС
+	 * @param status - статус
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public void setEolinkIdf(Eolink eo, String guid, String un) {
+	public void setEolinkIdf(Eolink eo, String guid, String un, Integer status) {
 		if (eo.getGuid() == null) {
 			eo.setGuid(guid);
 		}
 		if (eo.getUn() == null) {
 			eo.setUn(un);
 		}
+		if (!eo.getStatus().equals(status) ) {
+			eo.setStatus(status);
+		}
+
 	}
 	
 	/**

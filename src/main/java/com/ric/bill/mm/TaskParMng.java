@@ -7,6 +7,8 @@ import com.ric.bill.model.exs.Task;
 
 public interface TaskParMng {
 
+	public Boolean getBool(Task task, String parCd) throws WrongGetMethod;
+	public void setBool(Task task, String parCd, Boolean val) throws WrongGetMethod;
 	public Double getDbl(Task task, String parCd) throws WrongGetMethod;
 	public Double setDbl(Task task, String parCd, Double val) throws WrongGetMethod;
 	public String getStr(Task task, String parCd) throws WrongGetMethod;

@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -74,6 +76,32 @@ public class Task implements java.io.Serializable  {
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
 	private List<Task> child = new ArrayList<Task>(0);
 	
+	// Дочерние задания ссылаются на данное
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="FK_PARENT", referencedColumnName="ID")
+	private List<TaskToTask> inside = new ArrayList<TaskToTask>(0);
+
+	// Данное задание ссылается на родительские TASKXTASK
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="FK_CHILD", referencedColumnName="ID")
+	private List<TaskToTask> outside = new ArrayList<TaskToTask>(0);
+	
+	// Дочерние задания, связанные через TASKXTASK - короче это всё работает, но как обработать тип связи?? TASKXTASK.FK_TP 
+	/*@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "EXS.TASKXTASK", joinColumns = {
+			@JoinColumn(name = "FK_PARENT", nullable = false, updatable = false) },
+			inverseJoinColumns = { @JoinColumn(name = "FK_CHILD",
+					nullable = false, updatable = false) })
+	private List<Task> childLinked = new ArrayList<Task>(0);*/
+	
+	// Родительские задания, связанные через TASKXTASK
+	/*@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "EXS.TASKXTASK", joinColumns = {
+			@JoinColumn(name = "FK_CHILD", nullable = false, updatable = false) },
+			inverseJoinColumns = { @JoinColumn(name = "FK_PARENT",
+					nullable = false, updatable = false) })
+	private List<Task> parentLinked = new ArrayList<Task>(0);*/
+	
 	// Ведущее задание, после выполнения которого, в статус "ACP", начнёт выполняться текущее
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="DEP_ID", referencedColumnName="ID")
@@ -124,6 +152,10 @@ public class Task implements java.io.Serializable  {
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="FK_TASK", referencedColumnName="ID")
 	private List<TaskPar> taskPar = new ArrayList<TaskPar>(0);
+
+	// Порядковый номер
+	@Column(name = "npp")
+	private String npp;
 	
 	public Date getUpdDt() {
 		return updDt;
@@ -252,6 +284,31 @@ public class Task implements java.io.Serializable  {
 	public void setChild(List<Task> child) {
 		this.child = child;
 	}
+
+	public List<TaskToTask> getInside() {
+		return inside;
+	}
+
+	public void setInside(List<TaskToTask> inside) {
+		this.inside = inside;
+	}
+
+	public List<TaskToTask> getOutside() {
+		return outside;
+	}
+
+	public void setOutside(List<TaskToTask> outside) {
+		this.outside = outside;
+	}
+
+	public String getNpp() {
+		return npp;
+	}
+
+	public void setNpp(String npp) {
+		this.npp = npp;
+	}
+
 
 	public boolean equals(Object o) {
 	    if (this == o) return true;

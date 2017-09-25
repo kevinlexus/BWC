@@ -66,9 +66,9 @@ public class EolinkMngImpl implements EolinkMng {
 	 * @param - tp - тип объекта
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor=Exception.class) //rollbackFor=Exception.class - означает, что все исключения, выбрасываемые данным методом, должны приводить к откату транзакции. 	
-	public void setChildActive(Eolink eolink, String tp, boolean isActive) {
+	public void setChildActive(Eolink eolink, String tp, Integer status) {
 		eolink.getChild().stream().forEach(t-> {
-			t.setIsInactive(!isActive);
+			t.setStatus(status);
 		});
 	}
 	

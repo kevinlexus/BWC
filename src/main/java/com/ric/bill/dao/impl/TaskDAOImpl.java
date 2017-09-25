@@ -58,7 +58,7 @@ public class TaskDAOImpl implements TaskDAO {
     			}
     		} else {
     			// не заполнен уточняющий тип
-    			query =em.createQuery("from Task t where t.parentid = :parentId and t.eolink.objTp.cd = :addrTp");
+    			query =em.createQuery("from Task t where t.parent.id = :parentId and t.eolink.objTp.cd = :addrTp");
     			query.setParameter("parentId", task.getId());
     			query.setParameter("addrTp", addrTp);
     		}

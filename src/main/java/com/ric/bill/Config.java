@@ -1,5 +1,7 @@
 package com.ric.bill;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -64,32 +66,56 @@ public class Config {
 	String periodBack;
 	// Тип приложения, по умолчанию - 0
 	Integer appTp = 0;
+	// Путь и наименование файла, для отправки в квартплату показаний по счетчикам 
+	String pathCounter ="C:\\temp\\test1.txt"; 
+
 	// Запретить начислять по лиц.счетам, если формируется глобальное начисление
 	Boolean isRestrictChrgLsk = false;
-	
 	// загрузить свойства
 	private void loadProp() {
+		Boolean isLoaded = false;
 		Properties prop = new Properties();
-		InputStream input = null;
-		String filename = "config.properties";
-		input = Config.class.getClassLoader().getResourceAsStream(filename);
-		if(input==null){
-	            log.info("ERROR! Unable to find properties file:{}", filename);
-		    return;
+		FileInputStream file = null;
+		String filename = ".\\config.properties";
+		try {
+			file = new FileInputStream(filename);
+			// загрузить свойства из файла
+			prop.load(file);
+			isLoaded = true;
+		} catch (FileNotFoundException e1) {
+            log.error("ERROR! Loading from file: Unable to find properties file:{}", filename);
+			//e1.printStackTrace();
+		} catch (IOException e) {
+            log.error("ERROR! Loading from file: Unable to load properties from file:{}", filename);
+			//e.printStackTrace();
 		}
 		
-		try {
-			// загрузить свойства из файла
-			prop.load(input);
+		if (!isLoaded) {
+			InputStream input = null;
+			filename = "config.properties";
+			try {
+				input = Config.class.getClassLoader().getResourceAsStream(filename);
+				// загрузить свойства из ресурса
+				prop.load(input);
+				isLoaded = true;
+			} catch (IOException e) {
+	            log.error("ERROR! Loading from stream: Unable to load properties from file:{}", filename);
+			}
 
+		}
+		
+		if (isLoaded) {
 			// получить свойства, сохранить, распечатать
 			String appTp = prop.getProperty("appTp");
-			log.info("Properties param appTp={}", appTp);
+			String pathCounter = prop.getProperty("pathCounter");
+			log.info("********* Properties *********");
+			log.info("param appTp={}", appTp);
+			log.info("param pathCounter={}", pathCounter);
+			log.info("********* Properties *********");
 			setAppTp(Integer.valueOf(appTp));
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			setPathCounter(pathCounter);
+		} else {
+			log.error("Properties file is not loaded", pathCounter);
 		}
 		
 	}
@@ -97,7 +123,13 @@ public class Config {
 	// конструктор
 	public Config() {
 		// Загрузить параметры приложения
+		System.out.println("");
+		System.out.println("");
+		log.info("Start loading properties");
 		loadProp();
+		log.info("End loading properties");
+		System.out.println("");
+		System.out.println("");
 		
 		TimeZone.setDefault(TimeZone.getTimeZone("GMT+7"));
 		//calendar = new GregorianCalendar(1940, Calendar.JANUARY, 1);
@@ -130,13 +162,13 @@ public class Config {
 			log.error("Ошибка добавления path в Classpath");
 		}
 		// Распечатать Classpath
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
+/*		ClassLoader cl = ClassLoader.getSystemClassLoader();
         URL[] urls = ((URLClassLoader)cl).getURLs();
     	log.info("**** Check Classpath: START ****");
         for(URL url: urls){
         	log.info(url.getFile());
         }
-    	log.info("**** Check Classpath: END****");
+    	log.info("**** Check Classpath: END****");*/
 		
 		// Объект приложения, получить даты текущего периода
     	if (getAppTp()==0) { 
@@ -243,6 +275,14 @@ public class Config {
 
 	public void setAppTp(Integer appTp) {
 		this.appTp = appTp;
+	}
+
+	public String getPathCounter() {
+		return pathCounter;
+	}
+
+	public void setPathCounter(String pathCounter) {
+		this.pathCounter = pathCounter;
 	}
 
 	public Boolean getIsRestrictChrgLsk() {

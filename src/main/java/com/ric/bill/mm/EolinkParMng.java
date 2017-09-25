@@ -7,6 +7,8 @@ import com.ric.bill.model.exs.Eolink;
 
 public interface EolinkParMng {
 
+	public Boolean getBool(Eolink eolink, String parCd) throws WrongGetMethod;
+	public void setBool(Eolink eolink, String parCd, Boolean val) throws WrongGetMethod;
 	public Double getDbl(Eolink eolink, String parCd) throws WrongGetMethod;
 	public void setDbl(Eolink eolink, String parCd, Double val) throws WrongGetMethod;
 	public String getStr(Eolink eolink, String parCd) throws WrongGetMethod;

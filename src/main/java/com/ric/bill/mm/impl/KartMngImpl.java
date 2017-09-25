@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.ric.bill.Calc;
 import com.ric.bill.CntPers;
-import com.ric.bill.Config;
 import com.ric.bill.RegContains;
 import com.ric.bill.Standart;
 import com.ric.bill.TarifContains;
@@ -29,6 +28,7 @@ import com.ric.bill.model.ps.Pers;
 import com.ric.bill.model.ps.Reg;
 import com.ric.bill.model.ps.Registrable;
 import com.ric.bill.model.tr.Serv;
+import com.ric.bill.Config;
 
 
 @Service

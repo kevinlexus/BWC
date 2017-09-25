@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.ric.bill.model.fn.Chng;
+import com.ric.bill.Config;
 
 /**
  * Конфиг запроса

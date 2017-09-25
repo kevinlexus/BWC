@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -111,10 +113,14 @@ public class Eolink implements java.io.Serializable  {
 	@Column(name = "USL", updatable = true, nullable = true)
 	private String usl;
 	
-	// Групповой счетчик в системе "Квартплата" (для группового счетчика, из таблицы)
+	// ID Группового счетчика в системе "Квартплата" из таблицы a_flow.n1
 	@Column(name = "ID_CNT", updatable = true, nullable = true)
 	private Integer idCnt;
 	
+	// ID Группы счетчика в системе "Квартплата" из таблицы a_flow.n2
+	@Column(name = "ID_GRP", updatable = true, nullable = true)
+	private Integer idGrp;
+
 	// GUID объекта во внешней системе
 	@Column(name = "GUID", updatable = true, nullable = true)
 	private String guid;
@@ -170,19 +176,35 @@ public class Eolink implements java.io.Serializable  {
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
 	private List<Eolink> child = new ArrayList<Eolink>(0);
 
-	// Дочерние объекты, связанные через внешнюю таблицу
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
-	@JoinColumn(name="FK_CHILD", referencedColumnName="ID")
+	// Дочерние объекты, связанные через EOLXEOL	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "EXS.EOLXEOL", joinColumns = {
+			@JoinColumn(name = "FK_PARENT", nullable = false, updatable = false) },
+			inverseJoinColumns = { @JoinColumn(name = "FK_CHILD",
+					nullable = false, updatable = false) })
 	private List<Eolink> childLinked = new ArrayList<Eolink>(0);
-
-	// Родительские объекты, связанные через внешнюю таблицу
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
-	@JoinColumn(name="FK_PARENT", referencedColumnName="ID")
+	
+	// Родительские объекты, связанные через EOLXEOL	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "EXS.EOLXEOL", joinColumns = {
+			@JoinColumn(name = "FK_CHILD", nullable = false, updatable = false) },
+			inverseJoinColumns = { @JoinColumn(name = "FK_PARENT",
+					nullable = false, updatable = false) })
 	private List<Eolink> parentLinked = new ArrayList<Eolink>(0);
 
-	@Type(type= "org.hibernate.type.NumericBooleanType")
-	@Column(name = "INACTIVE", nullable = true)
-	private Boolean isInactive;
+	// Дочерние объекты, связанные через внешнюю таблицу
+/*	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="FK_PARENT", referencedColumnName="ID")
+	private List<EolinkToEolink> childLinked = new ArrayList<EolinkToEolink>(0);
+*/
+	// Родительские объекты, связанные через внешнюю таблицу
+/*	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="FK_CHILD", referencedColumnName="ID")
+	private List<EolinkToEolink> parentLinked = new ArrayList<EolinkToEolink>(0);
+*/
+	// Статус, 0 - архивная запись, 1-активная запись
+	@Column(name = "STATUS", updatable = true, nullable = true)
+	private Integer status;
 	
 	public User getUser() {
 		return user;
@@ -370,12 +392,20 @@ public class Eolink implements java.io.Serializable  {
 		this.child = child;
 	}
 
-	public Boolean getIsInactive() {
-		return isInactive;
+	public Integer getStatus() {
+		return status;
 	}
 
-	public void setIsInactive(Boolean isInactive) {
-		this.isInactive = isInactive;
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Integer getIdGrp() {
+		return idGrp;
+	}
+
+	public void setIdGrp(Integer idGrp) {
+		this.idGrp = idGrp;
 	}
 
 	public boolean equals(Object o) {

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ric.bill.Config;
 import com.ric.bill.MeterContains;
 import com.ric.bill.SumNodeVol;
 import com.ric.bill.Utl;
@@ -32,6 +31,7 @@ import com.ric.bill.model.mt.MeterLog;
 import com.ric.bill.model.mt.MeterLogGraph;
 import com.ric.bill.model.mt.Vol;
 import com.ric.bill.model.tr.Serv;
+import com.ric.bill.Config;
 
 //включил кэш - стало хуже, по скорости - 61 сек.
 @Service

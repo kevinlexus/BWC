@@ -37,6 +37,74 @@ public class EolinkParMngImpl implements EolinkParMng {
 	@Autowired
 	private EolinkParDAO eolinkParDao;
 
+	
+	
+	/**
+	 * получить значение параметра типа Boolean связанного объекта по CD свойства
+	 * @param eolink - связанный объект
+	 * @param parCd - CD параметра
+	 * @throws WrongGetMethod 
+	 */
+	public Boolean getBool(Eolink eolink, String parCd) throws WrongGetMethod {
+		Par par = parMng.getByCD(-1, parCd);
+		if (par == null){
+			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
+		} else if (par.getTp().equals("BL") && par.getDataTp().equals("SI")) {
+			EolinkPar ap = eolinkParDao.getEolinkPar(eolink, parCd);
+			if (ap!= null) {
+				if (ap.getN1() != null) {
+					if (ap.getN1() == 1) {
+						return true;
+					} else {
+						return false;
+					}
+				} else {
+					return null;
+				}
+			}
+		} else {
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
+		}
+		return null;
+	}
+	
+	/**
+	 * установить значение параметра типа Boolean связанного объекта по CD свойства
+	 * в случае отсутствия - создать
+	 * @param eolink - связанный объект
+	 * @param parCd - CD параметра
+	 * @param val - значение
+	 * @throws WrongGetMethod 
+	 */
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	public void setBool(Eolink eolink, String parCd, Boolean val) throws WrongGetMethod {
+		Par par = parMng.getByCD(-1, parCd);
+		if (par == null){
+			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
+		} else if (par.getTp().equals("BL") && par.getDataTp().equals("SI")) {
+			EolinkPar ap = eolinkParDao.getEolinkPar(eolink, parCd);
+			Double val1 = null;
+			if (val != null) {
+				if (val) {
+					val1 = 1D;
+				} else {
+					val1 = 0D;
+				}
+			}
+			
+			if (ap!= null) {
+				// сохранить значение
+				ap.setN1(val1);
+			} else {
+				// создать значение
+				ap = new EolinkPar(eolink, par, val1, null, null);
+				em.persist(ap);
+			}
+		} else {
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
+		}
+	}
+	
 	/**
 	 * получить значение параметра типа Double связанного объекта по CD свойства
 	 * @param eolink - связанный объект
@@ -47,13 +115,13 @@ public class EolinkParMngImpl implements EolinkParMng {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
 			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
-		} else if (par.getTp().equals("NM")) {
+		} else if (par.getTp().equals("NM") && par.getDataTp().equals("SI")) {
 			EolinkPar ap = eolinkParDao.getEolinkPar(eolink, parCd);
 			if (ap!= null) {
 				return ap.getN1();
 			}
 		} else {
-			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
 		}
 		return null;
 	}
@@ -71,10 +139,10 @@ public class EolinkParMngImpl implements EolinkParMng {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
 			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
-		} else if (par.getTp().equals("NM")) {
+		} else if (par.getTp().equals("NM") && par.getDataTp().equals("SI")) {
 			EolinkPar ap = eolinkParDao.getEolinkPar(eolink, parCd);
 			if (ap!= null) {
-				// сохарнить значение
+				// сохранить значение
 				ap.setN1(val);
 			} else {
 				// создать значение
@@ -82,7 +150,7 @@ public class EolinkParMngImpl implements EolinkParMng {
 				em.persist(ap);
 			}
 		} else {
-			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
 		}
 	}
 
@@ -97,13 +165,13 @@ public class EolinkParMngImpl implements EolinkParMng {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
 			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
-		} else if (par.getTp().equals("ST")) {
+		} else if (par.getTp().equals("ST") && par.getDataTp().equals("SI")) {
 			EolinkPar ap = eolinkParDao.getEolinkPar(eolink, parCd);
 			if (ap!= null) {
 				return ap.getS1();
 			}
 		} else {
-			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
 		}
 		return null;
 	}
@@ -121,10 +189,10 @@ public class EolinkParMngImpl implements EolinkParMng {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
 			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
-		} else if (par.getTp().equals("ST")) {
+		} else if (par.getTp().equals("ST") && par.getDataTp().equals("SI")) {
 			EolinkPar ap = eolinkParDao.getEolinkPar(eolink, parCd);
 			if (ap!= null) {
-				// сохарнить значение
+				// сохранить значение
 				ap.setS1(val);
 			} else {
 				// создать значение
@@ -132,7 +200,7 @@ public class EolinkParMngImpl implements EolinkParMng {
 				em.persist(ap);
 			}
 		} else {
-			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
 		}
 	}
 
@@ -146,13 +214,13 @@ public class EolinkParMngImpl implements EolinkParMng {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
 			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
-		} else if (par.getTp().equals("DT")) {
+		} else if (par.getTp().equals("DT") && par.getDataTp().equals("SI")) {
 			EolinkPar ap = eolinkParDao.getEolinkPar(eolink, parCd);
 			if (ap!= null) {
 				return ap.getD1();
 			}
 		} else {
-			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
 		}
 		return null;
 	}
@@ -170,10 +238,10 @@ public class EolinkParMngImpl implements EolinkParMng {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
 			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
-		} else if (par.getTp().equals("DT")) {
+		} else if (par.getTp().equals("DT") && par.getDataTp().equals("SI")) {
 			EolinkPar ap = eolinkParDao.getEolinkPar(eolink, parCd);
 			if (ap!= null) {
-				// сохарнить значение
+				// сохранить значение
 				ap.setD1(val);
 			} else {
 				// создать значение
@@ -181,7 +249,7 @@ public class EolinkParMngImpl implements EolinkParMng {
 				em.persist(ap);
 			}
 		} else {
-			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип или тип данного");
 		}
 	}
 	
