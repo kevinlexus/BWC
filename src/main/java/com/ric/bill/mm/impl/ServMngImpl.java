@@ -74,6 +74,7 @@ public class ServMngImpl implements ServMng {
 	 */
 	@Cacheable(cacheNames="ServMngImpl.getUpperTree", key="{ #servTree.getId(), #tp }")
 	public ServTree getUpperTree(ServTree servTree, String tp, int itr) throws TooManyRecursiveCalls {
+		//System.out.println("-------->"+itr);
 		itr++;
 		if (itr > 1000) {
 			throw new TooManyRecursiveCalls("На записи иерархии id="+servTree.getId()+" обнаружено превышение числа рекурсий");

@@ -52,7 +52,7 @@ classes = {
 })*/
 public class House extends Base implements java.io.Serializable, MeterContains, TarifContains {
 
-	public House() {
+	public House() { 
 	}
 
 	public House(Integer id) {

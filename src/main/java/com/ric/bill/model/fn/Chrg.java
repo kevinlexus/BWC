@@ -38,7 +38,7 @@ public class Chrg implements java.io.Serializable, Simple {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CHRG")
-	@SequenceGenerator(name="SEQ_CHRG", sequenceName="FN.SEQ_CHRG", allocationSize=10)	
+	@SequenceGenerator(name="SEQ_CHRG", sequenceName="FN.SEQ_CHRG", allocationSize=10)
     @Column(name = "ID", unique=true, updatable = false, nullable = false)			
 	private Integer id;
 	

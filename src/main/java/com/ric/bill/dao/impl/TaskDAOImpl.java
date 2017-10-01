@@ -37,6 +37,15 @@ public class TaskDAOImpl implements TaskDAO {
 	}
     
     /**
+     * Вернуть список заданий определенного типа 
+     */
+    public List<Task> getByTp(String tp) {
+			Query query =em.createQuery("select t from Task t where t.act.cd=:tp order by t.id");
+			query.setParameter("tp", tp);
+			return query.getResultList();
+	}
+
+    /**
      * Вернуть список дочерних заданий по родительскому заданию, по определённому типу объектов
      * @param task - родительское задание
      * @param addrTp - тип объекта

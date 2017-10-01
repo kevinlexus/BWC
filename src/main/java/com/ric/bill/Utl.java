@@ -471,6 +471,19 @@ public class Utl {
     }
 	
 	/**
+	 * Добавить или отнять N секунд к дате-времени
+	 * @param dt - базовая дата-время
+	 * @param nSec - кол-во секунд + -
+	 * @return
+	 */
+	public static Date addSec(Date dt, int nSec) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dt);
+        calendar.add(Calendar.SECOND, nSec);
+        return calendar.getTime();
+    }
+
+	/**
 	 * Добавить путь в classpath
 	 * @param s
 	 * @throws Exception
@@ -485,6 +498,20 @@ public class Utl {
 	    method.invoke(urlClassLoader, new Object[]{u.toURL()});
 	}
 	
+	static long startTime = 0;
+
+	/**
+	 * Логгер выполнения программы
+	 */
+	public static void logger (Boolean isReset, Integer step, Integer lsk, Integer servId) {
+		return;
+		/*if (isReset) {
+			log.info("------------> BEGIN           lsk={}, serv.id={}", lsk, servId);
+		} else {
+			log.info("------------> TIMING lsk={}, serv.id={}, step={}, time={}", lsk, servId, step, System.currentTimeMillis()-startTime);
+		}
+		startTime = System.currentTimeMillis();*/
+	}
 
 }
 

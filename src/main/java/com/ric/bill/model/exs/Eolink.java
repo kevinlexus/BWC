@@ -43,7 +43,7 @@ public class Eolink implements java.io.Serializable  {
 	// Конструктор
 	public Eolink(String reu, String kul, String nd, String kw, String lsk,
 			Integer entry, String usl, Integer idCnt, String guid, String un,
-			String cdExt, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, Eolink parEolink, User user) {
+			String cdExt, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, Eolink parEolink, User user, Integer status) {
 		super();
 		this.reu = reu;
 		this.kul = kul;
@@ -62,6 +62,7 @@ public class Eolink implements java.io.Serializable  {
 		this.koObj = koObj;
 		this.parent = parEolink;
 		this.user = user;
+		this.status = status;
 	}
 
 	// Конструктор
