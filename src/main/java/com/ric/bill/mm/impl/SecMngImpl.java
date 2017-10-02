@@ -28,7 +28,7 @@ public class SecMngImpl implements SecMng {
 	private OrgDAO orgDao;
     @Autowired
 	private AreaDAO areaDao;
-    @Autowired
+    @Autowired 
 	private KoDAO klskDao;
     @Autowired
 	private Config config;
