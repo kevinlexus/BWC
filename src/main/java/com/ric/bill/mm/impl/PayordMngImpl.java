@@ -776,7 +776,12 @@ public class PayordMngImpl implements PayordMng {
 						// TODO! Сделать чтобы Итоговая платежка добавлялась только 1 раз!
 
 						// добавить платежку
-						if (!isFinal) {
+						if (isFinal) {
+							// получить сумму перечислений для сальдо по бухгалтерии (взять по фактическим
+							// датам)
+							amntFlow = calcFlow(p, uk, null, curDt1, curDt2, 2);
+							summa2 = amntFlow.summa;
+						} else {
 							// округлить, если не итоговая плат. по концу мес.
 							summa6 = summa6.setScale(0, BigDecimal.ROUND_DOWN);
 						}
@@ -788,6 +793,8 @@ public class PayordMngImpl implements PayordMng {
 						if (summa1.compareTo(BigDecimal.ZERO) != 0 || summa2.compareTo(BigDecimal.ZERO) != 0
 								|| summa3.compareTo(BigDecimal.ZERO) != 0 || summa4.compareTo(BigDecimal.ZERO) != 0
 								|| summa5.compareTo(BigDecimal.ZERO) != 0 || summa6.compareTo(BigDecimal.ZERO) != 0) {
+							log.info("Итоговая платежка: сумма сборов={}, перечисл.={}, корр.сбор.={}, корр.перечисл.={}, удержано={}, Итого={}",
+								       summa1, summa2, summa3, summa4, summa5, summa6);
 							// создать движение по платежке, если не нулевое
 							PayordFlow flow = new PayordFlow(p, uk, summa6.doubleValue(), summa1.doubleValue(),
 									summa2.doubleValue(), summa3.doubleValue(), summa4.doubleValue(),

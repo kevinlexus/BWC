@@ -45,7 +45,7 @@ public class KartDAOImpl implements KartDAO {
      * @param dt1
      * @return
      */
-	public List<Kart> findAll(Integer houseId, Integer areaId, Integer tempLskId, Date dt1) {
+	public List<Kart> findAll(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2) {
 		@SqlResultSetMapping(name= STATEMENT_SQLMAP, classes = { //эту часть кода можно закинуть в любое место
 		        @ConstructorResult(targetClass = ResultSetKlsk.class,
 		            columns = {
@@ -67,12 +67,14 @@ public class KartDAOImpl implements KartDAO {
 						   "and h.id = kw.fk_house "+
 						   "and o.parent_id=u.id "+
 						   "and k.fk_uk = u.id "+
-						   "and ? between k.dt1 and k.dt2 "+
-						   "and h.fk_street = s.id and s.fk_area = ? "+
+						   "and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+
+						   "and h.fk_street = s.id and s.fk_area = :areaId "+
 						   "order by k.lsk ",  STATEMENT_SQLMAP);
-				q.setParameter(1, dt1,//config.getCurDt1()
+				q.setParameter("dt1", dt1,
 						TemporalType.DATE);
-				q.setParameter(2, areaId);
+				q.setParameter("dt2", dt2,
+						TemporalType.DATE);
+				q.setParameter("areaId", areaId);
 				
 			} else if (houseId != null) {
 				// по дому
@@ -82,12 +84,14 @@ public class KartDAOImpl implements KartDAO {
 						   "and h.id = kw.fk_house "+
 						   "and o.parent_id=u.id "+
 						   "and k.fk_uk = u.id "+
-						   "and ? between k.dt1 and k.dt2 "+
-						   "and h.id = ? "+
+						   "and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+
+						   "and h.id = :houseId "+
 						   "order by k.lsk ",  STATEMENT_SQLMAP);
-				q.setParameter(1, dt1,//config.getCurDt1(), 
+				q.setParameter("dt1", dt1,
 						TemporalType.DATE);
-				q.setParameter(2, houseId);
+				q.setParameter("dt2", dt2,
+						TemporalType.DATE);
+				q.setParameter("houseId", houseId);
 			} else if (tempLskId != null) {
 				// по списку лиц.счетов
 				q = em.createNativeQuery("select t.lsk "+
@@ -103,10 +107,11 @@ public class KartDAOImpl implements KartDAO {
 //						   "and o.reu in ('Z4', 'F4', 'J4', 'G4') /*'D8'*/ "+
 						   "and o.parent_id=u.id /*and h.id=7468*/ "+ // and (k.lsk between 1 and 300 or k.lsk between 1500 and 1520) "+
 						   "and k.fk_uk = u.id "+
-						   "and ? between k.dt1 and k.dt2 "+
+						   "and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+
 						   "order by k.lsk ",  STATEMENT_SQLMAP);
-				q.setParameter(1, dt1, 
-						//config.getCurDt1(), 
+				q.setParameter("dt1", dt1,
+						TemporalType.DATE);
+				q.setParameter("dt2", dt2,
 						TemporalType.DATE);
 			}
 			
