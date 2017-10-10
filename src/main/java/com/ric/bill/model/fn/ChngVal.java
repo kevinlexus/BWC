@@ -12,10 +12,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.ric.bill.Simple;
 import com.ric.bill.model.bs.Lst;
+import com.ric.bill.model.bs.Par;
 import com.ric.bill.model.mt.Meter;
 import com.ric.bill.model.mt.Vol;
+import com.ric.bill.model.oralv.Ko;
 
 /**
  * Детали перерасчета - объемы по счетчикам
@@ -66,6 +70,17 @@ public class ChngVal implements java.io.Serializable, Simple {
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_METER_VOL", referencedColumnName="ID")
 	private Vol vol; 
+    
+	// Объект по которому меняется параметр в перерасчете
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="ID", updatable = false, insertable = false)
+	private Ko ko;
+    
+    // Изменяемый параметр по перерасчету
+    @ManyToOne(fetch = FetchType.LAZY) 
+	@JoinColumn(name="FK_HFP", referencedColumnName="ID")
+	@BatchSize(size = 50)
+	private Par par; 
     
 	public Integer getId() {
 		return id;
@@ -129,6 +144,22 @@ public class ChngVal implements java.io.Serializable, Simple {
 
 	public void setVal(Double val) {
 		this.val = val;
+	}
+
+	public Ko getKo() {
+		return ko;
+	}
+
+	public void setKo(Ko ko) {
+		this.ko = ko;
+	}
+
+	public Par getPar() {
+		return par;
+	}
+
+	public void setPar(Par par) {
+		this.par = par;
 	}
 
 	public boolean equals(Object o) {

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ric.bill.dao.TaskDAO;
 import com.ric.bill.model.exs.Task;
+import com.ric.bill.model.exs.TaskPar;
 
 
 
@@ -32,7 +33,7 @@ public class TaskDAOImpl implements TaskDAO {
      */
     public List<Task> getAllUnprocessed() {
 			Query query =em.createQuery("select t from Task t left join t.depTask d where t.state in ('INS','ACK') and t.parent is null "
-					+ "and (t.depTask is null or t.depTask.state in ('ACP')) order by t.id");
+					+ "and (t.depTask is null or t.depTask.state in ('ACP','STP')) order by t.id");
 			return query.getResultList();
 	}
     

@@ -87,6 +87,7 @@ public class Task implements java.io.Serializable  {
 	private List<TaskToTask> outside = new ArrayList<TaskToTask>(0);
 	
 	// Дочерние задания, связанные через TASKXTASK - короче это всё работает, но как обработать тип связи?? TASKXTASK.FK_TP 
+	// Возможный ответ -  @Filter and @FilterJoinTable ред.09.10.2017 почитать: http://www.concretepage.com/hibernate/hibernate-filter-and-filterjointable-annotation-example
 	/*@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "EXS.TASKXTASK", joinColumns = {
 			@JoinColumn(name = "FK_PARENT", nullable = false, updatable = false) },

@@ -24,6 +24,7 @@ import com.ric.bill.mm.ParMng;
 import com.ric.bill.mm.TarifMng;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.bs.Org;
+import com.ric.bill.model.fn.Chng;
 import com.ric.bill.model.ps.Pers;
 import com.ric.bill.model.ps.Reg;
 import com.ric.bill.model.ps.Registrable;
@@ -172,6 +173,7 @@ public class KartMngImpl implements KartMng {
 	@Cacheable(cacheNames="KartMngImpl.getCntPers", key="{#rqn, #rc.getKo().getId(), #serv.getId(), #cntPers, #genDt}") 
 	public void getCntPers(int rqn, Calc calc, RegContains rc, Serv serv, CntPers cntPers, Date genDt) throws EmptyStorable{
 		List<Pers> counted = new ArrayList<Pers>();
+		Chng chng = calc.getReqConfig().getChng();
 		cntPers.cnt=0; //кол-во человек
 		cntPers.cntVol=0; //кол-во чел. для определения объема
 		cntPers.cntEmpt=0; //кол-во чел. для анализа пустая ли квартира
@@ -228,7 +230,7 @@ public class KartMngImpl implements KartMng {
 		// если кол-во проживающих для объема установить невозможно, установить по кол-ву собственников
 		// здесь не считать кол-во прожив факт cntFact
 		if (cntPers.cntVol == 0) {
-			cntPers.cntOwn = Utl.nvl(parMng.getDbl(rqn, calc.getKart(), "Количество собственников на ЛС", genDt), 0d).intValue();
+			cntPers.cntOwn = Utl.nvl(parMng.getDbl(rqn, calc.getKart(), "Количество собственников на ЛС", genDt, chng), 0d).intValue();
 			cntPers.cntVol = cntPers.cntOwn;
 		}
 	}
@@ -245,6 +247,7 @@ public class KartMngImpl implements KartMng {
 	@Cacheable(cacheNames="KartMngImpl.getStandartVol", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") // сделал отдельный кэш, иначе валится с Cannot Cast Standart to Boolean! 
 	public Standart getStandartVol(int rqn, Calc calc, Serv serv, CntPers cntPers, Date genDt, int tp) throws EmptyStorable {
 		log.trace("STANDART1="+serv.getId()+" dt="+genDt);	
+		Chng chng = calc.getReqConfig().getChng();
 		//получить услугу основную, для начисления
 		Serv servChrg = serv.getServChrg();
 		//получить услугу, по которой записывается норматив (в справочнике 
@@ -293,7 +296,7 @@ public class KartMngImpl implements KartMng {
 				&& servChrg.getCd().equals("Электроснабжение")) {
 			Double kitchElStv = 0d;
 			String s2;
-			kitchElStv = parMng.getDbl(rqn, calc.getKart(), "Электроплита. основное количество", genDt);
+			kitchElStv = parMng.getDbl(rqn, calc.getKart(), "Электроплита. основное количество", genDt, chng);
 			if (Utl.nvl(kitchElStv, 0d) != 0d) {
 				//с эл.плитой
 				switch (cnt) {
@@ -370,7 +373,8 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 */
 	@Cacheable(cacheNames="KartMngImpl.getServPropByCD", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #cd, #genDt }") 
-	public /*synchronized*/ Double getServPropByCD(int rqn, Calc calc, Serv serv, String cd, Date genDt) { //убрал synchronized, получил - java.util.concurrent.ExecutionException: org.hibernate.exception.GenericJDBCException: could not initialize a collection
+	public Double getServPropByCD(int rqn, Calc calc, Serv serv, String cd, Date genDt) {
+		//log.info("проверка кэша ----------> rqn={}, serv.id={}, cd={}, genDt={}", rqn, serv.getId(), cd, genDt);
 		Double val;
 		//в начале ищем по дому
 		val=tarMng.getProp(calc, rqn, calc.getHouse(), serv, cd, genDt);
@@ -443,9 +447,8 @@ public class KartMngImpl implements KartMng {
 	 * @param cmd - добавлять ли услугу в список(0) или удалять(1)?
 	 * @return - обновленный список услуг
 	 */
-    public /*synchronized*/ List<Serv> checkServ(Calc calc, TarifContains tc, List lst, String cd, int cmd) {
+    public List<Serv> checkServ(Calc calc, TarifContains tc, List lst, String cd, int cmd) {
 
-    	/* JAVA 8 */
     	tc.getTarifklsk().stream().forEach(t -> {
     		t.getTarprop().stream()
     			.filter(d -> d.getServ().getServChrg() != null && d.getServ().getServChrg().equals(d.getServ()))
@@ -510,7 +513,7 @@ public class KartMngImpl implements KartMng {
 	 * @throws EmptyServ 
 	 */
 	@Cacheable(cacheNames="KartMngImpl.getServAll", key="{#rqn, #calc.getHouse().getId(), #calc.getKart().getLsk() }")
-	public /*synchronized*/ List<Serv> getServAll(int rqn, Calc calc) {
+	public List<Serv> getServAll(int rqn, Calc calc) {
 		List<Serv> lst = new ArrayList<Serv>();
 		// искать и добавить по наборам тарифа
 		// города:

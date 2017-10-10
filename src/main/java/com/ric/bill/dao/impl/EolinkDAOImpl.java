@@ -114,4 +114,16 @@ public class EolinkDAOImpl implements EolinkDAO {
 		} 
 	}
 
+	/**
+	 * Получить все счетчики, по которым не сохранены показания в файл
+	 */
+	public List<Eolink> getValsNotSaved() {
+		Query query = em.createQuery("select t from Eolink t "
+				+ "join AddrTp b with b.cd ='СчетчикФизический' "
+				+ "join Par a with a.cd = 'ГИС ЖКХ.Счетчик.СтатусОбработкиПоказания' "
+				+ "left outer join EolinkPar p with p.eolink.id = t.id and p.par.id = a.id "
+				+ "where (p.n1 = null or p.n1 = 0) "
+				+ "and t.objTp.id=b.id ");
+		return query.getResultList();		
+	}
 }

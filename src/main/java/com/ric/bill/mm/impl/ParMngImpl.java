@@ -1,8 +1,7 @@
 package com.ric.bill.mm.impl;
 
 import java.util.Date;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,6 +18,10 @@ import com.ric.bill.excp.WrongSetMethod;
 import com.ric.bill.mm.ParMng;
 import com.ric.bill.model.bs.Dw;
 import com.ric.bill.model.bs.Par;
+import com.ric.bill.model.fn.Chng;
+import com.ric.bill.model.fn.ChngVal;
+
+import lombok.extern.slf4j.Slf4j;
 
 
 @Service
@@ -129,13 +132,32 @@ public class ParMngImpl implements ParMng {
 	/**
 	 * получить значение параметра типа Double объекта по CD свойства
 	 * внимание! дату важно передавать, а не получать из Calc.getGenDt(), так как она влияет на кэш!
+	 * 
+	 * @param rqn -  номер запроса начисления
+	 * @param st - объект с интерфейсом Storable
+	 * @param cd - CD параметра
+	 * @param genDt - дата проверки параметра
+	 * @param chng - перерасчет (если есть)
+	 * @return - значение параметра
+	 * @throws EmptyStorable
 	 */
-	@Cacheable(cacheNames="ParMngImpl.getDbl1", key="{#rqn, #st.getKo().getId(), #cd, #genDt }")
-	public/* synchronized*/ Double getDbl(int rqn, Storable st, String cd, Date genDt) throws EmptyStorable {
+	@Cacheable(cacheNames="ParMngImpl.getDbl1", key="{#rqn, #st.getKo().getId(), #cd, #genDt, #chng }")
+	public Double getDbl(int rqn, Storable st, String cd, Date genDt, Chng chng) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
 		}
 		Par par = getByCD(rqn, cd);
+		
+		if (chng != null) {
+			// перерасчет
+			ChngVal chngVal = getChngPar(st, chng, par, genDt);
+			if (chngVal != null && chngVal.getVal() != null) {
+				// найдено значение
+				return chngVal.getVal();
+			}
+		}
+		
+		// начисление
 		try {
 			for (Dw d: st.getDw()) {
     			//по соотв.периоду
@@ -173,7 +195,7 @@ public class ParMngImpl implements ParMng {
 	 * @throws EmptyServ 
 	 */
 	@Cacheable(cacheNames="ParMngImpl.getDbl2", key="{#rqn, #st.getKo().getId(), #cd }")
-	public /*synchronized*/ Double getDbl(int rqn, Storable st, String cd) throws EmptyStorable {
+	public Double getDbl(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
 		}
@@ -345,4 +367,29 @@ public class ParMngImpl implements ParMng {
 		}
 		return null;
 	}
+	
+	/**
+	 * Получить параметр из перерасчета (не глядя на lsk!!!) 
+	 * @param st - объект
+	 * @param chng - перерасчет
+	 * @param par - параметр
+	 * @param genDt - дата
+	 * @return
+	 */
+	public ChngVal getChngPar(Storable st, Chng chng, Par par, Date genDt) {
+		
+			Optional<ChngVal> chngVal;
+			chngVal = chng.getChngLsk().stream()
+					.flatMap(t -> t.getChngVal().stream() // преобразовать в другую коллекцию
+								.filter(d -> genDt == null || Utl.between(genDt, d.getDtVal1(), d.getDtVal2())) // и фильтр по дате или без даты
+								.filter(d -> d.getKo().equals(st.getKo())) // по данному объекту
+								.filter(d -> d.getPar().equals(par)) // по данному параметру
+							).findFirst(); // взять первый элемент
+			if (chngVal.isPresent()) {
+				return chngVal.get();
+			} else {
+				return null;
+			}
+	}
+	
 }
