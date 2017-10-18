@@ -1,0 +1,59 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Building BWC 0.0.2-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ BWC ---
+[INFO] com.ric.bill:BWC:jar:0.0.2-SNAPSHOT
+[INFO] +- org.hibernate:hibernate-entitymanager:jar:5.1.0.Final:compile
+[INFO] |  +- org.jboss.logging:jboss-logging:jar:3.3.0.Final:compile
+[INFO] |  +- org.hibernate:hibernate-core:jar:5.1.0.Final:compile
+[INFO] |  |  +- org.jboss:jandex:jar:2.0.0.Final:compile
+[INFO] |  |  \- com.fasterxml:classmate:jar:1.3.1:compile
+[INFO] |  +- dom4j:dom4j:jar:1.6.1:compile
+[INFO] |  |  \- xml-apis:xml-apis:jar:1.4.01:compile
+[INFO] |  +- org.hibernate.common:hibernate-commons-annotations:jar:5.0.1.Final:compile
+[INFO] |  +- org.javassist:javassist:jar:3.20.0-GA:compile
+[INFO] |  \- org.apache.geronimo.specs:geronimo-jta_1.1_spec:jar:1.1.1:compile
+[INFO] +- antlr:antlr:jar:2.7.7:compile
+[INFO] +- org.projectlombok:lombok:jar:1.16.10:provided
+[INFO] +- org.springframework:spring-beans:jar:4.3.2.RELEASE:compile
+[INFO] |  \- org.springframework:spring-core:jar:4.3.2.RELEASE:compile
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.21:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-security:jar:1.4.0.RELEASE:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter:jar:1.4.0.RELEASE:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot:jar:1.4.0.RELEASE:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-autoconfigure:jar:1.4.0.RELEASE:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:1.4.0.RELEASE:compile
+[INFO] |  |  |  +- ch.qos.logback:logback-classic:jar:1.1.7:compile
+[INFO] |  |  |  |  \- ch.qos.logback:logback-core:jar:1.1.7:compile
+[INFO] |  |  |  +- org.slf4j:jul-to-slf4j:jar:1.7.21:compile
+[INFO] |  |  |  \- org.slf4j:log4j-over-slf4j:jar:1.7.21:compile
+[INFO] |  |  \- org.yaml:snakeyaml:jar:1.17:runtime
+[INFO] |  +- org.springframework:spring-aop:jar:4.3.2.RELEASE:compile
+[INFO] |  +- org.springframework.security:spring-security-config:jar:4.1.1.RELEASE:compile
+[INFO] |  |  \- org.springframework.security:spring-security-core:jar:4.1.1.RELEASE:compile
+[INFO] |  \- org.springframework.security:spring-security-web:jar:4.1.1.RELEASE:compile
+[INFO] |     +- org.springframework:spring-expression:jar:4.3.2.RELEASE:compile
+[INFO] |     \- org.springframework:spring-web:jar:4.3.2.RELEASE:compile
+[INFO] +- org.springframework.data:spring-data-jpa:jar:1.11.6.RELEASE:compile
+[INFO] |  +- org.springframework.data:spring-data-commons:jar:1.12.2.RELEASE:compile
+[INFO] |  +- org.springframework:spring-orm:jar:4.3.2.RELEASE:compile
+[INFO] |  |  \- org.springframework:spring-jdbc:jar:4.3.2.RELEASE:compile
+[INFO] |  +- org.springframework:spring-context:jar:4.3.2.RELEASE:compile
+[INFO] |  +- org.aspectj:aspectjrt:jar:1.8.9:compile
+[INFO] |  \- org.slf4j:jcl-over-slf4j:jar:1.7.21:compile
+[INFO] +- org.hibernate.javax.persistence:hibernate-jpa-2.1-api:jar:1.0.0.Final:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-annotations:jar:2.8.1:compile
+[INFO] +- org.springframework:spring-tx:jar:4.3.2.RELEASE:compile
+[INFO] +- mxParser:org.mariuszgromada:jar:1.0:compile
+[INFO] +- javax.inject:javax.inject:jar:1:compile
+[INFO] \- org.apache.commons:commons-lang3:jar:3.6:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3.575 s
+[INFO] Finished at: 2017-10-18T09:46:36+06:00
+[INFO] Final Memory: 21M/309M
+[INFO] ------------------------------------------------------------------------

@@ -71,7 +71,7 @@ public class RequestConfig implements Serializable {
 	 * @param dt1 - заданная принудительно начальная дата начисления
 	 * @param dt2 - заданная принудительно конечная дата начисления
 	 */
-	public void setUp(/*Config config, */String dist, String tp, Integer chngId, int rqn, Date genDt1, Date genDt2) {
+	public Boolean setUp(/*Config config, */String dist, String tp, Integer chngId, int rqn, Date genDt1, Date genDt2) {
 		// установить текущий номер запроса
 		setRqn(rqn);
 		// основные настройки
@@ -93,6 +93,10 @@ public class RequestConfig implements Serializable {
 			// перерасчет
 	    	setOperTp(1);  // тип-перерасчёт
         	Chng chng = em.find(Chng.class, chngId); // ID перерасчета = 175961
+        	if (chng == null) {
+        		log.error("Не найден перерасчет с Chng.id={}", chngId);
+        		return false;
+        	}
         	setChng(chng);
         	if (chng.getTp().getCd().equals("Корректировка показаний ИПУ")) {
 	        	setIsDist(true); // распределять объем
@@ -154,6 +158,7 @@ public class RequestConfig implements Serializable {
 		
 		log.info("Установлены периоды:");
 		log.info("Текущий:{}, предыдущий:{}, будущий:{}", getPeriod(), getPeriodBack(), getPeriodNext());
+		return true;
 	}
 
 	public Integer getOperTp() {

@@ -148,7 +148,7 @@ public class ParMngImpl implements ParMng {
 		}
 		Par par = getByCD(rqn, cd);
 		
-		if (chng != null) {
+		if (chng != null && chng.getTp().getCd().equals("Изменение параметра объекта")) {
 			// перерасчет
 			ChngVal chngVal = getChngPar(st, chng, par, genDt);
 			if (chngVal != null && chngVal.getVal() != null) {

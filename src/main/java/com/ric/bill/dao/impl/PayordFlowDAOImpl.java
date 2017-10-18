@@ -41,16 +41,18 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
     /**
      * Получить движения по всем платежкам по типу и дате
      * @param tp - тип
-     * @param dt - дата
+     * @param dt1 - дата начала
+     * @param dt2 - дата окончания
      * @return
      */
-    public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt) {
+    public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt1, Date dt2) {
     	Query query = null;
-    	if (dt != null) {
+    	if (dt1 != null && dt2 != null ) {
     		query =em.createQuery("select t from PayordFlow t where "
-    				+ "t.dt = :dt and t.tp = :tp "
+    				+ "t.dt between :dt1 and :dt2 and t.tp = :tp "
     				+ "order by t.id");
-    		query.setParameter("dt", dt);
+    		query.setParameter("dt1", dt1);
+    		query.setParameter("dt2", dt2);
     		query.setParameter("tp", tp);
     	} else {
     		query =em.createQuery("select t from PayordFlow t where "

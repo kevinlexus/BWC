@@ -43,7 +43,7 @@ public class Eolink implements java.io.Serializable  {
 	// Конструктор
 	public Eolink(String reu, String kul, String nd, String kw, String lsk,
 			Integer entry, String usl, Integer idCnt, String guid, String un,
-			String cdExt, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, Eolink parEolink, User user, Integer status) {
+			String cdExt, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, Eolink parent, User user, Integer status) {
 		super();
 		this.reu = reu;
 		this.kul = kul;
@@ -60,7 +60,7 @@ public class Eolink implements java.io.Serializable  {
 		this.appTp = appTp;
 		this.objTpx = objTpx;
 		this.koObj = koObj;
-		this.parent = parEolink;
+		this.parent = parent;
 		this.user = user;
 		this.status = status;
 	}
@@ -207,6 +207,10 @@ public class Eolink implements java.io.Serializable  {
 	@Column(name = "STATUS", updatable = true, nullable = true)
 	private Integer status;
 	
+	// ID лиц.счета в системе "Квартплата" (Заполняется только для Лиц.счетов)
+	@Column(name = "C_LSK_ID", updatable = true, nullable = true)
+	private Integer cLskId;
+
 	public User getUser() {
 		return user;
 	}
@@ -407,6 +411,14 @@ public class Eolink implements java.io.Serializable  {
 
 	public void setIdGrp(Integer idGrp) {
 		this.idGrp = idGrp;
+	}
+
+	public Integer getcLskId() {
+		return cLskId;
+	}
+
+	public void setcLskId(Integer cLskId) {
+		this.cLskId = cLskId;
 	}
 
 	public boolean equals(Object o) {

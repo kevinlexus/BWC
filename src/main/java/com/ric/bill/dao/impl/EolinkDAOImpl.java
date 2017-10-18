@@ -120,10 +120,11 @@ public class EolinkDAOImpl implements EolinkDAO {
 	public List<Eolink> getValsNotSaved() {
 		Query query = em.createQuery("select t from Eolink t "
 				+ "join AddrTp b with b.cd ='СчетчикФизический' "
+				+ "join AddrTp d with d.cd ='Квартира' "
+				+ "join Eolink e with e.objTp.id=d.id and t.parent.id=e.id and t.objTp.id=b.id "
 				+ "join Par a with a.cd = 'ГИС ЖКХ.Счетчик.СтатусОбработкиПоказания' "
-				+ "left outer join EolinkPar p with p.eolink.id = t.id and p.par.id = a.id "
-				+ "where (p.n1 = null or p.n1 = 0) "
-				+ "and t.objTp.id=b.id ");
+				+ "join EolinkPar p with p.eolink.id = t.id and p.par.id = a.id "
+				+ "where (p.n1 = 1) ");
 		return query.getResultList();		
 	}
 }

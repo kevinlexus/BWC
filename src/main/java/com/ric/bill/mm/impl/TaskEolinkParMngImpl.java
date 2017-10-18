@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ric.bill.Config;
 import com.ric.bill.Utl;
 import com.ric.bill.dao.EolinkParDAO;
 import com.ric.bill.dao.TaskParDAO;
@@ -135,15 +136,59 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 		return null;
 	}
 
+	/**
+	 * получить значение параметра типа Boolean задания по CD свойства
+	 * @param task - задание
+	 * @param parCd - CD параметра
+	 * @throws WrongGetMethod 
+	 */
+	public Boolean getBool(Task task, String parCd) throws WrongGetMethod {
+		Par par = parMng.getByCD(-1, parCd);
+		if (par == null){
+			throw new WrongGetMethod("Параметр "+parCd+" не существует в базе данных");
+		} else if (par.getTp().equals("BL")) {
+			TaskPar tpar = taskParDao.getTaskPar(task, parCd);
+			if (tpar==null) {
+				// не найдено в taskParDao, искать в eolinkParDao 
+				EolinkPar epar = eolinkParDao.getEolinkPar(task.getEolink(), parCd);
+				if (epar!= null) {
+					if (epar.getN1() == 1D) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+			} else {
+				// найдено в taskParDao
+				if (tpar.getN1() == 1D) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			
+		} else {
+			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
+		}
+		return null;
+	}
 
+	
 	/**
 	 * Переписать значения параметров из Task в Eolink, по завершению отправки в ГИС
 	 */
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	//@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
 	public void acceptPar(Task task) {
-		log.trace("Перемещение параметров по task.id={}", task.getId());
+		log.trace("Перемещение параметров по task.id={}, task.getTaskPar().size()={}", task.getId(), task.getTaskPar().size());
+		//task.getTaskPar().stream().forEach(d-> {
+		//});
+
 		task.getTaskPar().stream().forEach(t-> {
 			EolinkPar ep = task.getEolink().getEolinkPar().stream().filter(e-> e.getPar().equals(t.getPar())).findAny().orElse(null);
+			/*if (ep!=null) {
+				log.info("id={} tp={}", t.getId(), ep.getPar().getTp());
+			}*/
+			
 			if (ep==null) {
 				//Параметра нет, создать
 				ep = new EolinkPar(task.getEolink(), t.getPar(), t.getN1(), t.getS1(), t.getD1());
@@ -151,24 +196,35 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 			} else {
 				//Параметр есть, и изменился, обновить
 				if (ep.getPar().getTp().equals("NM")) {
-					Double eVal = Utl.nvl(ep.getN1(), 0D);
-					Double tVal = Utl.nvl(t.getN1(), 0D);
+					Double eVal = ep.getN1();
+					Double tVal = t.getN1();
 					
-					if (!eVal.equals(tVal)) {
+					if (eVal!=null && tVal!=null && !eVal.equals(tVal) || 
+							eVal!=null && tVal==null || eVal==null && tVal!=null) {
+						ep.setN1(t.getN1());
+					}
+				} else if (ep.getPar().getTp().equals("BL")) {
+					Double eVal = ep.getN1();
+					Double tVal = t.getN1();
+					
+					if (eVal!=null && tVal!=null && !eVal.equals(tVal) || 
+							eVal!=null && tVal==null || eVal==null && tVal!=null) {
 						ep.setN1(t.getN1());
 					}
 				} else if (ep.getPar().getTp().equals("ST")) {
-					String eVal = Utl.nvl(ep.getS1(), "");
-					String tVal = Utl.nvl(t.getS1(), "");
+					String eVal = ep.getS1();
+					String tVal = t.getS1();
 					
-					if (!eVal.equals(tVal)) {
+					if (eVal!=null && tVal!=null && !eVal.equals(tVal) || 
+							eVal!=null && tVal==null || eVal==null && tVal!=null) {
 						ep.setS1(t.getS1());
 					}
 				} else if (ep.getPar().getTp().equals("DT")) {
-					Date eVal = Utl.nvl(ep.getD1(), null);
-					Date tVal = Utl.nvl(t.getD1(), null);
+					Date eVal = ep.getD1();
+					Date tVal = t.getD1();
 					
-					if (!eVal.equals(tVal)) {
+					if (eVal!=null && tVal!=null && !eVal.equals(tVal) || 
+							eVal!=null && tVal==null || eVal==null && tVal!=null) {
 						ep.setD1(t.getD1());
 					}
 				}

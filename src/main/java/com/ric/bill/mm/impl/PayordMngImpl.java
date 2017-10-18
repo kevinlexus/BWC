@@ -309,11 +309,12 @@ public class PayordMngImpl implements PayordMng {
 	/**
      * Получить движения по всем платежкам по типу и периоду
      * @param tp - тип движение
-     * @param dt - дата
+     * @param dt1 - дата начала
+     * @param dt2 - дата окончания
      * @return
      */
-    public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt) {
-    	return payordFlowDao.getPayordFlowByTpDt(tp, dt);
+    public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt1, Date dt2) {
+    	return payordFlowDao.getPayordFlowByTpDt(tp, dt1, dt2);
     }	
 
     // сохранить движение по платежке из DTO
@@ -498,7 +499,7 @@ public class PayordMngImpl implements PayordMng {
 	public List<RepItemDTO> getPayordRep(PeriodReports pr) {
 		List<RepItemDTO> lst;
 		// получить список платежек на текущую дату, с входящим сальдо
-		lst = getPayordFlowByTpDt(2, pr.getDt()).stream()
+		lst = getPayordFlowByTpDt(2, pr.getDt(), pr.getDt()).stream()
 				//.filter(t -> t.getSigned()) // только подписанные??
 				.map(t-> new RepItemDTO(t.getId(), t.getPayord().getPayordGrp().getName(),
 				t.getPayord().getName(), t.getUk().getName(), 
