@@ -67,13 +67,13 @@ public class KartDAOImpl implements KartDAO {
 						   "and h.id = kw.fk_house "+
 						   "and o.parent_id=u.id "+
 						   "and k.fk_uk = u.id "+
-						   "and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+
-						   "and h.fk_street = s.id and s.fk_area = :areaId "+
+						   //"and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+ ред.31.10.2017 НЕЛЬЗЯ использовать так даты, так как не будут найдены и пересчитаны лс
+						   "and h.fk_street = s.id and s.fk_area = :areaId "+ // с датой позже текущего периода (ошибочно начисленные, и т.п.) TODO подумать!
 						   "order by k.lsk ",  STATEMENT_SQLMAP);
-				q.setParameter("dt1", dt1,
+				/*q.setParameter("dt1", dt1,
 						TemporalType.DATE);
 				q.setParameter("dt2", dt2,
-						TemporalType.DATE);
+						TemporalType.DATE);*/
 				q.setParameter("areaId", areaId);
 				
 			} else if (houseId != null) {
@@ -84,13 +84,13 @@ public class KartDAOImpl implements KartDAO {
 						   "and h.id = kw.fk_house "+
 						   "and o.parent_id=u.id "+
 						   "and k.fk_uk = u.id "+
-						   "and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+
+						   //"and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+ ред.31.10.2017 НЕЛЬЗЯ использовать так даты, так как не будут найдены и пересчитаны лс
 						   "and h.id = :houseId "+
 						   "order by k.lsk ",  STATEMENT_SQLMAP);
-				q.setParameter("dt1", dt1,
+				/*q.setParameter("dt1", dt1,
 						TemporalType.DATE);
 				q.setParameter("dt2", dt2,
-						TemporalType.DATE);
+						TemporalType.DATE);*/
 				q.setParameter("houseId", houseId);
 			} else if (tempLskId != null) {
 				// по списку лиц.счетов
@@ -107,12 +107,12 @@ public class KartDAOImpl implements KartDAO {
 //						   "and o.reu in ('Z4', 'F4', 'J4', 'G4') /*'D8'*/ "+
 						   "and o.parent_id=u.id /*and h.id=7468*/ "+ // and (k.lsk between 1 and 300 or k.lsk between 1500 and 1520) "+
 						   "and k.fk_uk = u.id "+
-						   "and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+
+						   //"and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+ ред.31.10.2017 НЕЛЬЗЯ использовать так даты, так как не будут найдены и пересчитаны лс
 						   "order by k.lsk ",  STATEMENT_SQLMAP);
-				q.setParameter("dt1", dt1,
+				/*q.setParameter("dt1", dt1,
 						TemporalType.DATE);
 				q.setParameter("dt2", dt2,
-						TemporalType.DATE);
+						TemporalType.DATE);*/
 			}
 			
 			

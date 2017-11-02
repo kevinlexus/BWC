@@ -35,6 +35,7 @@ import com.ric.bill.dto.PayordGrpDTO;
 import com.ric.bill.dto.RepItemDTO;
 import com.ric.bill.excp.EmptyStorable;
 import com.ric.bill.excp.WrongDate;
+import com.ric.bill.excp.WrongExpression;
 import com.ric.bill.mm.LstMng;
 import com.ric.bill.mm.ObjMng;
 import com.ric.bill.mm.OrgMng;
@@ -527,7 +528,7 @@ public class PayordMngImpl implements PayordMng {
 	 * @throws EmptyStorable 
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public void genPayord(Date genDt, Boolean isFinal, Boolean isEndMonth) throws WrongDate, ParseException, EmptyStorable {
+	public void genPayord(Date genDt, Boolean isFinal, Boolean isEndMonth) throws WrongDate, ParseException, EmptyStorable, WrongExpression {
 		long beginTime = System.currentTimeMillis();
 
 		// приложение - новая разработка
@@ -583,18 +584,23 @@ public class PayordMngImpl implements PayordMng {
 				// всегда формировать итоговую платежку или итоговое формирование сальдо
 				isGen = true;
 			} else {
-				if (p.getPeriodTp().getCd().equals("PAYORD_EVERYWEEK")) {
-					// Платежка раз в неделю (в определённый день)
-					if (!isFinal && p.getSelDays() == null) {
-						throw new WrongDate("При формировании платежки раз в неделю, не задан день формирования");
+				if (p.getPeriodTp().getCd().equals("PAYORD_SELDAY") || p.getPeriodTp().getCd().equals("PAYORD_SELDAY2")) {
+					// Платежка в определённый день недели
+					if (p.getSelDays() == null) {
+						throw new WrongDate("При формировании платежки в определенный день недели, не задан день формирования");
 					} else {
 						String selDays = Utl.convertDaysToEng(p.getSelDays());
 						log.info("dayOfWeek, selDays = {},{}", dayOfWeek, selDays);
 	
-						if (isFinal || selDays.contains(dayOfWeek)) {
+						if (selDays.contains(dayOfWeek)) {
+							isGen = true;
+						} else if (p.getPeriodTp().getCd().equals("PAYORD_SELDAY2") && Utl.getLastDate(genDt).equals(genDt) ) {
+							// для этого типа платёжек -  еще и по последнему дню месяца
 							isGen = true;
 						}
+						
 					}
+					
 				}
 			}
 			
@@ -664,6 +670,7 @@ public class PayordMngImpl implements PayordMng {
 								.filter(d -> t.getOrg() == null || d.getOrg().equals(t.getOrg()))
 								.filter(d -> d.getPayment().getTp().getCd().equals("cash")
 										|| d.getPayment().getTp().getCd().equals("acq")
+										|| d.getPayment().getTp().getCd().equals("web")
 										|| d.getPayment().getTp().getCd().equals("bank"))
 								.forEach(d -> amntSummByUk
 										.add(new SummByUk(t.getMark(), d.getPayment().getKart().getUk(),
@@ -679,23 +686,38 @@ public class PayordMngImpl implements PayordMng {
 				for (Org uk : ukLst) {
 					//log.info("Check uk.id={}",uk.getId());
 					// По каждой УК, за период:
-					// получить сборы по всем маркерам
-					BigDecimal summa1 = calcMark(markLst, amntSummByUk, p, uk);
-					// получить сумму перечислений
-					AmntFlow amntFlow = calcFlow(p, uk, period, null, null, 2);
-					BigDecimal summa2 = amntFlow.summa;
-					// получить сумму корректировок сборов
-					amntFlow = calcFlow(p, uk, period, null, null, 3);
-					BigDecimal summa3 = amntFlow.summa;
-					// получить сумму корректировок перечислений
-					amntFlow = calcFlow(p, uk, period, null, null, 4);
-					BigDecimal summa4 = amntFlow.summa;
-					// получить сумму удержаний
-					amntFlow = calcFlow(p, uk, period, null, null, 5);
-					BigDecimal summa5 = amntFlow.summa;
-					// получить вх. сальдо по Платежке + УК
-					PayordFlow salFlow = getInsal(p, uk, period, 0);
+					BigDecimal summa1 = null;
+					BigDecimal summa2 = null;
+					BigDecimal summa3 = null;
+					BigDecimal summa4 = null;
+					BigDecimal summa5 = null;
+					AmntFlow amntFlow = null;
+					PayordFlow salFlow = null;
 					BigDecimal insal = null;
+					
+					try {
+						// получить сборы по всем маркерам
+						summa1 = calcMark(markLst, amntSummByUk, p, uk);
+						// получить сумму перечислений
+						amntFlow = calcFlow(p, uk, period, null, null, 2);
+						summa2 = amntFlow.summa;
+						// получить сумму корректировок сборов
+						amntFlow = calcFlow(p, uk, period, null, null, 3);
+						summa3 = amntFlow.summa;
+						// получить сумму корректировок перечислений
+						amntFlow = calcFlow(p, uk, period, null, null, 4);
+						summa4 = amntFlow.summa;
+						// получить сумму удержаний
+						amntFlow = calcFlow(p, uk, period, null, null, 5);
+						summa5 = amntFlow.summa;
+						// получить вх. сальдо по Платежке + УК
+						salFlow = getInsal(p, uk, period, 0);
+					} catch (Exception e) {
+						e.printStackTrace();
+						log.error("Ошибка при формировании платежки: Payord.id={} uk.id={}", p.getId(), uk.getId());
+						throw new WrongExpression("Ошибка при обработке формулы платежки!");
+					}
+
 					if (salFlow != null) {
 						insal = BigDecimal.valueOf(salFlow.getSumma());
 					} else {

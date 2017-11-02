@@ -8,7 +8,7 @@ public interface EolinkDAO {
 	
 	public List<Eolink> getAll();
 	public Eolink getEolinkByGuid(String guid);
-	//public List<Eolink> getChildByEolink(Eolink parent);
+	public List<Eolink> getChildByTp(Eolink parent, String tp);
 	public Eolink getEolinkByReuKulNdTp(String reu, String kul, String nd, 
 			String kw, String entry, String tp);
 	public List<Eolink> getValsNotSaved();

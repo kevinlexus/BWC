@@ -65,6 +65,7 @@ public class ReportDAOImpl implements ReportDAO {
 
 
 	public PeriodReports getPeriod(String repCd, String mg) {
+		//System.out.println(repCd+"--"+mg);
 		Query query = em.createQuery("select t from PeriodReports t join t.report r where r.cd = :cd and t.mg = :mg");
 		query.setParameter("cd", repCd);
 		query.setParameter("mg", mg);

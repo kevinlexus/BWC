@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -33,6 +35,7 @@ public class UlistTp implements java.io.Serializable  {
 	public UlistTp() {
 	}
 
+	// конструктор
 	public UlistTp(String cd, Integer fkExt, String name, Date dt1, String grp,
 			List<Ulist> ulist) {
 		super();
@@ -42,6 +45,19 @@ public class UlistTp implements java.io.Serializable  {
 		this.grp = grp;
 		this.ulist = ulist;
 		this.fkExt = fkExt;
+	}
+
+	// конструктор
+	public UlistTp(String cd, Integer fkExt, String name, Date dt1, String grp,
+			List<Ulist> ulist, Eolink eolink) {
+		super();
+		this.cd = cd;
+		this.name = name;
+		this.dt1 = dt1;
+		this.grp = grp;
+		this.ulist = ulist;
+		this.fkExt = fkExt;
+		this.eolink = eolink;
 	}
 
 	@Id
@@ -71,10 +87,14 @@ public class UlistTp implements java.io.Serializable  {
 	private Integer fkExt;
 
 	// Элементы соответствующие типу
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_LISTTP", referencedColumnName="ID")
-	@Fetch(FetchMode.SUBSELECT)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="FK_LISTTP", referencedColumnName="ID", updatable = false)
 	private List<Ulist> ulist = new ArrayList<Ulist>(0);
+
+	// Организация, владеющая справочником
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID")
+	private Eolink eolink; 
 	
 	public Integer getId() {
 		return id;
@@ -130,6 +150,14 @@ public class UlistTp implements java.io.Serializable  {
 
 	public void setFkExt(Integer fkExt) {
 		this.fkExt = fkExt;
+	}
+
+	public Eolink getEolink() {
+		return eolink;
+	}
+
+	public void setEolink(Eolink eolink) {
+		this.eolink = eolink;
 	}
 
 	public boolean equals(Object o) {

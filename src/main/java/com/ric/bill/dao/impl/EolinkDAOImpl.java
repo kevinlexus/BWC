@@ -1,6 +1,8 @@
 package com.ric.bill.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -12,7 +14,10 @@ import org.springframework.stereotype.Repository;
 import com.ric.bill.dao.EolinkDAO;
 import com.ric.bill.model.exs.Eolink;
 
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
 @Repository
 public class EolinkDAOImpl implements EolinkDAO {
 
@@ -46,6 +51,20 @@ public class EolinkDAOImpl implements EolinkDAO {
 		} 
 	}
 
+    
+    /**
+     * Получить объекты по типу, начиная с начальной точки иерархии
+     * @param parent - начальная точка иерархии
+     * @param tp - тип
+     * @return
+     */
+    public List<Eolink> getChildByTp(Eolink parent, String tp) {
+    	List<Eolink> lst = parent.getChild().stream().filter(t -> t.getObjTp().getCd().equals(tp)).collect(Collectors.toList());
+    	lst.addAll(parent.getChild().stream().flatMap(t -> getChildByTp(t, tp).stream()).collect(Collectors.toList()));
+    	return lst;
+	}
+    
+    
     /**
      * Получить дочерние объекты по родительскому объекту
      * @param parent - родительский объект

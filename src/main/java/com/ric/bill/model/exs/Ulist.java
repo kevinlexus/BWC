@@ -36,7 +36,7 @@ public class Ulist implements java.io.Serializable  {
 	private Integer id;
 
 	public Ulist(String cd, String name, String guid, Date dt1, Date dt2,
-			Boolean actual, UlistTp ulistTp, Integer npp, String value, Ulist parentUlist,
+			Boolean actual, UlistTp ulistTp, Integer npp, String value, Ulist parent,
 			String refCode, String refGuid, String tp) {
 		super();
 		this.cd = cd;
@@ -48,7 +48,7 @@ public class Ulist implements java.io.Serializable  {
 		this.ulistTp = ulistTp;
 		this.npp = npp;
 		this.s1 = value;
-		this.parentUlist = parentUlist;
+		this.parent = parent;
 		this.refCode = refCode;
 		this.refGuid = refGuid;
 		this.tp = tp;
@@ -85,7 +85,7 @@ public class Ulist implements java.io.Serializable  {
 
 	// Тип справочника
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="FK_LISTTP", referencedColumnName="ID")
+	@JoinColumn(name="FK_LISTTP", referencedColumnName="ID", updatable = false, nullable = false)
 	private UlistTp ulistTp; 
 
 	// Номер порядковый
@@ -107,7 +107,7 @@ public class Ulist implements java.io.Serializable  {
 	// Родительский элемент
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
-	private Ulist parentUlist; 
+	private Ulist parent; 
 
 	public Integer getId() {
 		return id;
@@ -181,12 +181,12 @@ public class Ulist implements java.io.Serializable  {
 		this.npp = npp;
 	}
 
-	public Ulist getParentUlist() {
-		return parentUlist;
+	public Ulist getParent() {
+		return parent;
 	}
 
-	public void setParentUlist(Ulist parentUlist) {
-		this.parentUlist = parentUlist;
+	public void setParent(Ulist parentUlist) {
+		this.parent = parentUlist;
 	}
 
 	public boolean equals(Object o) {

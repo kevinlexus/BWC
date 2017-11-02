@@ -19,6 +19,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.ric.bill.model.bs.Lst;
 
 
@@ -30,6 +32,7 @@ import com.ric.bill.model.bs.Lst;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "TASK", schema="EXS")
+@DynamicUpdate
 public class Task implements java.io.Serializable  {
 
 	public Task() {

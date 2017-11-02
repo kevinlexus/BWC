@@ -51,10 +51,11 @@ public class HouseDAOImpl implements HouseDAO {
 	 * @param houseId - наличию ID дома
 	 * @param areaId - наличию ID области
 	 * @param tempLskId - наличию ID списка лиц.счетов
-	 * @param dt1 - даты расчета (не используется при списке лиц.счетов)
+	 * @param dt1 - начальная дата расчета 
+	 * @param dt2 - конечная дата расчета 
 	 * @return
 	 */
-	public List<House> findAll2(Integer houseId, Integer areaId, Integer tempLskId, Date dt1) {
+	public List<House> findAll2(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2) {
 		@SqlResultSetMapping(name= STATEMENT_SQLMAP, classes = { //эту часть кода можно закинуть в любое место
 		        @ConstructorResult(targetClass = ResultSet.class,
 		            columns = {
@@ -72,25 +73,29 @@ public class HouseDAOImpl implements HouseDAO {
 						   "from ar.house h, ar.kart k, ar.kw kw, bs.org o, bs.org u, ar.street s  "+
 						   "where k.fk_kw = kw.id "+
 						   "and h.id = kw.fk_house "+
-						   "and ? between k.dt1 and k.dt2 "+
+						   //"and ? between k.dt1 and k.dt2 "+
+						   "and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+// ред.31.10.2017 здесь использовать даты таким образом. (участв.лиц.тек периода)
 						   "and o.parent_id=u.id "+
-						   "and h.fk_street = s.id and s.fk_area = ? "+
+						   "and h.fk_street = s.id and s.fk_area = :areaId "+
 						   "and k.fk_uk = u.id "+
 						   "order by h.id ",  STATEMENT_SQLMAP);
-				q.setParameter(1, dt1, TemporalType.DATE);
-				q.setParameter(2, areaId);
+				q.setParameter("dt1", dt1, TemporalType.DATE);
+				q.setParameter("dt2", dt2, TemporalType.DATE);
+				q.setParameter("areaId", areaId);
 			} else if (houseId != null) {
 				// по дому
 				q = em.createNativeQuery("select distinct h.id "+
 						   "from ar.house h, ar.kart k, ar.kw kw, bs.org o, bs.org u  "+
 						   "where k.fk_kw = kw.id "+
 						   "and h.id = kw.fk_house "+
-						   "and ? between k.dt1 and k.dt2 "+
-						   "and o.parent_id=u.id and h.id=? "+
+						   //"and ? between k.dt1 and k.dt2 "+
+						   "and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+// ред.31.10.2017 здесь использовать даты таким образом. (участв.лиц.тек периода)
+						   "and o.parent_id=u.id and h.id= :houseId "+
 						   "and k.fk_uk = u.id "+
 						   "order by h.id ",  STATEMENT_SQLMAP);
-				q.setParameter(1, dt1, TemporalType.DATE);
-				q.setParameter(2, houseId);
+				q.setParameter("dt1", dt1, TemporalType.DATE);
+				q.setParameter("dt2", dt2, TemporalType.DATE);
+				q.setParameter("houseId", houseId);
 			} else if (tempLskId != null) {
 				// по списку лиц.счетов, без контроля даты!!!
 				q = em.createNativeQuery("select distinct h.id "+
@@ -109,9 +114,10 @@ public class HouseDAOImpl implements HouseDAO {
 						   "and h.id = kw.fk_house "+
 						   "and o.parent_id=u.id "+
 						   "and k.fk_uk = u.id "+
-						   "and ? between k.dt1 and k.dt2 "+
+						   "and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+// ред.31.10.2017 здесь использовать даты таким образом. (участв.лиц.тек периода)
 						   "order by h.id ",  STATEMENT_SQLMAP);
-				q.setParameter(1, dt1, TemporalType.DATE);
+				q.setParameter("dt1", dt1, TemporalType.DATE);
+				q.setParameter("dt2", dt2, TemporalType.DATE);
 			}
 			
 			List<ResultSet> lst = q.getResultList();

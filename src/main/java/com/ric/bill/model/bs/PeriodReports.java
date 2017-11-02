@@ -41,7 +41,7 @@ public class PeriodReports implements java.io.Serializable {
     @Column(name = "MG", updatable = false, nullable = true)
 	private String mg;
     
-    @ManyToOne(fetch = FetchType.LAZY) 
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_REPORT", referencedColumnName="ID")
 	private Report report; 
     

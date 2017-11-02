@@ -28,10 +28,11 @@ public class HouseMngImpl implements HouseMng {
      * Получить дома по параметрам
      * @param - houseId - Id дома
      * @param - areaId - Id города
-     * @param - dt1 - дата выборки
+     * @param - dt1 - дата начала периода
+     * @param - dt1 - дата окончания периода
      */
-    public synchronized List<House> findAll2(Integer houseId, Integer areaId, Integer tempLskId, Date dt1) {
-		return hDao.findAll2(houseId, areaId, tempLskId, dt1);
+    public synchronized List<House> findAll2(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2) {
+		return hDao.findAll2(houseId, areaId, tempLskId, dt1, dt2);
 	}
 
     /**

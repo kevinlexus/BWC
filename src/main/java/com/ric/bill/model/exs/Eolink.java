@@ -153,9 +153,9 @@ public class Eolink implements java.io.Serializable  {
 	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="ID")
 	private Ko koObj;
 
-	// Родительский связанный объект 
+	// Родительский объект 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", updatable = false)
+	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", nullable = true, updatable = true)
 	private Eolink parent;
 
 	// ОГРН Организации

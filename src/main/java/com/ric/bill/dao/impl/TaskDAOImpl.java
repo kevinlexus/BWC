@@ -126,22 +126,27 @@ public class TaskDAOImpl implements TaskDAO {
 	}
     
 	/**
-	 * Вернуть наличие ошибки в любом дочернем задании
+	 * Вернуть наличие ошибки или не выполнения в любом дочернем задании
 	 * @param task - родительское задание
 	 * @return - наличие ошибки
 	 */
 	public Boolean getChildAnyErr(Task task) {
-		Query query =em.createQuery("from Task t where t.parent.id = :parentId and t.state = 'ERR' ");
+		Query query =em.createQuery("from Task t where t.parent.id = :parentId and t.state in ('ERR','INS') ");
 		query.setParameter("parentId", task.getId());
 		List<Task> lst;
 		try {
 			lst = query.getResultList();
-			return true;
+			if (lst.size() !=0) {
+				return true;
+			} else {
+				return false;
+			}
 		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
 			// не найден результат
 			return false;
 		}
 	}
+
 
 	/**
 	 * Вернуть все дочерние задания по заданному

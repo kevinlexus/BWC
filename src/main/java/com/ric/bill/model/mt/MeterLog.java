@@ -74,7 +74,7 @@ public class MeterLog extends Base implements java.io.Serializable, MLogs {
 	 */
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
-	@JoinColumn(name="FK_METER_LOG", referencedColumnName="ID", updatable = false) //внимание! если здесь убрать updatable = false то будет update kmp_meter_vol fk_meter_log!
+	@JoinColumn(name="FK_METER_LOG", referencedColumnName="ID", updatable = false) //внимание! если здесь убрать updatable = false то будет update meter_vol fk_meter_log!
 	//@BatchSize(size = 50)
 	@Fetch(FetchMode.SUBSELECT) // убрал subselect, так как внезапно начало тормозить  
 	private List<Vol> vol = new ArrayList<Vol>(0);
