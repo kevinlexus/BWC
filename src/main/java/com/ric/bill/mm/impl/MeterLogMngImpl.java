@@ -149,7 +149,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @return - возвращаемый объем
 	 */
 	@Cacheable(cacheNames="MeterLogMngImpl.getVolPeriod2", key="{ #rqn, #statusVol, #mc.getId(), #serv.getId(), #dt1, #dt2}")
-	public synchronized SumNodeVol getVolPeriod (int rqn, Integer statusVol, MeterContains mc, Serv serv, Date dt1, Date dt2) {
+	public /*synchronized */SumNodeVol getVolPeriod (int rqn, Integer statusVol, MeterContains mc, Serv serv, Date dt1, Date dt2) {
 		SumNodeVol amntSum = new SumNodeVol();
 		MLogs lastMlwithVol = null, lastMl = null;
 		//перебрать все лог.счетчики, доступные по объекту, сложить объемы
@@ -226,8 +226,8 @@ public class MeterLogMngImpl implements MeterLogMng {
      * @return 
      * @throws CyclicMeter 
      */
-	@Cacheable("MeterLogMngImpl.delNodeVol") // пока оставил кэширование, не должно мешать 
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED) //  ПРИМЕНЯТЬ ТОЛЬКО НА PUBLIC МЕТОДЕ!!! http://stackoverflow.com/questions/4396284/does-spring-transactional-attribute-work-on-a-private-method
+	@Cacheable("MeterLogMngImpl.delNodeVol") // пока оставил кэширование, не должно мешать
+	//@Transactional(readOnly = false, propagation = Propagation.REQUIRED) //  ПРИМЕНЯТЬ ТОЛЬКО НА PUBLIC МЕТОДЕ!!! http://stackoverflow.com/questions/4396284/does-spring-transactional-attribute-work-on-a-private-method
 	public void delNodeVol(int rqn, MLogs mLog, int tp, Date dt1, Date dt2, Integer status) throws CyclicMeter {
 
 		//удалять итератором, иначе java.util.ConcurrentModificationException

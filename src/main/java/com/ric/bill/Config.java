@@ -56,7 +56,7 @@ public class Config {
 	// номер текущего запроса 
 	private int reqNum = 0; 
 
-	private List<Integer> workLst; // обрабатываемые лицевые счета 
+	//private List<Integer> workLst; // обрабатываемые лицевые счета 
 
 	// Текущий период (для партицирования и проч.) 
 	String period;
@@ -120,6 +120,75 @@ public class Config {
 		
 	}
 	
+	// внутренний класс, для обработки блокировок по объектам
+	class Lock {
+		public List<Integer> lskChrg; 
+		public List<Integer> houseChrg; 
+		public List<Integer> houseDist;
+		// конструктор
+		Lock() {
+			lskChrg = new ArrayList<Integer>();
+			houseChrg = new ArrayList<Integer>();
+			houseDist = new ArrayList<Integer>();
+		}
+		
+		// блокировка для начисления и распределения по лиц.счету
+		public synchronized Boolean setLockChrgLsk(Integer rqn, Integer lsk, Integer house) {
+			if (this.houseDist.contains(house)) {
+				// запрет начисления, идёт распределение объемов по дому
+				log.trace("==LOCK== RQN={}, запрет начисления по lsk={}, идёт распределение объемов по дому: house.id={}!", rqn, lsk, house);
+				return false;
+			} else if (this.lskChrg.contains(lsk)) {
+				// запрет начисления, идёт распределение объемов по дому
+				log.trace("==LOCK== RQN={}, запрет начисления по lsk={}, идёт начисление другим потоком по: house.id={}", rqn, lsk, house);
+				return false;
+			} else {
+				// выполнить блокировку для начисления
+				this.houseChrg.add(house);
+				this.lskChrg.add(lsk);
+				log.trace("==LOCK== RQN={}, блокировка для начисления выполнена: house.id={}, lsk={}", rqn, house, lsk);
+				return true;
+			}
+			
+		}
+		
+		// разблокировать лиц.счет
+		public synchronized void unlockChrgLsk(Integer rqn, Integer lsk, Integer house) {
+			log.trace("==LOCK== RQN={}, блокировка для начисления снята: house.id={}, lsk={}", rqn, house, lsk);
+			this.lskChrg.remove(lsk);
+			this.houseChrg.remove(house);
+		}
+		
+		// разблокировать дом
+		public synchronized void unlockDistHouse(Integer rqn, Integer house) {
+			log.trace("==LOCK== RQN={}, блокировка для распределения снята: house.id={}", rqn, house);
+			this.houseDist.remove(house);
+		}
+
+		// блокировка для распределения по дому
+		public synchronized Boolean setLockDistHouse(Integer rqn, Integer house) {
+
+			if (this.houseDist.contains(house)) {
+				// запрет начисления, идёт распределение объемов по дому
+				log.trace("==LOCK== RQN={}, запрет распределения, уже идёт распределение объемов по этому дому: house.id={}", rqn, house);
+				return false;
+			} else if (this.houseChrg.contains(house)) {
+				// запрет начисления, идёт начисление по лицевому в этом доме
+				log.trace("==LOCK== RQN={}, запрет распределения, идёт начисление по лицевому в этом доме: house.id={}", rqn, house);
+				return false;
+			} else {
+				// выполнить блокировку для начисления
+				this.houseDist.add(house);
+				log.trace("==LOCK== RQN={}, блокировка для распределения выполнена: house.id={}", rqn, house);
+				return true;
+			}
+			
+		}
+	}
+	
+	// блокировщик выполнения процессов
+	public Lock lock;
+	
 	// конструктор
 	public Config() {
 		// Загрузить параметры приложения
@@ -138,7 +207,10 @@ public class Config {
 		//calendar = new GregorianCalendar(2940, Calendar.JANUARY, 1);
 		//calendar.clear(Calendar.ZONE_OFFSET);
 		lastDt = Utl.getLastDt();//calendar.getTime();
-		workLst = new ArrayList<Integer>();
+		//workLst = new ArrayList<Integer>();
+		
+		// блокировщик процессов
+		lock = new Lock();
 	}
 	
 	/*
@@ -225,7 +297,7 @@ public class Config {
 	}
 
 	// проверить наличие лицевого и добавить на обработку, если не найден
-	public synchronized boolean checkLsk(Integer lsk) {
+/*	public synchronized boolean checkLsk(Integer lsk) {
 		if (this.workLst.contains(lsk)) {
 			return false;
 		} else {
@@ -234,12 +306,12 @@ public class Config {
 		}
 		
 	}
-	
+*/	
 	// снять с обработки лицевой
-	public synchronized void unCheckLsk(Integer lsk) {
+/*	public synchronized void unCheckLsk(Integer lsk) {
 		this.workLst.remove(lsk);
 	}
-
+*/
 	// получить следующий номер запроса
 	public synchronized int incNextReqNum() {
 		return this.reqNum++;

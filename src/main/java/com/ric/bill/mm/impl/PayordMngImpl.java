@@ -804,6 +804,8 @@ public class PayordMngImpl implements PayordMng {
 							// датам)
 							amntFlow = calcFlow(p, uk, null, curDt1, curDt2, 2);
 							summa2 = amntFlow.summa;
+							summa6 = insal.add(summa1).subtract(summa2).add(summa3).subtract(summa4).subtract(summa5); // TODO добавил 
+
 						} else {
 							// округлить, если не итоговая плат. по концу мес.
 							summa6 = summa6.setScale(0, BigDecimal.ROUND_DOWN);
