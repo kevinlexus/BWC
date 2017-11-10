@@ -48,7 +48,7 @@ public class LstMngImpl implements LstMng {
 	}
 	
     /* Получить типы адресов
-	 * @param tp - 0 - весь список, 1 - ограниченный основными типами
+	 * @param tp - 0 - весь список, 1 - ограниченный основными типами, 2 - только Дом
      */
 	public List<AddrTp> getAddrTpByTp(Integer tp) {
 		return addrTpDao.getByTp(tp);

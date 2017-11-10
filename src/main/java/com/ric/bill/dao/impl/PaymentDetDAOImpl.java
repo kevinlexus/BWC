@@ -31,6 +31,7 @@ public class PaymentDetDAOImpl implements PaymentDetDAO {
 	 * @param trimDt - дата инкассации, по которой отсечь платежи
 	 */
 	public List<PaymentDet> getPaymentDetByPeriod(String period, Date curDt1, Date curDt2, Date trimDt) {
+		//log.info("curDt1={}, curDt2={}, period={}, trimDt={}", curDt1, curDt2, period, trimDt);
 		// получить первую дату периода
 		Query query =em.createQuery("select t from PaymentDet t join t.payment p join p.wp e "
 				+ "left join p.wpClct d where trunc(t.payment.dtf) between :dt1 and :dt2 "

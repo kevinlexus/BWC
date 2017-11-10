@@ -67,7 +67,7 @@ public List<PayordDTO> getPayordDTOLst(List<Payord> lst) {
 public List<PayordGrpDTO> getPayordGrpDTOLst(List<PayordGrp> lst) {
 	List<PayordGrpDTO> lst2 = new ArrayList<PayordGrpDTO>(0);
 	lst.stream().forEach(t-> lst2.add(
-				new PayordGrpDTO(t.getId(), t.getName(), t.getUsername(), t.getDtf())
+				new PayordGrpDTO(t.getId(), t.getName(), t.getDtf(), t.getUsername())
 				));
 	return lst2;
 }
@@ -84,7 +84,9 @@ public List<PayordCmpDTO> getPayordCmpDTOLst(List<PayordCmp> lst) {
 				new PayordCmpDTO(t.getId(), t.getUsername(), t.getDtf(), t.getPayord().getId(), t.getVar().getId(),
 						(t.getServ()!=null ? t.getServ().getId() : null) , (t.getOrg()!=null ? t.getOrg().getId() : null), 
 						(t.getKo()!=null ? t.getKo().getId() : null), 
+						(t.getKoExt()!=null ? t.getKoExt().getId() : null), 
 						(getKoDTO(t.getKo())!=null ? getKoDTO(t.getKo()).getName() : null), 
+						(getKoDTO(t.getKoExt())!=null ? getKoDTO(t.getKoExt()).getName() : null), 
 						t.getMark(), t.getSumma())
 				));
 	return lst2;
@@ -101,7 +103,8 @@ public List<PayordFlowDTO> getPayordFlowDTOLst(List<PayordFlow> lst) {
 	lst.stream().forEach(t-> lst2.add(
 				new PayordFlowDTO(t.getId(), t.getTp(), t.getPayord().getId(),
 						t.getUk().getId(), t.getSumma(), t.getSumma1(), t.getSumma2(), t.getSumma3(), t.getSumma4(), 
-						t.getSumma5(), t.getSumma6(), t.getNpp(), t.getSigned(), t.getDt(), t.getPeriod()
+						t.getSumma5(), t.getSumma6(), t.getNpp(), t.getSigned(), t.getDt(), t.getPeriod(),
+						t.getComm()
 						)
 				));
 	return lst2;
@@ -154,7 +157,9 @@ public List<ServDTO> getServDTOLst(List<Serv> lst) {
  */
 public KoDTO getKoDTO(Ko ko) {
 	KoDTO koDTO = null;
-	if ((ko.getAddrTp().getCd().equals("РКЦ") || ko.getAddrTp().getCd().equals("ЖЭО") || ko.getAddrTp().getCd().equals("Организация")
+	if (ko == null) {
+		return koDTO;
+	} else if ((ko.getAddrTp().getCd().equals("РКЦ") || ko.getAddrTp().getCd().equals("ЖЭО") || ko.getAddrTp().getCd().equals("Организация")
 		  	 || ko.getAddrTp().getCd().equals("РЭУ"))) {
 		koDTO = new KoDTO(ko.getId(), ko.getOrg().getCd(), ko.getOrg().getName(), ko.getAddrTp().getCd());
 		
@@ -163,7 +168,7 @@ public KoDTO getKoDTO(Ko ko) {
 		Date date = new Date();
 		koDTO = new KoDTO(ko.getId(), String.valueOf(ko.getId()), 
 				   ko.getHouse().getStreet().getArea().getName()+", "
-						   + houseMng.getUkNameByDt(ko.getHouse(), date)
+						   + houseMng.getUkByDt(ko.getHouse(), date).getName()
 						   +", "+ko.getHouse().getStreet().getName()+", "+
 						   ko.getHouse().getNd(), 
 				   ko.getAddrTp().getCd());

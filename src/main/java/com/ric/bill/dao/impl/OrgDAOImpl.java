@@ -40,20 +40,20 @@ public class OrgDAOImpl implements OrgDAO {
 	}
 	
 	/**
-	 * Получить все организации
+	 * Получить все организации по типу
+	 * @param tp - 0 - все, 1 - УК
+	 * @return
 	 */
-	public List<Org> getOrgAll() {
-		
-		Query query =em.createQuery("from Org t order by t.name");
+	public List<Org> getOrgAll(int tp) {
+		Query query;
+		if (tp==0) {
+			// все орг
+			query = em.createQuery("from Org t order by nvl(t.isMnt,0) desc, t.name");
+		} else {
+			// УК
+			query = em.createQuery("select t from Org t join t.orgTp otp join otp.addrTp atp where atp.cd='ЖЭО' order by nvl(t.isMnt,0) desc, t.name");
+		}
 		return query.getResultList();
 	}
 
-	/**
-	 * Получить все УК
-	 */
-	public List<Org> getOrgUkAll() {
-		
-		Query query =em.createQuery("select t from Org t join t.orgTp otp join otp.addrTp atp where atp.cd='ЖЭО' order by t.name");
-		return query.getResultList();
-	}
 }

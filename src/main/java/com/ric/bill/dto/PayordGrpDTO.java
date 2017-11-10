@@ -26,12 +26,12 @@ public class PayordGrpDTO {
 	
 
 	// конструктор
-	public PayordGrpDTO(Integer id, String name, String username, Date dtf) {
+	public PayordGrpDTO(Integer id, String name, Date dtf, String username) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.username = username;
 		this.dtf = dtf;
+		this.username = username;
 	}
 
 	// Здесь важен default конструктор (иначе не примет обратно данные, методом POST)

@@ -40,13 +40,14 @@ public class Payord implements java.io.Serializable, Simple {
 	}
 
 	public Payord(String name, String selDays, String formula,
-			PayordGrp payordGrp, Lst periodTp) {
+			PayordGrp payordGrp, Lst periodTp, String username) {
 		super();
 		this.name = name;
 		this.selDays = selDays;
 		this.formula = formula;
 		this.payordGrp = payordGrp;
 		this.periodTp = periodTp;
+		this.username = username;
 	}
 
 	@Id
@@ -64,7 +65,7 @@ public class Payord implements java.io.Serializable, Simple {
 	private String selDays;
 
 	// Пользователь
-	@Column(name = "USERNAME", insertable = false, updatable = false)
+	@Column(name = "USERNAME", insertable = true, updatable = false)
 	private String username;
 	
 	// Дата создания

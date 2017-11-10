@@ -36,12 +36,14 @@ import com.ric.bill.dto.RepItemDTO;
 import com.ric.bill.excp.EmptyStorable;
 import com.ric.bill.excp.WrongDate;
 import com.ric.bill.excp.WrongExpression;
+import com.ric.bill.mm.HouseMng;
 import com.ric.bill.mm.LstMng;
 import com.ric.bill.mm.ObjMng;
 import com.ric.bill.mm.OrgMng;
 import com.ric.bill.mm.ParMng;
 import com.ric.bill.mm.PayordMng;
 import com.ric.bill.mm.ReportMng;
+import com.ric.bill.mm.SecMng;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.bs.Obj;
 import com.ric.bill.model.bs.Org;
@@ -82,6 +84,10 @@ public class PayordMngImpl implements PayordMng {
 	private ObjMng objMng;
 	@Autowired
 	private ParMng parMng;
+	@Autowired
+	private SecMng sec;
+	@Autowired
+	private HouseMng houseMng;
 	
 	/**
 	 * Получить все платежки
@@ -160,7 +166,8 @@ public class PayordMngImpl implements PayordMng {
     // добавить группу платежки из DTO
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public PayordGrp addPayordGrpDto(PayordGrpDTO p) {
-		PayordGrp payordGrp = new PayordGrp(p.getName());
+		log.info("user={}", sec.getCurUser().getCd());
+		PayordGrp payordGrp = new PayordGrp(p.getName(), sec.getCurUser().getCd());
 		em.persist(payordGrp);
 		
 		return payordGrp;
@@ -180,7 +187,8 @@ public class PayordMngImpl implements PayordMng {
 		Payord payord = em.find(Payord.class, p.getPayordFk());
 		Org uk = em.find(Org.class, p.getUkFk());
 		PayordFlow payordFlow = new PayordFlow(payord, uk, p.getSumma(), p.getSumma1(), p.getSumma2(), 
-				p.getSumma3(), p.getSumma4(), p.getSumma5(), p.getSumma6(), p.getNpp(), p.getTp(), reqConfig.getPeriod(), p.getSigned(), false, p.getDt());
+				p.getSumma3(), p.getSumma4(), p.getSumma5(), p.getSumma6(), p.getNpp(), p.getTp(), 
+				reqConfig.getPeriod(), p.getSigned(), false, p.getDt(), p.getComm());
 		em.persist(payordFlow);
 		
 		return payordFlow;
@@ -255,7 +263,7 @@ public class PayordMngImpl implements PayordMng {
 		
 		PayordGrp grp = em.find(PayordGrp.class, p.getPayordGrpFk());
 		Lst period =  em.find(Lst.class, p.getPeriodTpFk()); 
-		Payord payord = new Payord(p.getName(), p.getSelDays(), p.getFormula(), grp, period);
+		Payord payord = new Payord(p.getName(), p.getSelDays(), p.getFormula(), grp, period, sec.getCurUser().getCd());
 		em.persist(payord);
 		
 		return payord;
@@ -271,8 +279,9 @@ public class PayordMngImpl implements PayordMng {
 		Org org = em.find(Org.class, p.getOrgFk());
 		Payord payord = em.find(Payord.class, p.getPayordFk());
 		Ko ko =  em.find(Ko.class, p.getKoFk());
+		Ko koExt =  em.find(Ko.class, p.getKoExtFk());
 		// создать формулу
-		PayordCmp cmp = new PayordCmp(payord, var, serv, org, ko, p.getMark());
+		PayordCmp cmp = new PayordCmp(payord, var, serv, org, ko, koExt, p.getMark(), sec.getCurUser().getCd());
 		em.persist(cmp);
 		
 		return cmp;
@@ -308,14 +317,15 @@ public class PayordMngImpl implements PayordMng {
     }	
 	
 	/**
-     * Получить движения по всем платежкам по типу и периоду
+     * Получить движения по всем платежкам по типу и периоду и УК
      * @param tp - тип движение
      * @param dt1 - дата начала
      * @param dt2 - дата окончания
+     * @param uk - УК
      * @return
      */
-    public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt1, Date dt2) {
-    	return payordFlowDao.getPayordFlowByTpDt(tp, dt1, dt2);
+    public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt1, Date dt2, Integer uk) {
+    	return payordFlowDao.getPayordFlowByTpDt(tp, dt1, dt2, uk);
     }	
 
     // сохранить движение по платежке из DTO
@@ -500,7 +510,7 @@ public class PayordMngImpl implements PayordMng {
 	public List<RepItemDTO> getPayordRep(PeriodReports pr) {
 		List<RepItemDTO> lst;
 		// получить список платежек на текущую дату, с входящим сальдо
-		lst = getPayordFlowByTpDt(2, pr.getDt(), pr.getDt()).stream()
+		lst = getPayordFlowByTpDt(2, pr.getDt(), pr.getDt(), null).stream()
 				//.filter(t -> t.getSigned()) // только подписанные??
 				.map(t-> new RepItemDTO(t.getId(), t.getPayord().getPayordGrp().getName(),
 				t.getPayord().getName(), t.getUk().getName(), 
@@ -610,28 +620,32 @@ public class PayordMngImpl implements PayordMng {
 				// distinct список Маркеров платежки
 				List<String> markLst = p.getPayordCmp().stream().distinct().map(t -> t.getMark())
 						.collect(Collectors.toList());
+
 				p.getPayordCmp().stream().forEach(t -> {
 					// по Каждой формуле-маркеру
 
-					// TODO: Не сделано: Платежка по РКЦ (которая генерит платежки по УК в неё
-					// входящим) - подумать!
-					if (t.getVar().getCd().equals("PAYORD_SUM_PAY_EX")) {
+						// исключать ли средства собранные УК за свой фонд
+						Boolean isExcl = false;
+						if (t.getVar().getCd().equals("PAYORD_SUM_PAY_EX") || t.getVar().getCd().equals("PAYORD_SUM_PEN_EX")) {
+							isExcl = true;
+						}
+						final Boolean excl = isExcl;
+						// тип объекта в формуле платежки
+						final String addrTp = t.getKo().getAddrTp().getCd();
 						// сумма оплаты НЕ включая средства, собранные собств.кассами
 						// собрать сумму по отчету оплаты, сгруппировать по Маркеру и УК
 						paymentDetDao.getPaymentDetByPeriod(period, curDt1, curDt2, trimDt).stream()
-								.filter(d -> d.getPayment().getKart().getUk().equals(t.getKo().getOrg())) // фильтр
-																											// по
-																											// организации,
-																											// по
-																											// которой
-																											// собраны
-																											// средства
-								.filter(d -> !d.getPayment().getWp().getOrg().equals(t.getKo().getOrg())) // фильтр
-																											// по
-																											// организации,
-																											// которая
-																											// собрала
-																											// средства
+								.filter(d -> 
+									!addrTp.equals("AREA") || d.getPayment()
+									.getKart().getKw().getHouse().getStreet().getArea().getKo().equals(t.getKo())) // фильтр по AREA (по городу)
+								.filter(d -> 
+									!addrTp.equals("ЖЭО") || houseMng.getUkByDt(
+											d.getPayment().getKart().getKw().getHouse(), genDt).getKo().equals(t.getKo())) // фильтр по ЖЭО
+								//.filter(d -> 
+								//	!addrTp.equals("Дом") || d.getPayment().getKart().getKw().getHouse().getKo().equals(t.getKo())) // фильтр по Дому
+								
+								.filter(d -> !excl || !d.getPayment().getWp().getOrg().equals(
+										d.getPayment().getKart().getUk())) // если указано, то, кроме орг, которая собрала деньги по своему фонду
 								.filter(d -> t.getServ() == null || d.getServ().equals(t.getServ()))
 								.filter(d -> t.getOrg() == null || d.getOrg().equals(t.getOrg()))
 								.filter(d -> d.getPayment().getTp().getCd().equals("cash")
@@ -639,49 +653,26 @@ public class PayordMngImpl implements PayordMng {
 										|| d.getPayment().getTp().getCd().equals("web")
 										|| d.getPayment().getTp().getCd().equals("bank"))
 								.forEach(d -> {
-									BigDecimal sum1 = Utl.nvl(BigDecimal.valueOf(Utl.nvl(d.getSumma(), 0d)),
-											BigDecimal.ZERO);
-									BigDecimal sum2 = Utl.nvl(BigDecimal.valueOf(Utl.nvl(d.getPen(), 0d)),
-											BigDecimal.ZERO);
-									BigDecimal sum3 = sum1.subtract(sum2);
-									// log.info("Подсчет={}, {}, {}", sum1, sum2, sum3);
-									amntSummByUk.add(new SummByUk(t.getMark(), d.getPayment().getKart().getUk(), sum3));
+									if (t.getVar().getCd().equals("PAYORD_SUM_PAY_EX")) {
+										// Оплата
+										BigDecimal sum1 = Utl.nvl(BigDecimal.valueOf(Utl.nvl(d.getSumma(), 0d)),
+												BigDecimal.ZERO);
+										BigDecimal sum2 = Utl.nvl(BigDecimal.valueOf(Utl.nvl(d.getPen(), 0d)),
+												BigDecimal.ZERO);
+										BigDecimal sum3 = sum1.subtract(sum2);
+										amntSummByUk.add(new SummByUk(t.getMark(), d.getPayment().getKart().getUk(), sum3));
+									} else if (t.getVar().getCd().equals("PAYORD_SUM_PEN_EX")) {
+										// Пеня
+										amntSummByUk.add(new SummByUk(t.getMark(), d.getPayment().getKart().getUk(),
+												BigDecimal.valueOf(Utl.nvl(d.getPen(), 0d))));
+									}
 								}
 						// Utl.nvl(d.getPen(), BigDecimal.ZERO)
 						);
-					} else if (t.getVar().getCd().equals("PAYORD_SUM_PEN_EX")) {
-						// сумма пени НЕ включая средства, собранные собств.кассами
-						// собрать сумму по отчету оплаты, сгруппировать по Маркеру и УК
-						paymentDetDao.getPaymentDetByPeriod(period, curDt1, curDt2, trimDt).stream()
-								.filter(d -> d.getPayment().getKart().getUk().equals(t.getKo().getOrg())) // фильтр
-																											// по
-																											// организации,
-																											// по
-																											// которой
-																											// собраны
-																											// средства
-								.filter(d -> !d.getPayment().getWp().getOrg().equals(t.getKo().getOrg())) // фильтр
-																											// по
-																											// организации,
-																											// которая
-																											// собрала
-																											// средства
-								.filter(d -> t.getServ() == null || d.getServ().equals(t.getServ()))
-								.filter(d -> t.getOrg() == null || d.getOrg().equals(t.getOrg()))
-								.filter(d -> d.getPayment().getTp().getCd().equals("cash")
-										|| d.getPayment().getTp().getCd().equals("acq")
-										|| d.getPayment().getTp().getCd().equals("web")
-										|| d.getPayment().getTp().getCd().equals("bank"))
-								.forEach(d -> amntSummByUk
-										.add(new SummByUk(t.getMark(), d.getPayment().getKart().getUk(),
-												BigDecimal.valueOf(Utl.nvl(d.getPen(), 0d)))));
-					} else {
-						// прочие варианты сбора данных
-					}
 				});
 
 				// distinct список УК
-				List<Org> ukLst = orgMng.getOrgUkAll();
+				List<Org> ukLst = orgMng.getOrgAll(1);
 				//ukLst.stream().forEach(uk -> {
 				for (Org uk : ukLst) {
 					//log.info("Check uk.id={}",uk.getId());
@@ -747,10 +738,10 @@ public class PayordMngImpl implements PayordMng {
 							p.getPayordFlow().remove(iterator.next());
 						}
 						
-						// добавить сальдо, если изменилось
-						if (!summa6.equals(insal) && summa6.compareTo(BigDecimal.ZERO) != 0) {
+						// добавить сальдо, если изменилось, даже если новое - 0 (если отличается)
+						if (!summa6.equals(insal)) {
 							PayordFlow flow = new PayordFlow(p, uk, summa6.doubleValue(), null, null, null, null, null, null, null,
-									0, periodNext, false, false, null);
+									0, periodNext, false, false, null, null);
 							p.getPayordFlow().add(flow);
 						}
 
@@ -788,7 +779,7 @@ public class PayordMngImpl implements PayordMng {
 						// добавить сальдо, если изменилось
 						if (!summa6.equals(insal) && summa6.compareTo(BigDecimal.ZERO) != 0) {
 							PayordFlow flow = new PayordFlow(p, uk, summa6.doubleValue(), null, null, null, null, null, null, null,
-									1, periodNext, false, false, null);
+									1, periodNext, false, false, null, null);
 							p.getPayordFlow().add(flow);
 							//if (p.getId()==244 && uk.getId()==1832) {
 								//log.info("Check p.id={}, uk.id={}, periodNext={}", p.getId(), uk.getId(), periodNext);
@@ -802,9 +793,9 @@ public class PayordMngImpl implements PayordMng {
 						if (isFinal) {
 							// получить сумму перечислений для сальдо по бухгалтерии (взять по фактическим
 							// датам)
-							amntFlow = calcFlow(p, uk, null, curDt1, curDt2, 2);
-							summa2 = amntFlow.summa;
-							summa6 = insal.add(summa1).subtract(summa2).add(summa3).subtract(summa4).subtract(summa5); // TODO добавил 
+							//amntFlow = calcFlow(p, uk, null, curDt1, curDt2, 2);
+							//summa2 = amntFlow.summa;
+							//summa6 = insal.add(summa1).subtract(summa2).add(summa3).subtract(summa4).subtract(summa5); // TODO добавил 
 
 						} else {
 							// округлить, если не итоговая плат. по концу мес.
@@ -823,7 +814,8 @@ public class PayordMngImpl implements PayordMng {
 							// создать движение по платежке, если не нулевое
 							PayordFlow flow = new PayordFlow(p, uk, summa6.doubleValue(), summa1.doubleValue(),
 									summa2.doubleValue(), summa3.doubleValue(), summa4.doubleValue(),
-									summa5.doubleValue(), summa6.doubleValue(), null, 2, period, false, isFinal, genDt);
+									summa5.doubleValue(), summa6.doubleValue(), null, 2, period, false, isFinal, genDt, 
+									null);
 							p.getPayordFlow().add(flow);
 						}
 					}

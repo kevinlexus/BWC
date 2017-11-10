@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Type;
 
 import com.ric.bill.Storable;
 
@@ -43,6 +44,11 @@ public class Org extends Base implements java.io.Serializable, Storable {
 	@BatchSize(size = 50)
 	private List<OrgTp> orgTp = new ArrayList<OrgTp>(0);
     
+	// Взято на обслуживание в новую программу
+	@Type(type= "org.hibernate.type.NumericBooleanType")
+	@Column(name = "MNT", nullable = true)
+	private Boolean isMnt;
+	
 	public Integer getId() {
 		return this.id;
 	}
@@ -69,6 +75,15 @@ public class Org extends Base implements java.io.Serializable, Storable {
 	public void setOrgTp(List<OrgTp> orgTp) {
 		this.orgTp = orgTp;
 	}
+	
+	public Boolean getIsMnt() {
+		return isMnt;
+	}
+	
+	public void setIsMnt(Boolean isMnt) {
+		this.isMnt = isMnt;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 	    if (this == o) return true;

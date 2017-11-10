@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.ric.bill.dao.VsecDAO;
+import com.ric.bill.model.sec.User;
 import com.ric.bill.model.sec.Vsec;
 
 
@@ -39,4 +40,15 @@ import com.ric.bill.model.sec.Vsec;
 			return query.getResultList();
 		}
 	    	    
+	    /*
+	     * Получить пользователя по его CD 
+	     * @param cd - CD пользователя
+	     */
+		@Cacheable(cacheNames="VsecDAOImpl.getUserByCd")
+	    public User getUserByCd(String userCd) {
+			Query query =em.createQuery("from User t where upper(t.cd)=upper(:usercd)");
+			query.setParameter("usercd", userCd);
+			return (User) query.getSingleResult();
+		}
+
 	}

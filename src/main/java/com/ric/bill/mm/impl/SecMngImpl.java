@@ -15,6 +15,7 @@ import com.ric.bill.dao.VsecDAO;
 import com.ric.bill.dto.DTOBuilder;
 import com.ric.bill.dto.KoDTO;
 import com.ric.bill.mm.SecMng;
+import com.ric.bill.model.sec.User;
 import com.ric.bill.model.sec.Vsec;
 import com.ric.bill.Config;
 
@@ -41,19 +42,25 @@ public class SecMngImpl implements SecMng {
 	 * @param roleCd - роль
 	 * @param actCd - действие
 	 */
-	@Override
 	public List<Vsec> getPrivByUserRoleAct(String userCd, String roleCd, String actCd) {
 		
 		return vDao.getPrivByUserRoleAct(userCd, roleCd, actCd);
 	}
 
+
+	/**
+	 * Получить текущего пользователя
+	 */
+	public User getCurUser() {
+		String userCd = config.getCurUserCd();
+		return vDao.getUserByCd(userCd);
+	}
 	
 	/**
 	 * Получить список объектов типа KoDTO, доступных текущему пользователю по определенной роли, действию
 	 * @param roleCd - роль
 	 * @param actCd - действие
 	 */
-	@Override
 	public List<KoDTO> getKoCurUser(String roleCd, String actCd) {
 		String userCd = config.getCurUserCd();
 		List<KoDTO> lst = new ArrayList <KoDTO>(); 

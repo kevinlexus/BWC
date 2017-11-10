@@ -21,6 +21,7 @@ import com.ric.bill.Config;
  *
  */
 @Slf4j
+//@Scope("request")
 @Scope("prototype")
 @Service
 public class RequestConfig implements Serializable {

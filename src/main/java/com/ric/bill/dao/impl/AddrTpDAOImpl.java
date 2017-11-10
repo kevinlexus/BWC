@@ -21,10 +21,20 @@ public class AddrTpDAOImpl implements AddrTpDAO {
     private EntityManager em;
 
     /* Получить типы адресов
-	 * @param tp - 0 - весь список, 1 - ограниченный основными типами
+	 * @param tp - 0 - весь список, 1 - ограниченный основными типами, 2 - только Дом
      */
     public List<AddrTp> getByTp(Integer tp) {
-		Query query =em.createQuery("select t from AddrTp t where t.cd in ('РКЦ','ЖЭО','РЭУ','Дом') order by t.npp");
+    	Query query = null;
+    	if (tp == null || tp == 0) {
+    		// все типы
+    		query =em.createQuery("select t from AddrTp t order by t.npp");
+    	} else if (tp == 1) {
+    		// основные типы
+    		query =em.createQuery("select t from AddrTp t where t.cd in ('РКЦ','ЖЭО','РЭУ','Дом') order by t.npp");
+    	} else if (tp == 2) {
+    		// только дом
+    		query =em.createQuery("select t from AddrTp t where t.cd in ('Дом') order by t.npp");
+    	}
 		return query.getResultList();
 	}
 

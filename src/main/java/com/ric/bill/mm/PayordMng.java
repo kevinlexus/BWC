@@ -43,7 +43,7 @@ public interface PayordMng {
 	public void refreshPayordCmp(PayordCmp t);
 
 	public List<PayordFlow> getPayordFlowByTpPeriod(Integer tp, Org uk, String period);
-	public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt1, Date dt2);
+	public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt1, Date dt2, Integer uk);
 	public void setPayordFlowDto(PayordFlowDTO p);
 
 	public void genPayord(Date genDt, Boolean isFinal, Boolean isEndMonth) throws WrongDate, ParseException, EmptyStorable, WrongExpression;

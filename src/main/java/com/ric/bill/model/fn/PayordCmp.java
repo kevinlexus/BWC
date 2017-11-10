@@ -35,8 +35,8 @@ public class PayordCmp implements java.io.Serializable, Simple {
 		
 	}
 
-	public PayordCmp(Payord payord, Lst var, Serv serv, Org org, Ko ko,
-			String mark) {
+	public PayordCmp(Payord payord, Lst var, Serv serv, Org org, Ko ko, Ko koExt,
+			String mark, String username) {
 		super();
 		this.payord = payord;
 		this.var = var;
@@ -44,6 +44,8 @@ public class PayordCmp implements java.io.Serializable, Simple {
 		this.org = org;
 		this.mark = mark;
 		this.ko = ko;
+		this.koExt = koExt;
+		this.username = username;
 	}
 
 	@Id
@@ -53,7 +55,7 @@ public class PayordCmp implements java.io.Serializable, Simple {
 	private Integer id;
 
 	// Пользователь
-	@Column(name = "USERNAME", insertable = false, updatable = false)
+	@Column(name = "USERNAME", insertable = true, updatable = false)
 	private String username;
 	
 	// Дата создания
@@ -84,6 +86,11 @@ public class PayordCmp implements java.io.Serializable, Simple {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="ID")
 	private Ko ko; 
+	
+	// Дополнительный Объект сбора информации (например Дом)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_KLSK_EXT_OBJ", referencedColumnName="ID")
+	private Ko koExt; 
 	
 	// Маркер
 	@Column(name = "MARK")
@@ -174,7 +181,14 @@ public class PayordCmp implements java.io.Serializable, Simple {
 		this.summa = summa;
 	}
 
-	
+	public Ko getKoExt() {
+		return koExt;
+	}
+
+	public void setKoExt(Ko koExt) {
+		this.koExt = koExt;
+	}
+
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof PayordCmp))

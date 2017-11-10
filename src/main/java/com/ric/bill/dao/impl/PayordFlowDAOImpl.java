@@ -43,22 +43,27 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
      * @param tp - тип
      * @param dt1 - дата начала
      * @param dt2 - дата окончания
+     * @param uk - УК
      * @return
      */
-    public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt1, Date dt2) {
+    public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt1, Date dt2, Integer uk) {
     	Query query = null;
     	if (dt1 != null && dt2 != null ) {
     		query =em.createQuery("select t from PayordFlow t where "
-    				+ "t.dt between :dt1 and :dt2 and t.tp = :tp "
+    				+ "t.dt between :dt1 and :dt2 and t.tp = :tp and "
+    				+ "t.uk.id = decode(:uk, -1, t.uk.id, :uk)  " // NVL не получилось сделать - ORA-00932: inconsistent datatypes: expected BINARY got NUMBER
     				+ "order by t.id");
     		query.setParameter("dt1", dt1);
     		query.setParameter("dt2", dt2);
     		query.setParameter("tp", tp);
+    		query.setParameter("uk", uk);
     	} else {
     		query =em.createQuery("select t from PayordFlow t where "
-    				+ "t.tp = :tp "
+    				+ "t.tp = :tp and "
+    				+ "t.uk.id = decode(:uk, -1, t.uk.id, :uk)  "
     				+ "order by t.id");
     		query.setParameter("tp", tp);
+    		query.setParameter("uk", uk);
     	}
 		return query.getResultList();
 	}

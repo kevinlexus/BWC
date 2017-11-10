@@ -37,9 +37,10 @@ public class PayordGrp implements java.io.Serializable, Simple {
 		
 	}
 
-	public PayordGrp(String name) {
+	public PayordGrp(String name, String username) {
 		super();
 		this.name = name;
+		this.username = username;
 	}
 
 	@Id
@@ -53,7 +54,7 @@ public class PayordGrp implements java.io.Serializable, Simple {
 	private String name;
 
 	// Пользователь
-	@Column(name = "USERNAME", insertable = false, updatable = false)
+	@Column(name = "USERNAME", insertable = true, updatable = false)
 	private String username;
 	
 	// Дата создания

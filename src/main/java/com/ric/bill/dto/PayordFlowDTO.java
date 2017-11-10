@@ -43,6 +43,8 @@ public class PayordFlowDTO {
 	private Date dt;
 	// Период
 	private String period;
+	// Комментарий
+	private String comm;
 
 	// Здесь важен default конструктор (иначе не примет обратно данные, методом POST)
 	public PayordFlowDTO() {
@@ -53,7 +55,7 @@ public class PayordFlowDTO {
 	public PayordFlowDTO(Integer id, Integer tp, Integer payordFk,
 			Integer ukFk, Double summa, Double summa1, Double summa2,
 			Double summa3, Double summa4, Double summa5, Double summa6, Integer npp, Boolean signed,
-			Date dt, String period) {
+			Date dt, String period, String comm) {
 		super();
 		this.id = id;
 		this.tp = tp;
@@ -70,6 +72,7 @@ public class PayordFlowDTO {
 		this.signed = signed;
 		this.dt = dt;
 		this.period = period;
+		this.comm = comm;
 	}
 
 	public Integer getId() {
@@ -191,6 +194,13 @@ public class PayordFlowDTO {
 	public void setSigned(Boolean signed) {
 		this.signed = signed;
 	}
-	
+
+	public String getComm() {
+		return comm;
+	}
+
+	public void setComm(String comm) {
+		this.comm = comm;
+	}
 	
 }

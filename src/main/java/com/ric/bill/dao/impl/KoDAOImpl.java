@@ -43,7 +43,9 @@ public class KoDAOImpl implements KoDAO {
 		// Зная тип адреса, выбрать соотв.запрос
 		if (addrTpCd.equals("РКЦ") || addrTpCd.equals("ЖЭО") || addrTpCd.equals("РЭУ")) {
 			query =em.createQuery("select k from Org o "
-					+ "left join o.ko k join o.orgTp t join t.addrTp tp where tp.cd = :addrTpCd and upper(o.name) like fn.p_chrg_part.getstrbypart(:flt,  :par) ");
+					+ "left join o.ko k join o.orgTp t join t.addrTp tp where tp.cd = :addrTpCd and "
+					+ "upper(o.name) like fn.p_chrg_part.getstrbypart(:flt,  :par) "
+					+ "order by nvl(o.isMnt, 0) desc, o.name");
 			query.setParameter("addrTpCd", addrTpCd);
 			query.setParameter("flt", flt);
 			query.setParameter("par", 1);
@@ -52,7 +54,8 @@ public class KoDAOImpl implements KoDAO {
 
 			query =em.createQuery("select t from House o "
 					+ "join o.ko t join o.street s where upper(o.nd) like fn.p_chrg_part.getstrbypart(:flt,  2) "
-					+ "and upper(s.name) like fn.p_chrg_part.getstrbypart(:flt,  1) ");
+					+ "and upper(s.name) like fn.p_chrg_part.getstrbypart(:flt,  1) "
+					+ "order by s.name, o.nd");
 			query.setParameter("flt", flt);
 			
 		}

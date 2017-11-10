@@ -12,6 +12,7 @@ import com.ric.bill.dao.HouseDAO;
 import com.ric.bill.mm.HouseMng;
 import com.ric.bill.model.ar.House;
 import com.ric.bill.model.ar.HouseSite;
+import com.ric.bill.model.bs.Org;
 
 @Service
 public class HouseMngImpl implements HouseMng {
@@ -36,16 +37,16 @@ public class HouseMngImpl implements HouseMng {
 	}
 
     /**
-     * Получить Наименование УК по дому и дате
+     * Получить УК по дому и дате
      */
-    public String getUkNameByDt(House house, Date dt) {
+    public Org getUkByDt(House house, Date dt) {
 
     	Optional<HouseSite> site = house.getHouseSite().stream().filter(d -> Utl.between(dt, d.getDt1(), d.getDt2()))
 		   .findFirst();
 		if (site.isPresent()) {
-			return site.get().getUk().getName();
+			return site.get().getUk();
 		} else {
-			return "";
+			return null;
 		}
     }
 

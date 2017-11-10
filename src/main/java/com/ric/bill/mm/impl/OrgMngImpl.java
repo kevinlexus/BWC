@@ -21,15 +21,15 @@ public class OrgMngImpl implements OrgMng {
     @PersistenceContext
     private EntityManager em;
 	
-	// Список всех организаций
-    public List<Org> getOrgAll() {
-		return orgDao.getOrgAll();
+	/**
+	 * Получить все организации по типу
+	 * @param tp - 0 - все, 1 - УК
+	 * @return
+	 */
+    public List<Org> getOrgAll(int tp) {
+		return orgDao.getOrgAll(tp);
 	}
 
-	// Список всех УК
-	public List<Org> getOrgUkAll() {
-		return orgDao.getOrgUkAll();
-	}
 
 	
 }
