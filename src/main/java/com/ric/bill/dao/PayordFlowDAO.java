@@ -13,5 +13,5 @@ public interface PayordFlowDAO {
 	public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt1, Date dt2, Integer uk);
 	public List<PayordFlow> getPayordFlowBeforeDt(Integer payordId, Org uk, Integer tp, Date dt);
 	public List<PayordFlow> getPayordFlowBeforePeriod(Integer payordId, Org uk, Integer tp, String period);
-	
+	public void delPayordFlow(Date dt);
 }

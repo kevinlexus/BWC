@@ -37,7 +37,7 @@ public class HouseMngImpl implements HouseMng {
 	}
 
     /**
-     * Получить УК по дому и дате
+     * Получить обслуживающую УК по дому и дате
      */
     public Org getUkByDt(House house, Date dt) {
 

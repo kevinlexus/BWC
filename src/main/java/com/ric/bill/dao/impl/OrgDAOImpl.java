@@ -44,6 +44,7 @@ public class OrgDAOImpl implements OrgDAO {
 	 * @param tp - 0 - все, 1 - УК
 	 * @return
 	 */
+	@Cacheable(cacheNames="OrgDAOImpl.getOrgAll", key="{#tp }")
 	public List<Org> getOrgAll(int tp) {
 		Query query;
 		if (tp==0) {

@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -16,6 +17,7 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Type;
 
 import com.ric.bill.Storable;
+import com.ric.bill.model.ar.Street;
 
 /**
  * Организация
@@ -48,6 +50,10 @@ public class Org extends Base implements java.io.Serializable, Storable {
 	@Type(type= "org.hibernate.type.NumericBooleanType")
 	@Column(name = "MNT", nullable = true)
 	private Boolean isMnt;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", updatable = false)
+	private Org parent;
 	
 	public Integer getId() {
 		return this.id;
@@ -82,6 +88,14 @@ public class Org extends Base implements java.io.Serializable, Storable {
 	
 	public void setIsMnt(Boolean isMnt) {
 		this.isMnt = isMnt;
+	}
+
+	public Org getParent() {
+		return parent;
+	}
+
+	public void setParent(Org parent) {
+		this.parent = parent;
 	}
 
 	@Override

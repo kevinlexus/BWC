@@ -37,7 +37,7 @@ public class PayordFlow implements java.io.Serializable, Simple {
 	public PayordFlow(Payord payord, Org uk, Double summa, Double summa1,
 			Double summa2, Double summa3, Double summa4, Double summa5, 
 			Double summa6, Integer npp, Integer tp, String period, 
-			Boolean signed, Boolean isFinal, Date dt, String comm) {
+			Boolean signed, Boolean isFinal, Date dt, String comm, Integer status) {
 		super();
 		this.payord = payord;
 		this.uk = uk;
@@ -55,6 +55,7 @@ public class PayordFlow implements java.io.Serializable, Simple {
 		this.isFinal = isFinal;
 		this.dt = dt;
 		this.comm = comm;
+		this.status = status;
 	}
 
 	@Id
@@ -131,6 +132,10 @@ public class PayordFlow implements java.io.Serializable, Simple {
     @Column(name = "COMM", updatable = true, nullable = true)
     private String comm;
     
+	// Статус, 0 - для информации только, 1 - для перечислений
+	@Column(name = "STATUS", updatable = true, insertable = true, nullable = true)
+	private Integer status;
+
     public Double getSumma1() {
 		return summa1;
 	}
@@ -274,6 +279,14 @@ public class PayordFlow implements java.io.Serializable, Simple {
 
 	public void setComm(String comm) {
 		this.comm = comm;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	public boolean equals(Object o) {

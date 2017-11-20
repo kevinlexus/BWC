@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -16,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.mariuszgromada.math.mxparser.Expression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -48,6 +51,7 @@ import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.bs.Obj;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.bs.PeriodReports;
+import com.ric.bill.model.cash.PaymentDet;
 import com.ric.bill.model.fn.Payord;
 import com.ric.bill.model.fn.PayordCmp;
 import com.ric.bill.model.fn.PayordFlow;
@@ -188,7 +192,7 @@ public class PayordMngImpl implements PayordMng {
 		Org uk = em.find(Org.class, p.getUkFk());
 		PayordFlow payordFlow = new PayordFlow(payord, uk, p.getSumma(), p.getSumma1(), p.getSumma2(), 
 				p.getSumma3(), p.getSumma4(), p.getSumma5(), p.getSumma6(), p.getNpp(), p.getTp(), 
-				reqConfig.getPeriod(), p.getSigned(), false, p.getDt(), p.getComm());
+				reqConfig.getPeriod(), p.getSigned(), false, p.getDt(), p.getComm(), 1);
 		em.persist(payordFlow);
 		
 		return payordFlow;
@@ -224,6 +228,13 @@ public class PayordMngImpl implements PayordMng {
 			pCmp.setKo(ko);
 		} else {
 			pCmp.setKo(null);
+		}
+
+		if (p.getKoExtFk() != null) {
+			Ko ko = em.find(Ko.class, p.getKoExtFk());	
+			pCmp.setKoExt(ko);
+		} else {
+			pCmp.setKoExt(null);
 		}
 
 		if (p.getServFk() != null) {
@@ -360,7 +371,7 @@ public class PayordMngImpl implements PayordMng {
 
 	// Сумматор сумм по УК и маркеру
 	class AmntSummByUk {
-		List<SummByUk> amnt = new ArrayList<SummByUk>(); // сгруппированные суммы по Маркеру и УК
+		List<SummByUk> amnt = new ArrayList<SummByUk>(20); // сгруппированные суммы по Маркеру и УК
 		public void add(SummByUk s) {
 			SummByUk summ = amnt.stream().filter(t-> t.getUk().equals(s.getUk()) && t.getMark().equals(s.getMark()))
 					.findFirst().orElse(null);
@@ -428,17 +439,22 @@ public class PayordMngImpl implements PayordMng {
 	 * @param uk - УК
 	 * @param dt1 - дата нач.
 	 * @param dt2 - дата кон.
-	 * @param tp - Тип записи:  0-вх.сал., 1-вх.сал.Бух, 2-платежка, 3-корр.перечисл., 4-корр.сборов, 5- корр.удерж
+	 * @param tp - Тип записи:  2-платежка, 3-корр.перечисл., 4-корр.сборов, 5- корр.удерж, (0-вх.сал., 1-вх.сал.Бух, - не использовать!)
 	 * @return
 	 */
+	@Cacheable(cacheNames="PayordMngImpl.calcFlow", key="{ #p.getId(), #uk.getId(), #period, #dt1, #dt2, #tp }")
 	private AmntFlow calcFlow(Payord p, Org uk, String period, Date dt1, Date dt2, Integer tp) {
+		// кроме 0 и 1
+		assert(!tp.equals(0) && !tp.equals(1));
 		AmntFlow amntFlow = new AmntFlow();
 		p.getPayordFlow().stream()
 				.filter(t-> (period==null || (t.getPeriod()!= null && t.getPeriod().equals(period)) ) 
 						&& (dt1==null || (t.getDt()!=null && Utl.between(t.getDt(), dt1, dt2))) 
 						&& t.getUk().equals(uk)
 						&& t.getPayord().equals(p) && t.getTp().equals(tp)
-						&& t.getSigned())
+						&& t.getSigned() // только подписанные
+						&& t.getStatus().equals(1) // взять только платежки к перечислению (не для информации)
+						)
 				.forEach(t-> {
 			amntFlow.summa=amntFlow.summa.add(BigDecimal.valueOf(Utl.nvl(t.getSumma(), 0D)));
 		});
@@ -529,7 +545,7 @@ public class PayordMngImpl implements PayordMng {
 	 * В течении месяца genDt - тек.дата, isFinal=false, isEndMonth=false
 	 * Итоговая платежка genDt - обычно - дата след.месяца, но можно и текущего (например если конец года), isFinal=true, isEndMonth=false
 	 * Итоговое формирование сальдо genDt - без разницы, isFinal=false, isEndMonth=true
-	 * 
+	 * ВНИМАНИЕ! Итоговое формирование - Строго после формирования и подписания итоговой платежки!
 	 * @param genDt - обычно текущая дата
 	 * @param isFinal - финальная платежка
 	 * @param isEndMonth - итоговое формирование сальдо
@@ -538,6 +554,7 @@ public class PayordMngImpl implements PayordMng {
 	 * @throws EmptyStorable 
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	@CacheEvict(value = {"PayordMngImpl.calcFlow"})
 	public void genPayord(Date genDt, Boolean isFinal, Boolean isEndMonth) throws WrongDate, ParseException, EmptyStorable, WrongExpression {
 		long beginTime = System.currentTimeMillis();
 
@@ -569,7 +586,6 @@ public class PayordMngImpl implements PayordMng {
 			dayOfWeek = Utl.convertDaysToEng(formatter.format(genDt));
 		}
 		
-		
 		String period = reqConfig.getPeriod();
 		String periodNext = reqConfig.getPeriodNext();
 		
@@ -584,17 +600,40 @@ public class PayordMngImpl implements PayordMng {
 			// если текущее формирование и дата меньше первой даты периода
 			throw new WrongDate("Некорректная дата, при текущем или финальном формировании платежки");
 		}
+
+
+		// почистить движение по платежке
+		if (isFinal || !isEndMonth){
+			//  по текущей или по итоговой
+			payordFlowDao.delPayordFlow(genDt);
+		}
 		
+		// сумма оплаты НЕ включая средства, собранные собств.кассами
+		List<PaymentDet> lstDetPrep = paymentDetDao.getPaymentDetByPeriod(period, curDt1, curDt2, trimDt).stream().collect(Collectors.toList());
+		// distinct список УК
+		List<Org> ukLst = orgMng.getOrgAll(1);
+		
+		/*log.info("TEST2, size={}", lstDetPrep.size());
+		lstDetPrep.forEach(d -> {
+			log.info("TEST id={} summa={}, uk.name={}, plat.uk.name={}", d.getId(), d.getSumma(), houseMng.getUkByDt(d.getPayment()
+					.getKart().getKw().getHouse(), genDt).getName()
+					);
+		});*/
+
+	
 		// Перебрать все платежки
-		for (Payord p : payordDao.getPayordAll()) {
+		for (Payord p : payordDao.getPayordAll()) {//.stream().filter(tt->tt.getId()==302).collect(Collectors.toList())) {
 			// запретить формировать по умолчанию
 			Boolean isGen = false;
 
-			if (isFinal || isEndMonth) {
+			if (p.getStatus() != 1) {    // ВНИМАНИЕ! ПОМЕНЯЛ!ПОМЕНЯЛ!ПОМЕНЯЛ!ПОМЕНЯЛ!ПОМЕНЯЛ!ПОМЕНЯЛ!ПОМЕНЯЛ!ПОМЕНЯЛ!ПОМЕНЯЛ!ПОМЕНЯЛ!ПОМЕНЯЛ!
+				// не формировать с неактивным статусом
+				isGen = false;
+			} else if (isFinal || isEndMonth) {
 				// всегда формировать итоговую платежку или итоговое формирование сальдо
 				isGen = true;
 			} else {
-				if (p.getPeriodTp().getCd().equals("PAYORD_SELDAY") || p.getPeriodTp().getCd().equals("PAYORD_SELDAY2")) {
+				if (p.getPeriodTp().getCd().equals("PAYORD_SELDAY")	|| p.getPeriodTp().getCd().equals("PAYORD_SELDAY2")) {
 					// Платежка в определённый день недели
 					if (p.getSelDays() == null) {
 						throw new WrongDate("При формировании платежки в определенный день недели, не задан день формирования");
@@ -610,11 +649,22 @@ public class PayordMngImpl implements PayordMng {
 						}
 						
 					}
-					
+				} else if (p.getPeriodTp().getCd().equals("PAYORD_EVERYMONTH")) {
+					// платежка в конце месяца
+					if (Utl.getLastDate(genDt).equals(genDt)) {
+						isGen = true;
+					}
+				} else if (p.getPeriodTp().getCd().equals("PAYORD_EVERYDAY")) {
+					// платежка каждый день
+					isGen = true;
 				}
 			}
 			
-			if (isGen) {
+			// Сформировать вообще все платежки!
+			//isGen = true;
+			
+			//if (isGen) {
+				log.info("Обрабатывается платежка id={} name = {}", p.getId(), p.getName());
 				// если разрешено формировать
 				AmntSummByUk amntSummByUk = new AmntSummByUk();
 				// distinct список Маркеров платежки
@@ -632,50 +682,82 @@ public class PayordMngImpl implements PayordMng {
 						final Boolean excl = isExcl;
 						// тип объекта в формуле платежки
 						final String addrTp = t.getKo().getAddrTp().getCd();
-						// сумма оплаты НЕ включая средства, собранные собств.кассами
-						// собрать сумму по отчету оплаты, сгруппировать по Маркеру и УК
-						paymentDetDao.getPaymentDetByPeriod(period, curDt1, curDt2, trimDt).stream()
+						// тип доп.объекта в формуле платежки
+						String extTp = "xxx";
+						if (t.getKoExt() != null) {
+							extTp = t.getKoExt().getAddrTp().getCd();
+						}
+						final String addrExtTp = extTp;
+						log.info("addrTp={}", addrTp);
+						log.info("addrExtTp={}", addrExtTp);
+						
+						List<PaymentDet> lstDet = lstDetPrep.stream()
 								.filter(d -> 
-									!addrTp.equals("AREA") || d.getPayment()
-									.getKart().getKw().getHouse().getStreet().getArea().getKo().equals(t.getKo())) // фильтр по AREA (по городу)
+									!addrTp.equals("РКЦ") || houseMng.getUkByDt(d.getPayment()
+									.getKart().getKw().getHouse(), genDt) // получить обслуживающую на данный период УК
+									.getParent().getKo().equals(t.getKo())) // фильтр по РКЦ
 								.filter(d -> 
-									!addrTp.equals("ЖЭО") || houseMng.getUkByDt(
-											d.getPayment().getKart().getKw().getHouse(), genDt).getKo().equals(t.getKo())) // фильтр по ЖЭО
-								//.filter(d -> 
-								//	!addrTp.equals("Дом") || d.getPayment().getKart().getKw().getHouse().getKo().equals(t.getKo())) // фильтр по Дому
-								
+									(!addrTp.equals("Организация") && !addrTp.equals("ЖЭО")) || houseMng.getUkByDt(d.getPayment()
+									.getKart().getKw().getHouse(), genDt) // получить обслуживающую на данный период УК
+									.getKo().equals(t.getKo())) // фильтр по УК
+								.filter(d -> 
+									!addrExtTp.equals("Дом") || d.getPayment().getKart().getKw().getHouse()
+									.getKo().equals(t.getKoExt())) // фильтр по доп. объекту - Дому
+
 								.filter(d -> !excl || !d.getPayment().getWp().getOrg().equals(
-										d.getPayment().getKart().getUk())) // если указано, то, кроме орг, которая собрала деньги по своему фонду
+										d.getPayment().getKart().getUk())) // если указано исключить, то, кроме орг, которая собрала деньги по своему фонду
 								.filter(d -> t.getServ() == null || d.getServ().equals(t.getServ()))
 								.filter(d -> t.getOrg() == null || d.getOrg().equals(t.getOrg()))
 								.filter(d -> d.getPayment().getTp().getCd().equals("cash")
 										|| d.getPayment().getTp().getCd().equals("acq")
 										|| d.getPayment().getTp().getCd().equals("web")
-										|| d.getPayment().getTp().getCd().equals("bank"))
-								.forEach(d -> {
-									if (t.getVar().getCd().equals("PAYORD_SUM_PAY_EX")) {
+										|| d.getPayment().getTp().getCd().equals("bank")
+										|| d.getPayment().getTp().getCd().equals("ric_uk")
+										)
+								.collect(Collectors.toList());
+						
+						// собрать сумму по отчету оплаты, сгруппировать по Маркеру и УК
+						lstDet.forEach(d -> {
+									if (t.getVar().getCd().equals("PAYORD_SUM_PAY_EX") || t.getVar().getCd().equals("PAYORD_SUM_PAY")) {
 										// Оплата
 										BigDecimal sum1 = Utl.nvl(BigDecimal.valueOf(Utl.nvl(d.getSumma(), 0d)),
 												BigDecimal.ZERO);
 										BigDecimal sum2 = Utl.nvl(BigDecimal.valueOf(Utl.nvl(d.getPen(), 0d)),
 												BigDecimal.ZERO);
 										BigDecimal sum3 = sum1.subtract(sum2);
-										amntSummByUk.add(new SummByUk(t.getMark(), d.getPayment().getKart().getUk(), sum3));
-									} else if (t.getVar().getCd().equals("PAYORD_SUM_PEN_EX")) {
+										amntSummByUk.add(new SummByUk(t.getMark(), houseMng.getUkByDt(d.getPayment()
+												.getKart().getKw().getHouse(), genDt), sum3));
+									} else if (t.getVar().getCd().equals("PAYORD_SUM_PEN_EX") || t.getVar().getCd().equals("PAYORD_SUM_PEN")) {
 										// Пеня
-										amntSummByUk.add(new SummByUk(t.getMark(), d.getPayment().getKart().getUk(),
+										amntSummByUk.add(new SummByUk(t.getMark(), houseMng.getUkByDt(d.getPayment()
+												.getKart().getKw().getHouse(), genDt),
 												BigDecimal.valueOf(Utl.nvl(d.getPen(), 0d))));
 									}
 								}
 						// Utl.nvl(d.getPen(), BigDecimal.ZERO)
 						);
+						
+						/*if (p.getId()==315) {
+							log.info("TEST2, size={}", lstDet.size());
+							lstDet.forEach(d -> {
+								log.info("TEST2 id={} summa={}, uk.name={}, plat.uk.name={}", d.getId(), d.getSumma(), houseMng.getUkByDt(d.getPayment()
+										.getKart().getKw().getHouse(), genDt).getName()
+										);
+							});
+						}*/
+						
 				});
 
-				// distinct список УК
-				List<Org> ukLst = orgMng.getOrgAll(1);
+
+				log.info("Список сумм по маркерам:"); 
+				amntSummByUk.amnt.stream().forEach(e-> {
+					log.info("org.id={}, org.name={}, mark={}, summa={}", 
+							e.getUk().getId(), e.getUk().getName(), e.getMark(), e.getSumma());
+				});
+
 				//ukLst.stream().forEach(uk -> {
 				for (Org uk : ukLst) {
-					//log.info("Check uk.id={}",uk.getId());
+					
 					// По каждой УК, за период:
 					BigDecimal summa1 = null;
 					BigDecimal summa2 = null;
@@ -741,7 +823,7 @@ public class PayordMngImpl implements PayordMng {
 						// добавить сальдо, если изменилось, даже если новое - 0 (если отличается)
 						if (!summa6.equals(insal)) {
 							PayordFlow flow = new PayordFlow(p, uk, summa6.doubleValue(), null, null, null, null, null, null, null,
-									0, periodNext, false, false, null, null);
+									0, periodNext, false, false, null, null, null);
 							p.getPayordFlow().add(flow);
 						}
 
@@ -779,7 +861,7 @@ public class PayordMngImpl implements PayordMng {
 						// добавить сальдо, если изменилось
 						if (!summa6.equals(insal) && summa6.compareTo(BigDecimal.ZERO) != 0) {
 							PayordFlow flow = new PayordFlow(p, uk, summa6.doubleValue(), null, null, null, null, null, null, null,
-									1, periodNext, false, false, null, null);
+									1, periodNext, false, false, null, null, null);
 							p.getPayordFlow().add(flow);
 							//if (p.getId()==244 && uk.getId()==1832) {
 								//log.info("Check p.id={}, uk.id={}, periodNext={}", p.getId(), uk.getId(), periodNext);
@@ -801,21 +883,21 @@ public class PayordMngImpl implements PayordMng {
 							// округлить, если не итоговая плат. по концу мес.
 							summa6 = summa6.setScale(0, BigDecimal.ROUND_DOWN);
 						}
-						// занулить, если отрицательная
-						if (summa6.floatValue() < 0) {
+						// занулить, если отрицательная или если информационная платежка (status=0)
+						if (summa6.floatValue() < 0 || !isGen) {
 							summa6 = BigDecimal.ZERO;
 						}
 
 						if (summa1.compareTo(BigDecimal.ZERO) != 0 || summa2.compareTo(BigDecimal.ZERO) != 0
 								|| summa3.compareTo(BigDecimal.ZERO) != 0 || summa4.compareTo(BigDecimal.ZERO) != 0
 								|| summa5.compareTo(BigDecimal.ZERO) != 0 || summa6.compareTo(BigDecimal.ZERO) != 0) {
-							log.info("Итоговая платежка: сумма сборов={}, перечисл.={}, корр.сбор.={}, корр.перечисл.={}, удержано={}, Итого={}",
+							log.info("Платежка: сумма сборов={}, перечисл.={}, корр.сбор.={}, корр.перечисл.={}, удержано={}, Итого={}",
 								       summa1, summa2, summa3, summa4, summa5, summa6);
-							// создать движение по платежке, если не нулевое
+							// создать движение по платежке, если не нулевой хоть один компонент
 							PayordFlow flow = new PayordFlow(p, uk, summa6.doubleValue(), summa1.doubleValue(),
 									summa2.doubleValue(), summa3.doubleValue(), summa4.doubleValue(),
 									summa5.doubleValue(), summa6.doubleValue(), null, 2, period, false, isFinal, genDt, 
-									null);
+									null, (isGen ? 1: 0));
 							p.getPayordFlow().add(flow);
 						}
 					}
@@ -831,7 +913,7 @@ public class PayordMngImpl implements PayordMng {
 					}
 				}; // ##
 
-			}
+			//}
 		}
 		
 		long endTime1 = System.currentTimeMillis() - beginTime;

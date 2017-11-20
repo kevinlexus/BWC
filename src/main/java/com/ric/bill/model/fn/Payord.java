@@ -101,6 +101,10 @@ public class Payord implements java.io.Serializable, Simple {
 	@JoinColumn(name="FK_PAYORD", referencedColumnName="ID", updatable = false)
 	//@Fetch(FetchMode.SUBSELECT)
 	private List<PayordFlow> payordFlow = new ArrayList<PayordFlow>(0);
+
+	// Статус, 0 - архивная запись, 1-активная запись
+	@Column(name = "STATUS", insertable = false, updatable = false)
+	private Integer status;
 	
 	public Integer getId() {
 		return id;
@@ -182,6 +186,14 @@ public class Payord implements java.io.Serializable, Simple {
 
 	public void setPayordFlow(List<PayordFlow> payordFlow) {
 		this.payordFlow = payordFlow;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	public boolean equals(Object o) {
