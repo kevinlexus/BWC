@@ -66,8 +66,8 @@ public class Payment implements java.io.Serializable, Simple {
 	// Тип платежа
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_TP", referencedColumnName="ID")
-	private Lst tp; 
-	
+	private TypePay tp; 
+
 	public Integer getId() {
 		return id;
 	}
@@ -116,12 +116,11 @@ public class Payment implements java.io.Serializable, Simple {
 		this.wpClct = wpClct;
 	}
 
-	
-	public Lst getTp() {
+	public TypePay getTp() {
 		return tp;
 	}
 
-	public void setTp(Lst tp) {
+	public void setTp(TypePay tp) {
 		this.tp = tp;
 	}
 

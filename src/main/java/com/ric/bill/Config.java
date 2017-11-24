@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.core.Authentication;
@@ -44,7 +45,6 @@ public class Config {
 	@Autowired
 	private ObjMng objMng;
 
-	private Calendar calendar;
 	static Date lastDt;//=new GregorianCalendar(2940, Calendar.JANUARY, 01).getTime();
 	// наиболее ранняя и поздние даты в биллинге, константы
 	static Date firstDt;//=new GregorianCalendar(1940, Calendar.JANUARY, 01).getTime();
@@ -242,50 +242,53 @@ public class Config {
         }
     	log.info("**** Check Classpath: END****");*/
 		
-		// Объект приложения, получить даты текущего периода
-    	if (getAppTp()==0) { 
-    		// приложение - новая разработка
-	    	Obj obj = objMng.getByCD(-1, "Модуль начисления");
-			
-			calendar = new GregorianCalendar();
-			//calendar = new GregorianCalendar(2015, Calendar.OCTOBER, 15);
-			calendar.clear(Calendar.ZONE_OFFSET);
-			
-			obj.getDw().size();
-			
-			calendar.setTime(parMng.getDate(-1, obj, "Начало расчетного периода"));
-			setCurDt1(calendar.getTime());
-			calendar.setTime(parMng.getDate(-1, obj, "Конец расчетного периода"));
-			setCurDt2(calendar.getTime());
-			
-			// здесь задаются периоды которые постоянны на всём времени работы программы!!! 
-			// задать текущий период в виде ГГГГММ
-			setPeriod(Utl.getPeriodByDate(getCurDt1()));
-	    	// период на 1 мес.вперед
-			setPeriodNext(Utl.addMonth(getPeriod(), 1));
-	    	// период на 1 мес.назад
-			setPeriodBack(Utl.addMonth(getPeriod(), -1));
-		}
-
 		log.info("Начало расчетного периода = {}", getCurDt1());
 		log.info("Конец расчетного периода = {}", getCurDt2());
 	}
 
+	// Получить Calendar текущего периода
+	//@Cacheable(cacheNames="Config.getCalendarCurrentPeriod") Пока отключил 24.11.2017
+	private List<Calendar> getCalendarCurrentPeriod() {
+			List<Calendar> calendarLst = new ArrayList<Calendar>();
+	    	Obj obj = objMng.getByCD(-1, "Модуль начисления");
+			
+			Calendar calendar;
+			calendar = new GregorianCalendar();
+			calendar.clear(Calendar.ZONE_OFFSET);
+			
+			obj.getDw().size();
+			
+			try {
+				calendar.setTime(parMng.getDate(-1, obj, "Начало расчетного периода"));
+				calendarLst.add(calendar);
+				
+				calendar.setTime(parMng.getDate(-1, obj, "Конец расчетного периода"));
+				calendarLst.add(calendar);
+			} catch (EmptyStorable e) {
+				e.printStackTrace();
+				throw new RuntimeException("Параметр Расчетного периода не может быть загружен!");
+			}
+			return calendarLst;
+	}
+	
+	public String getPeriod() {
+		return Utl.getPeriodByDate(getCalendarCurrentPeriod().get(0).getTime());
+	}
 
-	public void setCurDt1(Date curDt1) {
-		this.curDt1 = curDt1;
+	public String getPeriodNext() {
+		return Utl.addMonth(Utl.getPeriodByDate(getCalendarCurrentPeriod().get(0).getTime()), 1);
+	}
+
+	public String getPeriodBack() {
+		return Utl.addMonth(Utl.getPeriodByDate(getCalendarCurrentPeriod().get(0).getTime()), -1);
 	}
 
 	public Date getCurDt1() {
-		return curDt1;
+		return getCalendarCurrentPeriod().get(0).getTime(); 
 	}
 	
-	public void setCurDt2(Date curDt2) {
-		this.curDt2 = curDt2;
-	}
-
 	public Date getCurDt2() {
-		return curDt2;
+		return getCalendarCurrentPeriod().get(1).getTime(); 
 	}
 
 	public static Date getLastDt() {
@@ -296,49 +299,9 @@ public class Config {
 		return firstDt;
 	}
 
-	// проверить наличие лицевого и добавить на обработку, если не найден
-/*	public synchronized boolean checkLsk(Integer lsk) {
-		if (this.workLst.contains(lsk)) {
-			return false;
-		} else {
-			this.workLst.add(lsk);
-			return true;
-		}
-		
-	}
-*/	
-	// снять с обработки лицевой
-/*	public synchronized void unCheckLsk(Integer lsk) {
-		this.workLst.remove(lsk);
-	}
-*/
 	// получить следующий номер запроса
 	public synchronized int incNextReqNum() {
 		return this.reqNum++;
-	}
-
-	public void setPeriod(String period) {
-		this.period = period;
-	}
-
-	public String getPeriod() {
-		return period;
-	}
-
-	public String getPeriodNext() {
-		return periodNext;
-	}
-
-	public void setPeriodNext(String periodNext) {
-		this.periodNext = periodNext;
-	}
-
-	public String getPeriodBack() {
-		return periodBack;
-	}
-
-	public void setPeriodBack(String periodBack) {
-		this.periodBack = periodBack;
 	}
 
 	public Integer getAppTp() {

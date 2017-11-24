@@ -708,12 +708,13 @@ public class PayordMngImpl implements PayordMng {
 										d.getPayment().getKart().getUk())) // если указано исключить, то, кроме орг, которая собрала деньги по своему фонду
 								.filter(d -> t.getServ() == null || d.getServ().equals(t.getServ()))
 								.filter(d -> t.getOrg() == null || d.getOrg().equals(t.getOrg()))
-								.filter(d -> d.getPayment().getTp().getCd().equals("cash")
+								.filter(d -> d.getPayment().getTp().getTpPayord().equals(1)) // перенесли во вьюху
+								/*.filter(d -> d.getPayment().getTp().getCd().equals("cash")
 										|| d.getPayment().getTp().getCd().equals("acq")
 										|| d.getPayment().getTp().getCd().equals("web")
 										|| d.getPayment().getTp().getCd().equals("bank")
 										|| d.getPayment().getTp().getCd().equals("ric_uk")
-										)
+										)*/
 								.collect(Collectors.toList());
 						
 						// собрать сумму по отчету оплаты, сгруппировать по Маркеру и УК
