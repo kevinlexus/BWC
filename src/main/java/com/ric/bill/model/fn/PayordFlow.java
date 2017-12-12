@@ -124,11 +124,11 @@ public class PayordFlow implements java.io.Serializable, Simple {
 	@Column(name = "isFinal", nullable = true)
 	private Boolean isFinal;
 	
-	//дата операции, Дата платежного поручения (платежка)
+	// Дата операции, Дата платежного поручения (платежка)
     @Column(name = "DT", updatable = false, nullable = true)
     private Date dt;
 	
-	// коммментарий
+	// Коммментарий
     @Column(name = "COMM", updatable = true, nullable = true)
     private String comm;
     

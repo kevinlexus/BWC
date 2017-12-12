@@ -87,7 +87,9 @@ public List<PayordCmpDTO> getPayordCmpDTOLst(List<PayordCmp> lst) {
 						(t.getKoExt()!=null ? t.getKoExt().getId() : null), 
 						(getKoDTO(t.getKo())!=null ? getKoDTO(t.getKo()).getName() : null), 
 						(getKoDTO(t.getKoExt())!=null ? getKoDTO(t.getKoExt()).getName() : null), 
-						t.getMark(), t.getSumma())
+						t.getMark(), t.getSumma(), t.getSelDays(),
+						(t.getPeriodTp()!=null ? t.getPeriodTp().getId() : null)
+						)
 				));
 	return lst2;
 }
@@ -184,37 +186,8 @@ public KoDTO getKoDTO(Ko ko) {
  */
 public List<KoDTO> getKoDTOLst(List<Ko> lst) {
 	List<KoDTO> lko = new ArrayList<KoDTO>(0);
-
-/*	TODO - удалить позже
- * List<KoDTO> lst2 = lst.stream().filter(t -> (t.getAddrTp().getCd().equals("РКЦ") || t.getAddrTp().getCd().equals("ЖЭО")
-			 																	  	 || t.getAddrTp().getCd().equals("РЭУ")
-			) )
-		.map(t -> new KoDTO(t.getId(), t.getOrg().getCd(), t.getOrg().getName(), t.getAddrTp().getCd()) )
-		.collect(Collectors.toList());
-	lko.addAll(lst2);
-	
-	// Текущая дата
-	Date date = new Date();
-	
-	// Добавить Дом
-	lst2 = lst.stream().filter(t -> (t.getAddrTp().getCd().equals("Дом")
-			) )
-			.map(t -> new KoDTO(t.getId(), String.valueOf(t.getId()), 
-										   t.getHouse().getStreet().getArea().getName()+", "
-												   + houseMng.getUkNameByDt(t.getHouse(), date)
-												   +", "+t.getHouse().getStreet().getName()+", "+
-												   t.getHouse().getNd(), 
-										   t.getAddrTp().getCd()) )
-			.collect(Collectors.toList());*/
-	// Добавить РКЦ, ЖЭО, РЭУ, Дом
-	log.info("#################### Check2");
-
 	List<KoDTO> lst2 = lst.stream().map(t -> getKoDTO(t)).collect(Collectors.toList());
-	log.info("#################### Check3");
-
 	lko.addAll(lst2);
-	log.info("#################### Check4");
-
 	return lko;
 }
 

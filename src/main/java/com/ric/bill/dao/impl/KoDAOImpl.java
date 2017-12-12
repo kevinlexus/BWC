@@ -49,7 +49,6 @@ public class KoDAOImpl implements KoDAO {
 			query.setParameter("addrTpCd", addrTpCd);
 			query.setParameter("flt", flt);
 			query.setParameter("par", 1);
-			log.info("############### addrTpCd={}flt={}", addrTpCd, flt);
 		} else if (addrTpCd.equals("Дом")) {
 
 			query =em.createQuery("select t from House o "
@@ -59,7 +58,6 @@ public class KoDAOImpl implements KoDAO {
 			query.setParameter("flt", flt);
 			
 		}
-		log.info("#################### Check1");
 		return query.getResultList();
 	}
 

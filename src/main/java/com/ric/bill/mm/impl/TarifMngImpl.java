@@ -115,11 +115,12 @@ public class TarifMngImpl implements TarifMng {
 	 * @return
 	 */
 	public Double getChngVal(Calc calc, Serv serv, Date genDt, String cd, int lvlServ) {
-		log.trace("Serv={}", serv.getId());
+		log.trace("Serv={} lsk={}", serv.getId(), calc.getKart().getLsk());
 		Chng chng = calc.getReqConfig().getChng();	
 		Double val = null;
 		if (chng.getTp().getCd().equals(cd) && (lvlServ == 1 || chng.getServ().equals(serv)) ) {
 			Optional<ChngVal> chngVal;
+			
 			// по дате
 			chngVal = calc.getReqConfig().getChng().getChngLsk().stream()
 					.filter(t -> t.getKart().getLsk().equals(calc.getKart().getLsk())) // фильтр по лиц.счету

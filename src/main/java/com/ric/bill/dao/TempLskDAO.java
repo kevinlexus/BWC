@@ -1,4 +1,4 @@
-package com.ric.bill.dao.impl;
+package com.ric.bill.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

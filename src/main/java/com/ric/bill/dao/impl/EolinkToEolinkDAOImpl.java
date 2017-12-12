@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ric.bill.dao.EolinkToEolinkDAO;
 import com.ric.bill.model.exs.Eolink;
+import com.ric.bill.model.exs.EolinkToEolink;
 
 
 @Repository
@@ -24,6 +25,7 @@ public class EolinkToEolinkDAOImpl implements EolinkToEolinkDAO {
      * @param eolink - Вх. объект
      * @return
      */
+	@Override
     public List<Eolink> getLinkedEolink(Eolink eolink) {
     	List<Eolink> lst; 
 		Query query =em.createQuery("select t.child from EolinkToEolink t where t.parent.id = :id");
@@ -40,12 +42,29 @@ public class EolinkToEolinkDAOImpl implements EolinkToEolinkDAO {
      * @param eolink - Вх. объект
      * @return
      */
+	@Override
     public List<Eolink> getParentEolink(Eolink eolink, String tp) {
-    	List<Eolink> lst; 
 		Query query =em.createQuery("select t.parent from EolinkToEolink t where t.child.id = :id and t.tp.cd = :tp");
 		query.setParameter("id", eolink.getId());
 		query.setParameter("tp", tp);
 		return query.getResultList();
+	}
+
+    /**
+     * Получить отношение родительской сущности к дочерней, по типу
+     * @author lev
+     * @param parent - родительская сущность
+     * @param child  - дочерняя сущность
+     * @param tp     - тип 
+     */
+	@Override
+	public List<EolinkToEolink> getEolinkToEolink(Eolink parent, Eolink child, String tp) {
+		Query query =em.createQuery("from EolinkToEolink t where t.parent.id = :parentId and t.child.id = :childId and t.tp.cd = :tp");
+		query.setParameter("parentId", parent.getId());
+		query.setParameter("childId", child.getId());
+		query.setParameter("tp", tp);
+		return query.getResultList();
+		
 	}
 
 }

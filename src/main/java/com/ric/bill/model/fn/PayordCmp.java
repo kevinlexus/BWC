@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.ric.bill.Simple;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.bs.Org;
@@ -36,7 +38,7 @@ public class PayordCmp implements java.io.Serializable, Simple {
 	}
 
 	public PayordCmp(Payord payord, Lst var, Serv serv, Org org, Ko ko, Ko koExt,
-			String mark, String username) {
+			String mark, String username, String selDays, Lst periodTp) {
 		super();
 		this.payord = payord;
 		this.var = var;
@@ -46,6 +48,8 @@ public class PayordCmp implements java.io.Serializable, Simple {
 		this.ko = ko;
 		this.koExt = koExt;
 		this.username = username;
+		this.selDays = selDays;
+		this.periodTp = periodTp;
 	}
 
 	@Id
@@ -100,6 +104,14 @@ public class PayordCmp implements java.io.Serializable, Simple {
 	@Column(name = "SUMMA")
 	private Double summa;
 
+	// Выбранные дни
+	@Column(name = "SEL_DAYS")
+	private String selDays;
+
+	// Тип периода
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_PERIODTP", referencedColumnName="ID")
+	private Lst periodTp; 
 	
 	public Lst getVar() {
 		return var;
@@ -187,6 +199,22 @@ public class PayordCmp implements java.io.Serializable, Simple {
 
 	public void setKoExt(Ko koExt) {
 		this.koExt = koExt;
+	}
+
+	public String getSelDays() {
+		return selDays;
+	}
+
+	public void setSelDays(String selDays) {
+		this.selDays = selDays;
+	}
+
+	public Lst getPeriodTp() {
+		return periodTp;
+	}
+
+	public void setPeriodTp(Lst periodTp) {
+		this.periodTp = periodTp;
 	}
 
 	public boolean equals(Object o) {

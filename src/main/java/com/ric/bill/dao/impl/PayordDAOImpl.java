@@ -24,7 +24,7 @@ public class PayordDAOImpl implements PayordDAO {
      */
     public List<Payord> getPayordByPayordGrpId(Integer payordGrpId) {
     	
-		Query query =em.createQuery("select t from Payord t join t.payordGrp p where p.id = :payordGrpId");
+		Query query =em.createQuery("select t from Payord t join t.payordGrp p where p.id = :payordGrpId order by t.name");
 		query.setParameter("payordGrpId", payordGrpId);
 		return query.getResultList();
     
@@ -34,7 +34,7 @@ public class PayordDAOImpl implements PayordDAO {
      * Получить все платежки
      */
 	public List<Payord> getPayordAll() {
-		Query query =em.createQuery("select t from Payord t");
+		Query query =em.createQuery("select t from Payord t order by t.name");
 		return query.getResultList();
 
 	}

@@ -136,17 +136,17 @@ public class Config {
 		public synchronized Boolean setLockChrgLsk(Integer rqn, Integer lsk, Integer house) {
 			if (this.houseDist.contains(house)) {
 				// запрет начисления, идёт распределение объемов по дому
-				log.trace("==LOCK== RQN={}, запрет начисления по lsk={}, идёт распределение объемов по дому: house.id={}!", rqn, lsk, house);
+				log.info("==LOCK== RQN={}, запрет начисления по lsk={}, идёт распределение объемов по дому: house.id={}!", rqn, lsk, house);
 				return false;
 			} else if (this.lskChrg.contains(lsk)) {
 				// запрет начисления, идёт распределение объемов по дому
-				log.trace("==LOCK== RQN={}, запрет начисления по lsk={}, идёт начисление другим потоком по: house.id={}", rqn, lsk, house);
+				log.info("==LOCK== RQN={}, запрет начисления по lsk={}, идёт начисление другим потоком по: house.id={}", rqn, lsk, house);
 				return false;
 			} else {
 				// выполнить блокировку для начисления
 				this.houseChrg.add(house);
 				this.lskChrg.add(lsk);
-				log.trace("==LOCK== RQN={}, блокировка для начисления выполнена: house.id={}, lsk={}", rqn, house, lsk);
+				log.info("==LOCK== RQN={}, блокировка для начисления выполнена: house.id={}, lsk={}", rqn, house, lsk);
 				return true;
 			}
 			
@@ -154,14 +154,14 @@ public class Config {
 		
 		// разблокировать лиц.счет
 		public synchronized void unlockChrgLsk(Integer rqn, Integer lsk, Integer house) {
-			log.trace("==LOCK== RQN={}, блокировка для начисления снята: house.id={}, lsk={}", rqn, house, lsk);
+			log.info("==LOCK== RQN={}, блокировка для начисления снята: house.id={}, lsk={}", rqn, house, lsk);
 			this.lskChrg.remove(lsk);
 			this.houseChrg.remove(house);
 		}
 		
 		// разблокировать дом
 		public synchronized void unlockDistHouse(Integer rqn, Integer house) {
-			log.trace("==LOCK== RQN={}, блокировка для распределения снята: house.id={}", rqn, house);
+			log.info("==LOCK== RQN={}, блокировка для распределения снята: house.id={}", rqn, house);
 			this.houseDist.remove(house);
 		}
 
@@ -170,16 +170,16 @@ public class Config {
 
 			if (this.houseDist.contains(house)) {
 				// запрет начисления, идёт распределение объемов по дому
-				log.trace("==LOCK== RQN={}, запрет распределения, уже идёт распределение объемов по этому дому: house.id={}", rqn, house);
+				log.info("==LOCK== RQN={}, запрет распределения, уже идёт распределение объемов по этому дому: house.id={}", rqn, house);
 				return false;
 			} else if (this.houseChrg.contains(house)) {
 				// запрет начисления, идёт начисление по лицевому в этом доме
-				log.trace("==LOCK== RQN={}, запрет распределения, идёт начисление по лицевому в этом доме: house.id={}", rqn, house);
+				log.info("==LOCK== RQN={}, запрет распределения, идёт начисление по лицевому в этом доме: house.id={}", rqn, house);
 				return false;
 			} else {
 				// выполнить блокировку для начисления
 				this.houseDist.add(house);
-				log.trace("==LOCK== RQN={}, блокировка для распределения выполнена: house.id={}", rqn, house);
+				log.info("==LOCK== RQN={}, блокировка для распределения выполнена: house.id={}", rqn, house);
 				return true;
 			}
 			
@@ -252,18 +252,21 @@ public class Config {
 			List<Calendar> calendarLst = new ArrayList<Calendar>();
 	    	Obj obj = objMng.getByCD(-1, "Модуль начисления");
 			
-			Calendar calendar;
-			calendar = new GregorianCalendar();
-			calendar.clear(Calendar.ZONE_OFFSET);
+			Calendar calendar1, calendar2;
+			calendar1 = new GregorianCalendar();
+			calendar1.clear(Calendar.ZONE_OFFSET);
+			
+			calendar2 = new GregorianCalendar();
+			calendar2.clear(Calendar.ZONE_OFFSET);
 			
 			obj.getDw().size();
 			
 			try {
-				calendar.setTime(parMng.getDate(-1, obj, "Начало расчетного периода"));
-				calendarLst.add(calendar);
+				calendar1.setTime(parMng.getDate(-1, obj, "Начало расчетного периода"));
+				calendarLst.add(calendar1);
 				
-				calendar.setTime(parMng.getDate(-1, obj, "Конец расчетного периода"));
-				calendarLst.add(calendar);
+				calendar2.setTime(parMng.getDate(-1, obj, "Конец расчетного периода"));
+				calendarLst.add(calendar2);
 			} catch (EmptyStorable e) {
 				e.printStackTrace();
 				throw new RuntimeException("Параметр Расчетного периода не может быть загружен!");

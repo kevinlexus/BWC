@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.ric.bill.dao.PayordFlowDAO;
@@ -60,7 +61,7 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
     				+ "t.dt between :dt1 and :dt2 and t.tp = :tp and "
     				+ "t.uk.id = decode(:uk, -1, t.uk.id, :uk) and " // NVL не получилось сделать - ORA-00932: inconsistent datatypes: expected BINARY got NUMBER
     				+ "t.status = 1 "
-    				+ "order by t.id");
+    				+ "order by t.payord.name, t.uk.id");
     		query.setParameter("dt1", dt1);
     		query.setParameter("dt2", dt2);
     		query.setParameter("tp", tp);
@@ -70,7 +71,7 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
     				+ "t.tp = :tp and "
     				+ "t.uk.id = decode(:uk, -1, t.uk.id, :uk) and  "
     				+ "t.status = 1 "
-    				+ "order by t.id");
+    				+ "order by t.payord.name, t.uk.id");
     		query.setParameter("tp", tp);
     		query.setParameter("uk", ukId);
     	}
@@ -97,6 +98,27 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
 		return query.getResultList();
 	}
 
+    /** НЕ УДАЛЯТЬ!
+     * Получить движение по платежке, до определенного периода (напр.для вычисления сальдо)
+     * @param payordId - Id платежки
+     * @param uk - УК
+     * @param tp - тип движения
+     * @param period - период
+     */
+/*    public List<PayordFlow> getPayordFlowBeforePeriod(Integer payordId, Org uk, Integer tp, String period) {
+    	Integer ukId = (uk==null? null : uk.getId());
+		Query query =em.createQuery("select t from PayordFlow t join t.payord p where coalesce(:payordId, p.id) = p.id "
+				+ "and t.period <= :period and t.tp = :tp and coalesce(:id, t.uk.id) = t.uk.id and "
+				+ "t.status = 1 "
+				+ "order by t.period desc");
+		query.setParameter("payordId", payordId);
+		query.setParameter("period", period);
+		query.setParameter("tp", tp);
+		query.setParameter("id", ukId );
+		return query.getResultList();
+	}*/
+
+    
     /**
      * Получить движение по платежке, до определенного периода даты (напр.для вычисления сальдо)
      */
@@ -111,7 +133,7 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
 		query.setParameter("id", uk.getId());
 		return query.getResultList();
 	}
-
+    
     /**
      * Удалить движение по платежке по определенной дате или периоду
      * @param dt - дата

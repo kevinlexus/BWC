@@ -22,7 +22,7 @@ public class PayordGrpDAOImpl implements PayordGrpDAO {
 
 	// получить все платежки
     public List<PayordGrp> getPayordGrpAll() {
-		Query query =em.createQuery("from PayordGrp t");
+		Query query =em.createQuery("from PayordGrp t order by t.name");
 		return query.getResultList();
 	}
 

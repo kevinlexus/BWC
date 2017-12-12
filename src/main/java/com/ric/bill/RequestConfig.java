@@ -36,8 +36,6 @@ public class RequestConfig implements Serializable {
 	private Boolean isDist;
 	// перерасчет
 	private Chng chng;
-	// статус записи объема
-	private Integer statusVol;
 	
 	// даты текущего периода (могут быть зависимы от перерасчета)
 	Date curDt1;
@@ -88,8 +86,6 @@ public class RequestConfig implements Serializable {
     			// не распределять объем
         		setIsDist(false);
     		}
-			// установить статус записи объема
-			setStatusVol(0);
     	} else if (tp.equals("1")) {
 			// перерасчет
 	    	setOperTp(1);  // тип-перерасчёт
@@ -101,18 +97,12 @@ public class RequestConfig implements Serializable {
         	setChng(chng);
         	if (chng.getTp().getCd().equals("Корректировка показаний ИПУ")) {
 	        	setIsDist(true); // распределять объем
-	        	// статус записи объема - перерасчетный
-	    		setStatusVol(1);
 	    	} else {
 	    		// для прочих видов перерасчетов
 	        	setIsDist(false); // не распределять объем
-				// статус записи объема
-				setStatusVol(0);
 	    	}
 		} else {
 			// начисление
-			// установить статус записи объема
-			setStatusVol(0);
 		}
 		
 
@@ -201,14 +191,6 @@ public class RequestConfig implements Serializable {
 
 	public Date getCurDt2() {
 		return curDt2;
-	}
-
-	public Integer getStatusVol() {
-		return statusVol;
-	}
-
-	public void setStatusVol(Integer statusVol) {
-		this.statusVol = statusVol;
 	}
 
 	public double getCntCurDays() {

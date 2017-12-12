@@ -64,7 +64,7 @@ public class KartDAOImpl implements KartDAO {
 				q = em.createNativeQuery("select distinct k.lsk "+
 						   "from ar.house h, ar.kart k, ar.kw kw, bs.org o, bs.org u, ar.street s  "+
 						   "where k.fk_kw = kw.id "+
-						   "and h.id = kw.fk_house "+
+						   "and h.id = kw.fk_house "+//and h.id in (187, 168, 2009) and 1=2 "+  //TODO УБРАТЬ!УБРАТЬ!УБРАТЬ!УБРАТЬ!УБРАТЬ!УБРАТЬ!
 						   "and o.parent_id=u.id "+
 						   "and k.fk_uk = u.id "+
 						   //"and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+ ред.31.10.2017 НЕЛЬЗЯ использовать так даты, так как не будут найдены и пересчитаны лс

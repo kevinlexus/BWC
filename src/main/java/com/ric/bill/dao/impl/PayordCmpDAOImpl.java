@@ -25,7 +25,7 @@ public class PayordCmpDAOImpl implements PayordCmpDAO {
 	 */
 	public List<PayordCmp> getPayordCmpByPayordId(Integer payordId) {
 
-		Query query =em.createQuery("select t from PayordCmp t join t.payord p where p.id = :payordId");
+		Query query =em.createQuery("select t from PayordCmp t join t.payord p where p.id = :payordId order by p.name");
 		query.setParameter("payordId", payordId);
 		return query.getResultList();
 

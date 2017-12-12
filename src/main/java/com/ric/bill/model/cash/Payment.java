@@ -15,6 +15,9 @@ import com.ric.bill.Simple;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.bs.Lst;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Заголовок платежа
  * @author lev
@@ -23,8 +26,8 @@ import com.ric.bill.model.bs.Lst;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "PAYMENT", schema="CASH")
+@Getter @Setter
 public class Payment implements java.io.Serializable, Simple {
-
 
 	public Payment() {
 		
@@ -53,7 +56,11 @@ public class Payment implements java.io.Serializable, Simple {
     @Column(name = "DTF")
     private Date dtf;
     
-	// Рабочее место, осуществившее сбор платежа
+	// дата банковского платежа
+    @Column(name = "DT_PAY_BANK")
+    private Date dtPayBank;
+
+    // Рабочее место, осуществившее сбор платежа
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_WP", referencedColumnName="ID")
 	private Wp wp; 
@@ -67,62 +74,6 @@ public class Payment implements java.io.Serializable, Simple {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_TP", referencedColumnName="ID")
 	private TypePay tp; 
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Kart getKart() {
-		return kart;
-	}
-
-	public void setKart(Kart kart) {
-		this.kart = kart;
-	}
-
-	public Date getDtClct() {
-		return dtClct;
-	}
-
-	public void setDtClct(Date dtClct) {
-		this.dtClct = dtClct;
-	}
-
-	public Date getDtf() {
-		return dtf;
-	}
-
-	public void setDtf(Date dtf) {
-		this.dtf = dtf;
-	}
-	
-	public Wp getWp() {
-		return wp;
-	}
-
-	public void setWp(Wp wp) {
-		this.wp = wp;
-	}
-	
-	public WpCollection getWpClct() {
-		return wpClct;
-	}
-
-	public void setWpClct(WpCollection wpClct) {
-		this.wpClct = wpClct;
-	}
-
-	public TypePay getTp() {
-		return tp;
-	}
-
-	public void setTp(TypePay tp) {
-		this.tp = tp;
-	}
 
 	public boolean equals(Object o) {
 	    if (this == o) return true;

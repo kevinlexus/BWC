@@ -25,7 +25,8 @@ public class AreaDAOImpl implements AreaDAO {
      * 
      */
     public List<Area> getAllHaveKlsk(Integer areaId) {
-		Query query =em.createQuery("select t from Area t where t.klskId is not null and (:areaId is null or t.id=:areaId)");
+		Query query =em.createQuery("select t from Area t where t.klskId is not null "
+				+ "and (:areaId is null or t.id=:areaId) order by t.id");
 		query.setParameter("areaId", areaId);
 		return query.getResultList();
 	}

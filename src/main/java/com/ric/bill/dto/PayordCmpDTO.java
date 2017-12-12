@@ -21,7 +21,8 @@ public class PayordCmpDTO {
 	// конструктор
 	public PayordCmpDTO(Integer id, String username, Date dtf,
 			Integer payordFk, Integer varFk, Integer servFk, Integer orgFk,
-			Integer koFk, Integer koExtFk, String koName, String koExtName, String mark, Double summa) {
+			Integer koFk, Integer koExtFk, String koName, String koExtName, 
+			String mark, Double summa, String selDays, Integer periodTpFk) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -36,6 +37,8 @@ public class PayordCmpDTO {
 		this.koExtName = koExtName;
 		this.mark = mark;
 		this.summa = summa;
+		this.selDays = selDays;
+		this.periodTpFk = periodTpFk;
 	}
 
 	private Integer id;
@@ -77,6 +80,11 @@ public class PayordCmpDTO {
 	// Сумма
 	private Double summa;
 
+	// Выбранные дни
+	private String selDays;
+	
+	// Fk на тип периода
+	private Integer periodTpFk;
 	
 	public Integer getId() {
 		return id;
@@ -183,6 +191,21 @@ public class PayordCmpDTO {
 		this.koExtName = koExtName;
 	}
 
-	
+	public String getSelDays() {
+		return selDays;
+	}
+
+	public void setSelDays(String selDays) {
+		this.selDays = selDays;
+	}
+
+	public Integer getPeriodTpFk() {
+		return periodTpFk;
+	}
+
+	public void setPeriodTpFk(Integer periodTpFk) {
+		this.periodTpFk = periodTpFk;
+	}
+
 }
 

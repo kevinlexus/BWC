@@ -46,7 +46,8 @@ public interface PayordMng {
 	public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt1, Date dt2, Integer uk);
 	public void setPayordFlowDto(PayordFlowDTO p);
 
-	public void genPayord(Date genDt, Boolean isFinal, Boolean isEndMonth) throws WrongDate, ParseException, EmptyStorable, WrongExpression;
+	public void genPayord(Date genDt, Boolean isFinal, Boolean isEndMonth, Integer payordId, Integer payordCmpId)
+			throws WrongDate, ParseException, EmptyStorable, WrongExpression;
 	public PayordFlow getInsal(Payord p, Org uk, String period, Integer tp);
 	public BigDecimal getInsalSumm(Payord p, Org uk, String period, Integer tp);	
 	List<RepItemDTO> getPayordRep(PeriodReports pr);

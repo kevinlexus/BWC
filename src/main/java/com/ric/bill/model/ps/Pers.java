@@ -12,8 +12,8 @@ import javax.persistence.Table;
 import com.ric.bill.Simple;
 
 /**
- * Персона
- * 
+ * Проживающий
+ * @author lev
  *
  */
 @SuppressWarnings("serial")

@@ -34,11 +34,13 @@ public class PaymentDetDAOImpl implements PaymentDetDAO {
 		log.info("curDt1={}, curDt2={}, period={}, trimDt={}", curDt1, curDt2, period, trimDt);
 		// получить первую дату периода
 		Query query =em.createQuery("select t from PaymentDet t join t.payment p join p.wp e "
-				+ "left join p.wpClct d where trunc(t.payment.dtf) between :dt1 and :dt2 "
-				+ "and (e.id in (600, 5000) and trunc(t.payment.dtf) between :dt1 and :trimDt " // Сбер, Web
-				+ "or e.id not in (600, 5000) and trunc(d.dtClose) between :dt1 and :trimDt) "); // Кроме Сбер, Web, wp.id=5000 - это гениальное творчество Мишы и Димана
+				+ "left join p.wpClct d where "
+				+ "e.id in (600) and trunc(nvl(d.dtClose, t.payment.dtf)) between trunc(:dt1) and trunc(:trimDt) " // Банки - поменяли 04.12.17 обратно  t.payment.dtPayBank --> t.payment.dtf  
+				+ "or e.id in (5000) and trunc(t.payment.dtf) between trunc(:dt1) and trunc(:trimDt) " // Web (Газпромбанк, Виталя делает)
+				+ "or t.payment.tp.id in (2012,1624,2096,2087) and trunc(t.payment.dtf) between trunc(:dt1) and trunc(:trimDt) " // Безналичные платежи УК и т.п.
+				+ "or trunc(d.dtClose) between trunc(:dt1) and trunc(:trimDt)) "); // Прочие
 		query.setParameter("dt1", curDt1);
-		query.setParameter("dt2", curDt2);
+//		query.setParameter("dt2", curDt2);
 		query.setParameter("trimDt", trimDt);
 		
 		//log.info("dt1={}, dt2={}, trimDt={}", curDt1, curDt2, trimDt);

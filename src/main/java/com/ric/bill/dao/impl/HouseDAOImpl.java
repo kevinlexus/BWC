@@ -3,6 +3,7 @@ package com.ric.bill.dao.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
@@ -72,7 +73,7 @@ public class HouseDAOImpl implements HouseDAO {
 				q = em.createNativeQuery("select distinct h.id "+
 						   "from ar.house h, ar.kart k, ar.kw kw, bs.org o, bs.org u, ar.street s  "+
 						   "where k.fk_kw = kw.id "+
-						   "and h.id = kw.fk_house "+
+						   "and h.id = kw.fk_house "+//and h.id in (187, 168, 2009) "+  //TODO УБРАТЬ!УБРАТЬ!УБРАТЬ!УБРАТЬ!УБРАТЬ!УБРАТЬ!
 						   //"and ? between k.dt1 and k.dt2 "+
 						   "and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+// ред.31.10.2017 здесь использовать даты таким образом. (участв.лиц.тек периода)
 						   "and o.parent_id=u.id "+
