@@ -503,15 +503,15 @@ public class Utl {
 	/**
 	 * Логгер выполнения программы
 	 */
-	public static void logger (Boolean isReset, Integer step, Integer lsk, Integer servId) {
-		return;
+	//public static void logger (Boolean isReset, Integer step, Integer lsk, Integer servId) {
+	//	return;
 		/*if (isReset) {
 			log.info("------------> BEGIN           lsk={}, serv.id={}", lsk, servId);
 		} else {
 			log.info("------------> TIMING lsk={}, serv.id={}, step={}, time={}", lsk, servId, step, System.currentTimeMillis()-startTime);
 		}
 		startTime = System.currentTimeMillis();*/
-	}
+	//}
 
 }
 

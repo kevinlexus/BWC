@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.ric.bill.model.ar.Kart;
+import com.ric.bill.model.ps.Pers;
 
 
 public interface KartDAO {

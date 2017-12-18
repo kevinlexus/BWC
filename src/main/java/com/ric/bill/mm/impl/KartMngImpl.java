@@ -17,6 +17,7 @@ import com.ric.bill.Standart;
 import com.ric.bill.TarifContains;
 import com.ric.bill.Utl;
 import com.ric.bill.dao.KartDAO;
+import com.ric.bill.dao.PersDAO;
 import com.ric.bill.excp.EmptyServ;
 import com.ric.bill.excp.EmptyStorable;
 import com.ric.bill.mm.KartMng;
@@ -25,6 +26,8 @@ import com.ric.bill.mm.TarifMng;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.fn.Chng;
+import com.ric.bill.model.fn.PersPrivilege;
+import com.ric.bill.model.fn.PrivilegeServ;
 import com.ric.bill.model.ps.Pers;
 import com.ric.bill.model.ps.Reg;
 import com.ric.bill.model.ps.Registrable;
@@ -38,6 +41,8 @@ public class KartMngImpl implements KartMng {
 
 	@Autowired
 	private KartDAO kDao;
+	@Autowired
+	private PersDAO persDao;
 	@Autowired
 	private ParMng parMng;
 	@Autowired
@@ -170,15 +175,12 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 * @throws EmptyStorable 
 	 */
+	@Override
 	@Cacheable(cacheNames="KartMngImpl.getCntPers", key="{#rqn, #rc.getKo().getId(), #serv.getId(), #cntPers, #genDt}") 
 	public void getCntPers(int rqn, Calc calc, RegContains rc, Serv serv, CntPers cntPers, Date genDt) throws EmptyStorable{
 		List<Pers> counted = new ArrayList<Pers>();
 		Chng chng = calc.getReqConfig().getChng();
-		cntPers.cnt=0; //кол-во человек
-		cntPers.cntVol=0; //кол-во чел. для определения объема
-		cntPers.cntEmpt=0; //кол-во чел. для анализа пустая ли квартира
-		cntPers.cntFact=0; // кол-во проживающих фактическое (без виртуальных +1 собственников, если никто не прописан)
-		cntPers.cntOwn=0; // кол-во собственников
+		cntPers.setUp();
 		//поиск сперва по постоянной регистрации 
 		for (Registrable p : rc.getReg()) {
 			if (p.getPers()!=null && !foundPers(counted, p.getPers())) {
@@ -190,12 +192,14 @@ public class KartMngImpl implements KartMng {
 							cntPers.cnt++;
 							cntPers.cntVol++;
 							cntPers.cntFact++;
+							cntPers.persLst.add(p.getPers());
 						}
 					} else {
 						//не проверять временное отсутствие, считать проживающего
 						cntPers.cnt++;
 						cntPers.cntVol++;
 						cntPers.cntFact++;
+						cntPers.persLst.add(p.getPers());
 					}
 					cntPers.cntEmpt++;
 				} else {
@@ -206,6 +210,7 @@ public class KartMngImpl implements KartMng {
 							cntPers.cnt++;
 							cntPers.cntVol++;
 							cntPers.cntFact++;
+							cntPers.persLst.add(p.getPers());
 						}
 						cntPers.cntEmpt++;
 					}
@@ -222,6 +227,7 @@ public class KartMngImpl implements KartMng {
 						cntPers.cnt++;
 						cntPers.cntVol++;
 						cntPers.cntFact++;
+						cntPers.persLst.add(p.getPers());
 					}
 				}
 			}		
@@ -244,6 +250,7 @@ public class KartMngImpl implements KartMng {
 	 * @param tp - тип норматива, 0 - для определения нормы и свыше, 1 - для определения объема
 	 * @throws EmptyServ 
 	 */
+	@Override
 	@Cacheable(cacheNames="KartMngImpl.getStandartVol", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") // сделал отдельный кэш, иначе валится с Cannot Cast Standart to Boolean! 
 	public Standart getStandartVol(int rqn, Calc calc, Serv serv, CntPers cntPers, Date genDt, int tp) throws EmptyStorable {
 		log.trace("STANDART1="+serv.getId()+" dt="+genDt);	
@@ -372,6 +379,7 @@ public class KartMngImpl implements KartMng {
 	 * @param genDt - Дата выборки
 	 * @return
 	 */
+	@Override
 	@Cacheable(cacheNames="KartMngImpl.getServPropByCD", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #cd, #genDt }") 
 	public Double getServPropByCD(int rqn, Calc calc, Serv serv, String cd, Date genDt) {
 		//log.info("проверка кэша ----------> rqn={}, serv.id={}, cd={}, genDt={}", rqn, serv.getId(), cd, genDt);
@@ -396,6 +404,7 @@ public class KartMngImpl implements KartMng {
 	 * @param genDt - Дата выборки
 	 * @return
 	 */
+	@Override
 	@Cacheable(cacheNames="KartMngImpl.getOrg", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
 	public /*synchronized*/ Org getOrg(int rqn, Calc calc, Serv serv, Date genDt) {
 		Org org;
@@ -428,6 +437,7 @@ public class KartMngImpl implements KartMng {
 	 * @param genDt - Дата выборки
 	 * @return
 	 */
+	@Override
 	@Cacheable(cacheNames="KartMngImpl.getServ", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
 	public /*synchronized*/ boolean getServ(int rqn, Calc calc, Serv serv, Date genDt) {
 		boolean exs = false;
@@ -447,8 +457,8 @@ public class KartMngImpl implements KartMng {
 	 * @param cmd - добавлять ли услугу в список(0) или удалять(1)?
 	 * @return - обновленный список услуг
 	 */
+	@Override
     public List<Serv> checkServ(Calc calc, TarifContains tc, List lst, String cd, int cmd) {
-
     	tc.getTarifklsk().stream().forEach(t -> {
     		t.getTarprop().stream()
     			.filter(d -> d.getServ().getServChrg() != null && d.getServ().getServChrg().equals(d.getServ()))
@@ -512,6 +522,7 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 * @throws EmptyServ 
 	 */
+	@Override
 	@Cacheable(cacheNames="KartMngImpl.getServAll", key="{#rqn, #calc.getHouse().getId(), #calc.getKart().getLsk() }")
 	public List<Serv> getServAll(int rqn, Calc calc) {
 		List<Serv> lst = new ArrayList<Serv>();
@@ -540,6 +551,7 @@ public class KartMngImpl implements KartMng {
 	 * @param kart
 	 * @param genDt
 	 */
+	@Override
 	@Cacheable("KartMngImpl.getCapPrivs")
 	public /*synchronized*/ double getCapPrivs(int rqn, Calc calc, RegContains rc, Date genDt) { //TODO! ВРЕМЕННО ВКЛЮЧИЛ кэш
 		boolean above70owner=false;
@@ -592,8 +604,22 @@ public class KartMngImpl implements KartMng {
 	}
 
 	
-	//все лицевые по определённому критерию
+	// все лицевые по определённому критерию
+	@Override
 	public List<Kart> findAll(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2) {
 		return kDao.findAll(houseId, areaId, tempLskId, dt1, dt2);
 	}
+
+	/**
+	 * получить Льготу проживающему, по услуге
+	 * @param pers - проживающий
+	 * @param serv - услуга
+	 * @param genDt - дата формирования
+	 * @return
+	 */
+	@Override
+	public PrivilegeServ getPrivilegeServByPers(Pers pers, Serv serv, Date genDt) {
+		return persDao.getPrivilegeServByPers(pers.getId(), serv.getId(), genDt).stream().findFirst().orElse(null);
+	}
+	
 }

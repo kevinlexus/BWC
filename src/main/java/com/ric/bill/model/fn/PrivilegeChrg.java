@@ -22,6 +22,7 @@ import com.ric.bill.Simple;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.bs.Org;
+import com.ric.bill.model.ps.Pers;
 import com.ric.bill.model.tr.Serv;
 
 import lombok.Getter;
@@ -55,6 +56,11 @@ public class PrivilegeChrg implements java.io.Serializable {
 	@Column(name = "status", nullable = true)
 	private Integer status;
 
+	// Льгота по проживающему
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_PERSXPRIVILEGE", referencedColumnName="ID", updatable = false)
+	private PersPrivilege persPrivilege;
+	
 	// Период
 	@Column(name = "PERIOD")
 	private String period;

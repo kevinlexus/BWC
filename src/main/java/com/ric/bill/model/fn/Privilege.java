@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -47,17 +48,21 @@ public class Privilege implements java.io.Serializable, Simple {
 	private Integer id;
 
 	// Закон
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_LAW", referencedColumnName="ID")
-	@Fetch(FetchMode.SUBSELECT)
-	private List<Law> law = new ArrayList<Law>(0);
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_LAW", referencedColumnName="ID", updatable = false)
+	private Law law;
 
 	// Город, область
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_AREA", referencedColumnName="ID")
-	@Fetch(FetchMode.SUBSELECT)
-	private List<Area> area = new ArrayList<Area>(0);
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_AREA", referencedColumnName="ID", updatable = false)
+	private Area area;
 	
+	// Привилегия по услуге
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_PRIVILEGE", referencedColumnName="ID")
+	@Fetch(FetchMode.SUBSELECT)
+	private List<PrivilegeServ> privilegeServ = new ArrayList<PrivilegeServ>(0);
+
 	// Наименование
 	@Column(name = "name")
 	private String name;

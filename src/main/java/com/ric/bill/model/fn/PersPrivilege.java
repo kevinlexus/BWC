@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -46,16 +47,14 @@ public class PersPrivilege implements java.io.Serializable {
 	private Integer id;
 
 	// Проживающий
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_PERS", referencedColumnName="ID")
-	@Fetch(FetchMode.SUBSELECT)
-	private List<Pers> pers = new ArrayList<Pers>(0);
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_PERS", referencedColumnName="ID", updatable = false)
+	private Pers pers;
 
 	// Привилегия
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_PrivilegE", referencedColumnName="ID")
-	@Fetch(FetchMode.SUBSELECT)
-	private List<Privilege> privilege = new ArrayList<Privilege>(0);
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_PRIVILEGE", referencedColumnName="ID", updatable = false)
+	private Privilege privilege;
 	
 	// Документ - основание льготы
 	@Column(name = "DOC_NAME")

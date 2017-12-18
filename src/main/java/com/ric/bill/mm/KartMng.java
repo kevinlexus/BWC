@@ -6,9 +6,12 @@ import com.ric.bill.Calc;
 import com.ric.bill.CntPers;
 import com.ric.bill.RegContains;
 import com.ric.bill.Standart;
+import com.ric.bill.TarifContains;
 import com.ric.bill.excp.EmptyStorable;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.bs.Org;
+import com.ric.bill.model.fn.PrivilegeServ;
+import com.ric.bill.model.ps.Pers;
 import com.ric.bill.model.tr.Serv;
 
 public interface KartMng  {
@@ -21,4 +24,6 @@ public interface KartMng  {
 	public double getCapPrivs(int rqn, Calc calc, RegContains rc, Date genDt);
 	public boolean getServ(int rqn, Calc calc, Serv serv, Date genDt);
 	public List<Kart> findAll(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2);
+    public List<Serv> checkServ(Calc calc, TarifContains tc, List lst, String cd, int cmd);
+    public PrivilegeServ getPrivilegeServByPers(Pers pers, Serv serv, Date genDt);
 }
