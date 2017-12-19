@@ -66,6 +66,9 @@ public class Chrg implements java.io.Serializable, Simple {
 	@Column(name = "SUM_FULL")
 	private Double sumFull;
 	
+	@Column(name = "SUM_PREF")
+	private Double sumPref;
+
 	@Column(name = "SUM_AMNT")
 	private Double sumAmnt;
 
@@ -120,7 +123,7 @@ public class Chrg implements java.io.Serializable, Simple {
 			
 	// конструктор для окончательно рассчитанных данных (умноженная расценка на объем)
 	public Chrg(Kart kart, Serv serv, Org org, int status, String period,
-			BigDecimal sumFull, BigDecimal sumAmnt, BigDecimal vol,
+			BigDecimal sumFull, BigDecimal sumPref, BigDecimal sumAmnt, BigDecimal vol,
 			BigDecimal price, BigDecimal stdt, Integer cntFact, BigDecimal area, Lst tp, 
 			Chng chng, Integer met, Integer entry, Date dt1, Date dt2, Integer cntOwn) {
 		
@@ -130,6 +133,7 @@ public class Chrg implements java.io.Serializable, Simple {
 		setStatus(status);
 		setPeriod(period);
 		setSumFull(sumFull.doubleValue());
+		setSumPref(sumPref.doubleValue());
 		setSumAmnt(sumAmnt.doubleValue());
 		if (vol!=null) {
 			setVol(vol.doubleValue());
@@ -155,7 +159,7 @@ public class Chrg implements java.io.Serializable, Simple {
 
 	// конструктор для подготовительных данных, рассчитанных в потоке
 	public Chrg(Kart kart, Serv serv, Org org, int status, String period,
-			Double sumFull, Double sumAmnt, Double vol,
+			Double sumFull, Double sumPref, Double sumAmnt, Double vol,
 			Double price, Double stdt, Integer cntFact, Double area, Lst tp, 
 			Date dt1, Date dt2, Integer met, Integer entry, Chng chng, Integer cntOwn) {
 		
@@ -165,6 +169,7 @@ public class Chrg implements java.io.Serializable, Simple {
 		setStatus(status);
 		setPeriod(period);
 		setSumFull(sumFull);
+		setSumPref(sumPref);
 		setSumAmnt(sumAmnt);
 		setVol(vol);
 		setPrice(price);
@@ -347,6 +352,14 @@ public class Chrg implements java.io.Serializable, Simple {
 
 	public void setCntOwn(Integer cntOwn) {
 		this.cntOwn = cntOwn;
+	}
+
+	public Double getSumPref() {
+		return sumPref;
+	}
+
+	public void setSumPref(Double sumPref) {
+		this.sumPref = sumPref;
 	}
 
 	public boolean equals(Object o) {
