@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.ric.bill.model.bs.Org;
+import com.ric.bill.model.fn.PersPrivilege;
 import com.ric.bill.model.fn.Privilege;
 import com.ric.bill.model.ps.Pers;
 import com.ric.bill.model.tr.Serv;
@@ -13,12 +14,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Строка начисления, детализированная
+ * Строка объемов, детализированная
  * @author lev
  *
  */
 @Getter @Setter
-public class ChrgRecDet {
+public class VolDet {
 
 	private BigDecimal vol;
 	private BigDecimal price;
@@ -32,8 +33,7 @@ public class ChrgRecDet {
 	private BigDecimal area;
 	private Integer met;
 	private Integer entry;
-	private Pers pers;
-	private Privilege priv;
+	private PersPrivilege persPriv;
 	private BigDecimal discount;
 	
     /**
@@ -55,8 +55,8 @@ public class ChrgRecDet {
      * @param pers - проживающий
      * @param priv - привилегия
 	 */
-	public ChrgRecDet(BigDecimal vol, BigDecimal price, BigDecimal pricePriv, BigDecimal discount, BigDecimal stdt, Integer cntFact, BigDecimal area, 
-				   Serv serv, Org org, Integer met, Integer entry, Date dt1, Date dt2, Integer cntOwn, Pers pers, Privilege priv) {
+	public VolDet(BigDecimal vol, BigDecimal price, BigDecimal pricePriv, BigDecimal discount, BigDecimal stdt, Integer cntFact, BigDecimal area, 
+				   Serv serv, Org org, Integer met, Integer entry, Date dt1, Date dt2, Integer cntOwn, PersPrivilege persPriv) {
 		setVol(vol);
 		setPrice(price);
 		setPricePriv(pricePriv);
@@ -71,8 +71,7 @@ public class ChrgRecDet {
 		setDt2(dt2);
 		setCntFact(cntFact);
 		setCntOwn(cntOwn);
-		setPers(pers);
-		setPriv(priv);
+		setPersPriv(persPriv);
 	}
 	
 }

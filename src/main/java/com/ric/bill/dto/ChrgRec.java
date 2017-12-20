@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Строка начисления, для сохранения в таблицу CHRG
+ * Строка начисления, для сохранения в таблицу FN.CHRG
  * @author lev
  *
  */

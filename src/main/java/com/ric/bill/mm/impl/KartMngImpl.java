@@ -27,6 +27,7 @@ import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.fn.Chng;
 import com.ric.bill.model.fn.PersPrivilege;
+import com.ric.bill.model.fn.Privilege;
 import com.ric.bill.model.fn.PrivilegeServ;
 import com.ric.bill.model.ps.Pers;
 import com.ric.bill.model.ps.Reg;
@@ -618,8 +619,19 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 */
 	@Override
-	public PrivilegeServ getPrivilegeServByPers(Pers pers, Serv serv, Date genDt) {
-		return persDao.getPrivilegeServByPers(pers.getId(), serv.getId(), genDt).stream().findFirst().orElse(null);
+	public PersPrivilege getPersPrivilege(Pers pers, Serv serv, Date genDt) {
+		return persDao.getPersPrivilege(pers.getId(), serv.getId(), genDt).stream().findFirst().orElse(null);
+	}
+
+	/**
+	 * получить Отношение привилегии к услуге
+	 * @param priv - льгота
+	 * @param serv - услуга
+	 * @return
+	 */
+	@Override
+	public PrivilegeServ getPrivilegeServ(Privilege priv, Serv serv) {
+		return persDao.getPrivilegeServ(priv.getId(), serv.getId());
 	}
 	
 }

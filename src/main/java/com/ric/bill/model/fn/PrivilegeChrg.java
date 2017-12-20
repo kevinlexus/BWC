@@ -1,7 +1,6 @@
 package com.ric.bill.model.fn;
 
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -18,11 +17,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.ric.bill.Simple;
 import com.ric.bill.model.ar.Kart;
-import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.bs.Org;
-import com.ric.bill.model.ps.Pers;
 import com.ric.bill.model.tr.Serv;
 
 import lombok.Getter;
@@ -35,55 +31,86 @@ import lombok.Setter;
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "PRIVILEGE_CHRG", schema="FN")
 @Getter @Setter
 public class PrivilegeChrg implements java.io.Serializable {
 
 	// ID
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CHRG")
-	@SequenceGenerator(name="SEQ_CHRG", sequenceName="FN.SEQ_CHRG", allocationSize=10)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PRIV")
+	@SequenceGenerator(name="SEQ_PRIV", sequenceName="FN.SEQ_PRIVILEGE_CHRG", allocationSize=10)
     @Column(name = "ID", unique=true, updatable = false, nullable = false)			
 	private Integer id;
 	
-    // Лиц.счет
+    // лиц.счет
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="LSK", referencedColumnName="LSK", updatable = false)
 	private Kart kart;
 
-	//Статус, 0 - архивная запись, 1-текущее начисление
+	// статус, 0 - архивная запись, 1-текущее начисление
 	@Column(name = "status", nullable = true)
 	private Integer status;
 
-	// Льгота по проживающему
+	// льгота по проживающему
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_PERSXPRIVILEGE", referencedColumnName="ID", updatable = false)
 	private PersPrivilege persPrivilege;
 	
-	// Период
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_SERV", referencedColumnName="ID")
+	private Serv serv; 
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_ORG", referencedColumnName="ID")
+	private Org org; 
+
+	// период
 	@Column(name = "PERIOD")
 	private String period;
 
-	// Сумма возмещения
+	// сумма возмещения
 	@Column(name = "SUMMA")
 	private Double summa;
 	
-	// Объем возмещения
+	// объем возмещения
 	@Column(name = "VOL")
 	private Double vol;
 
-    // Даты начала и окончания произведенного расчета
+	// перерасчет
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_CHNG", referencedColumnName="ID")
+	private Chng chng; 
+	
+    // даты начала и окончания произведенного расчета
     @Column(name = "DT1", updatable = false, nullable = true)
     private Date dt1;
 
     @Column(name = "DT2", updatable = false, nullable = true)
     private Date dt2;
 	
-	// Дата обновления
-	@Column(name = "DTF", updatable = false, nullable = true)
-    private Date dtf;
-
+    // default конструктор
+    public PrivilegeChrg() {
+    	
+    }
+    
+	// конструктор
+	public PrivilegeChrg(Kart kart, Serv serv, Org org, Integer status, PersPrivilege persPrivilege, String period, Double summa,
+			Double vol, Chng chng, Date dt1, Date dt2) {
+		super();
+		this.kart = kart;
+		this.serv = serv;
+		this.org = org;
+		this.status = status;
+		this.persPrivilege = persPrivilege;
+		this.period = period;
+		this.summa = summa;
+		this.vol = vol;
+		this.dt1 = dt1;
+		this.dt2 = dt2;
+		this.chng = chng;
+	}
+	
+	
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof PrivilegeChrg))
@@ -105,6 +132,7 @@ public class PrivilegeChrg implements java.io.Serializable {
 	        return super.hashCode();
 	    }
 	}
+
 	
 	
 }
