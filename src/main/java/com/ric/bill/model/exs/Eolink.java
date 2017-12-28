@@ -1,6 +1,7 @@
 package com.ric.bill.model.exs;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -25,6 +26,9 @@ import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.oralv.Ko;
 import com.ric.bill.model.sec.User;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 /**
  * Связанный объект 
@@ -34,6 +38,7 @@ import com.ric.bill.model.sec.User;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "EOLINK", schema="EXS")
+@Getter @Setter
 public class Eolink implements java.io.Serializable  {
 
 	public Eolink() {
@@ -211,215 +216,13 @@ public class Eolink implements java.io.Serializable  {
 	@Column(name = "C_LSK_ID", updatable = true, nullable = true)
 	private Integer cLskId;
 
-	public User getUser() {
-		return user;
-	}
+	// Дата создания
+	@Column(name = "DT_CRT")
+	private Date crtDt;
 
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public String getUn() {
-		return un;
-	}
-
-	public void setUn(String un) {
-		this.un = un;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
-	public String getReu() {
-		return reu;
-	}
-
-	public void setReu(String reu) {
-		this.reu = reu;
-	}
-
-	public String getKul() {
-		return kul;
-	}
-
-	public void setKul(String kul) {
-		this.kul = kul;
-	}
-
-	public String getNd() {
-		return nd;
-	}
-
-	public void setNd(String nd) {
-		this.nd = nd;
-	}
-
-	public String getKw() {
-		return kw;
-	}
-
-	public void setKw(String kw) {
-		this.kw = kw;
-	}
-
-	public String getLsk() {
-		return lsk;
-	}
-
-	public void setLsk(String lsk) {
-		this.lsk = lsk;
-	}
-
-	public Integer getEntry() {
-		return entry;
-	}
-
-	public void setEntry(Integer entry) {
-		this.entry = entry;
-	}
-
-	public String getUsl() {
-		return usl;
-	}
-
-	public void setUsl(String usl) {
-		this.usl = usl;
-	}
-
-	public Integer getIdCnt() {
-		return idCnt;
-	}
-
-	public void setIdCnt(Integer idCnt) {
-		this.idCnt = idCnt;
-	}
-
-	public String getGuid() {
-		return guid;
-	}
-
-	public void setGuid(String guid) {
-		this.guid = guid;
-	}
-
-	public String getCdExt() {
-		return cdExt;
-	}
-
-	public void setCdExt(String cdExt) {
-		this.cdExt = cdExt;
-	}
-
-	public Integer getAppTp() {
-		return appTp;
-	}
-
-	public void setAppTp(Integer appTp) {
-		this.appTp = appTp;
-	}
-
-
-	public AddrTp getObjTp() {
-		return objTp;
-	}
-
-	public void setObjTp(AddrTp objTp) {
-		this.objTp = objTp;
-	}
-
-	public Lst getObjTpx() {
-		return objTpx;
-	}
-
-	public void setObjTpx(Lst objTpx) {
-		this.objTpx = objTpx;
-	}
-
-	
-	public Ko getKoObj() {
-		return koObj;
-	}
-
-	public void setKoObj(Ko koObj) {
-		this.koObj = koObj;
-	}
-
-	public Eolink getParent() {
-		return parent;
-	}
-
-	public void setParent(Eolink parEolink) {
-		this.parent = parEolink;
-	}
-
-	public String getOgrn() {
-		return ogrn;
-	}
-
-	public void setOgrn(String ogrn) {
-		this.ogrn = ogrn;
-	}
-
-	public List<EolinkPar> getEolinkPar() {
-		return eolinkPar;
-	}
-
-	public void setEolinkPar(List<EolinkPar> eolinkPar) {
-		this.eolinkPar = eolinkPar;
-	}
-
-	public List<Eolink> getChildLinked() {
-		return childLinked;
-	}
-
-	public void setChildLinked(List<Eolink> childLinked) {
-		this.childLinked = childLinked;
-	}
-
-	public List<Eolink> getParentLinked() {
-		return parentLinked;
-	}
-
-	public void setParentLinked(List<Eolink> parentLinked) {
-		this.parentLinked = parentLinked;
-	}
-
-	public List<Eolink> getChild() {
-		return child;
-	}
-
-	public void setChild(List<Eolink> child) {
-		this.child = child;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-
-	public Integer getIdGrp() {
-		return idGrp;
-	}
-
-	public void setIdGrp(Integer idGrp) {
-		this.idGrp = idGrp;
-	}
-
-	public Integer getcLskId() {
-		return cLskId;
-	}
-
-	public void setcLskId(Integer cLskId) {
-		this.cLskId = cLskId;
-	}
+	// Дата обновления
+	@Column(name = "DT_UPD")
+	private Date updDt;
 
 	public boolean equals(Object o) {
 	    if (this == o) return true;
