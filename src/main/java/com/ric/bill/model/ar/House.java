@@ -34,7 +34,7 @@ import com.ric.bill.model.tr.TarifKlsk;
 classes = {
     @ConstructorResult(
             targetClass = House.class,
-            columns = {
+            columns = { 
                 @ColumnResult(name = "id", type = Long.class)
             })
 })

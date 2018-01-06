@@ -26,9 +26,9 @@ import com.ric.bill.model.tr.TarifKlsk;
  * @author lev
  *
  */
-@SuppressWarnings("serial")
-@Entity
-@Table(name = "AREA", schema="AR")
+@SuppressWarnings("serial") 
+@Entity 
+@Table(name = "AREA", schema="AR") 
 @AttributeOverride(name = "klsk", column = @Column(name = "FK_K_LSK"))
 public class Area extends Base implements java.io.Serializable, Storable, TarifContains {
 
