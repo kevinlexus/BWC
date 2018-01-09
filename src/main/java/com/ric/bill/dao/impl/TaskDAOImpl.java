@@ -47,6 +47,22 @@ public class TaskDAOImpl implements TaskDAO {
 	}
 
     /**
+     * Вернуть задание по CD 
+     */
+    @Override
+    public Task getByCd(String cd) {
+			Query query =em.createQuery("select t from Task t where t.cd=:cd");
+			query.setParameter("cd", cd);
+			try {
+				return (Task) query.getSingleResult();
+			} catch (javax.persistence.NoResultException e) {
+				// не найден результат
+				log.error("Не найдено задание по CD={}", cd);
+				return null;
+			}
+	}
+
+    /**
      * Вернуть список дочерних заданий по родительскому заданию, по определённому типу объектов
      * @param task - родительское задание
      * @param addrTp - тип объекта

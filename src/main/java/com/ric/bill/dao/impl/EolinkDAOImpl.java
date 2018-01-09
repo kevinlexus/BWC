@@ -146,4 +146,22 @@ public class EolinkDAOImpl implements EolinkDAO {
 				+ "where (p.n1 = 1) ");
 		return query.getResultList();		
 	}
+
+	/**
+	 * Получить все объекты, определенного типа, по которым 
+	 * НЕТ созданных заданий определенного типа
+	 * @param eolTp - тип объекта
+	 * @param actTp - тип действия
+	 */
+	@Override
+	public List<Eolink> getEolinkByTpWoTaskTp(String eolTp, String actTp) {
+		
+		Query query = em.createQuery("select e from Eolink e "
+				+ "join AddrTp b with e.objTp.id=b.id and b.cd =:eolTp "
+				+ "where e.id in (7350, 7343, 6440) and e.parent is not null " // TODO УБРАТЬ ВРЕМЕННЫЕ ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+				+ "and not exists (select t from Task t where e.id=t.eolink.id and t.act.cd = :actTp) ");
+		query.setParameter("eolTp", eolTp);
+		query.setParameter("actTp", actTp);
+		return query.getResultList();		
+	}
 }

@@ -61,7 +61,6 @@ public class Task implements java.io.Serializable  {
 		this.fk_user = fk_user;
 	}
 
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
 	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_TASK", allocationSize=1)	
@@ -115,7 +114,11 @@ public class Task implements java.io.Serializable  {
 	@JoinColumn(name="DEP_ID", referencedColumnName="ID")
 	private Task depTask; 
 
-	// CD состояния
+	// CD
+	@Column(name = "CD")
+	private String cd;
+
+	// Статус обработки
 	@Column(name = "STATE")
 	private String state;
 
