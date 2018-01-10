@@ -28,7 +28,7 @@ public class EolinkDAOImpl implements EolinkDAO {
     //конструктор
     public EolinkDAOImpl() {
     	
-    }
+    } 
     
     //вернуть список необработанных действий
     public List<Eolink> getAll() {
