@@ -50,7 +50,7 @@ public class TaskDAOImpl implements TaskDAO {
      * Вернуть задание по CD 
      */
     @Override
-    public Task getByCd(String cd) {
+    public Task getByCd(String cd) { 
 			Query query =em.createQuery("select t from Task t where t.cd=:cd");
 			query.setParameter("cd", cd);
 			try {
