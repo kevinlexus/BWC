@@ -26,7 +26,7 @@ public class EolinkDAOImpl implements EolinkDAO {
     private EntityManager em;
     
     //конструктор
-    public EolinkDAOImpl() {
+    public EolinkDAOImpl() { 
     	
     } 
     
