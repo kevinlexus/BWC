@@ -22,7 +22,7 @@ import com.ric.bill.model.bs.Org;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "HOUSEXSITE", schema="AR")
+@Table(name = "HOUSEXSITE", schema="AR") 
 public class HouseSite implements java.io.Serializable, Simple {
 
 	@Id
