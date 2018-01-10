@@ -13,5 +13,5 @@ public interface TaskDAO {
 	public List<Task> getByTaskAddrTp(Task task, String addrTp, String addrTpx);
 	public Task getByTguid(Task task, String tguid);
 	public Boolean getChildAnyErr(Task task);
-	public Task getByCd(String cd); // новый метод
+	public Task getByCd(String cd); // новый метод 2
 }
