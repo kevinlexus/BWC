@@ -88,7 +88,7 @@
 		</dependency>
 
 
-		<!-- mxparser -->
+		<!-- mxparser 1.1--> 
 		<dependency>
 		    <groupId>mxParser</groupId>
 		    <artifactId>org.mariuszgromada</artifactId>
