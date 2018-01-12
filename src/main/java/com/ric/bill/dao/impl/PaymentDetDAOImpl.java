@@ -38,7 +38,8 @@ public class PaymentDetDAOImpl implements PaymentDetDAO {
 				+ "e.id in (600) and trunc(nvl(d.dtClose, t.payment.dtf)) between trunc(:dt1) and trunc(:trimDt) " // Банки - поменяли 04.12.17 обратно  t.payment.dtPayBank --> t.payment.dtf  
 				+ "or e.id in (5000) and trunc(t.payment.dtf) between trunc(:dt1) and trunc(:trimDt) " // Web (Газпромбанк, Виталя делает)
 				+ "or t.payment.tp.id in (2012,1624,2096,2087) and trunc(t.payment.dtf) between trunc(:dt1) and trunc(:trimDt) " // Безналичные платежи УК и т.п.
-				+ "or trunc(d.dtClose) between trunc(:dt1) and trunc(:trimDt)) "); // Прочие
+				+ "or e.id not in (600,5000) and t.payment.tp.id not in (2012,1624,2096,2087) "
+				+ "and trunc(d.dtClose) between trunc(:dt1) and trunc(:trimDt)) "); // Прочие
 		query.setParameter("dt1", curDt1);
 //		query.setParameter("dt2", curDt2);
 		query.setParameter("trimDt", trimDt);
