@@ -76,6 +76,10 @@ public class PrivilegeChrg implements java.io.Serializable {
 	@Column(name = "VOL")
 	private Double vol;
 
+	// расценка
+	@Column(name = "PRICE")
+	private Double price;
+
 	// перерасчет
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_CHNG", referencedColumnName="ID")
@@ -95,7 +99,7 @@ public class PrivilegeChrg implements java.io.Serializable {
     
 	// конструктор
 	public PrivilegeChrg(Kart kart, Serv serv, Org org, Integer status, PersPrivilege persPrivilege, String period, Double summa,
-			Double vol, Chng chng, Date dt1, Date dt2) {
+			Double vol, Chng chng, Double price, Date dt1, Date dt2) {
 		super();
 		this.kart = kart;
 		this.serv = serv;
@@ -105,9 +109,10 @@ public class PrivilegeChrg implements java.io.Serializable {
 		this.period = period;
 		this.summa = summa;
 		this.vol = vol;
+		this.chng = chng;
+		this.price = price;
 		this.dt1 = dt1;
 		this.dt2 = dt2;
-		this.chng = chng;
 	}
 	
 	

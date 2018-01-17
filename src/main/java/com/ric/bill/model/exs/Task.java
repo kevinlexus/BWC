@@ -23,6 +23,9 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.ric.bill.model.bs.Lst;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 /**
  * Задание на выполнение обмена с ГИС ЖКХ
@@ -33,6 +36,7 @@ import com.ric.bill.model.bs.Lst;
 @Entity
 @Table(name = "TASK", schema="EXS")
 @DynamicUpdate
+@Getter @Setter
 public class Task implements java.io.Serializable  {
 
 	public Task() {
@@ -40,7 +44,7 @@ public class Task implements java.io.Serializable  {
 
 	
 	public Task(Eolink eolink, Task parent, Task depTask, String state, Lst act, String guid, String msgGuid,
-			String un, String result, Date updDt, String tguid, Integer appTp, Integer fk_user) {
+			String un, String result, Date crtDt, String tguid, Integer appTp, Integer fk_user) {
 		super();
 		this.eolink = eolink;
 		this.parent = parent;
@@ -51,12 +55,11 @@ public class Task implements java.io.Serializable  {
 		this.msgGuid = msgGuid;
 		this.un = un;
 		this.result = result;
-		this.updDt = updDt;
+		this.crtDt = crtDt;
 		this.tguid = tguid;
 		this.appTp = appTp;
 		this.fk_user = fk_user;
 	}
-
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
@@ -111,7 +114,11 @@ public class Task implements java.io.Serializable  {
 	@JoinColumn(name="DEP_ID", referencedColumnName="ID")
 	private Task depTask; 
 
-	// CD состояния
+	// CD
+	@Column(name = "CD")
+	private String cd;
+
+	// Статус обработки
 	@Column(name = "STATE")
 	private String state;
 
@@ -136,8 +143,12 @@ public class Task implements java.io.Serializable  {
 	@Column(name = "RESULT")
 	private String result;
 
+	// Дата создания
+	@Column(name = "DT_CRT")
+	private Date crtDt;
+
 	// Дата обновления
-	@Column(name = "DT1")
+	@Column(name = "DT_UPD")
 	private Date updDt;
 
 	// Транспортный GUID объекта
@@ -161,159 +172,6 @@ public class Task implements java.io.Serializable  {
 	@Column(name = "npp")
 	private String npp;
 	
-	public Date getUpdDt() {
-		return updDt;
-	}
-
-	public void setUpdDt(Date updDt) {
-		this.updDt = updDt;
-	}
-
-	public String getUn() {
-		return un;
-	}
-
-	public void setUn(String un) {
-		this.un = un;
-	}
-
-	public Lst getAct() {
-		return act;
-	}
-
-	public void setAct(Lst act) {
-		this.act = act;
-	}
-
-	public Task getParent() {
-		return parent;
-	}
-
-	public void setParent(Task parent) {
-		this.parent = parent;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public Eolink getEolink() {
-		return eolink;
-	}
-
-	public void setEolink(Eolink eolink) {
-		this.eolink = eolink;
-	}
-
-	public String getResult() {
-		return result;
-	}
-
-	public void setResult(String result) {
-		this.result = result;
-	}
-
-	public String getGuid() {
-		return guid;
-	}
-
-	public void setGuid(String guid) {
-		this.guid = guid;
-	}
-
-	public String getTguid() {
-		return tguid;
-	}
-
-	public void setTguid(String tguid) {
-		this.tguid = tguid;
-	}
-
-	public Integer getAppTp() {
-		return appTp;
-	}
-
-	public void setAppTp(Integer appTp) {
-		this.appTp = appTp;
-	}
-
-	public Integer getFk_user() {
-		return fk_user;
-	}
-
-	public void setFk_user(Integer fk_user) {
-		this.fk_user = fk_user;
-	}
-
-	public String getMsgGuid() {
-		return msgGuid;
-	}
-
-	public void setMsgGuid(String msgGuid) {
-		this.msgGuid = msgGuid;
-	}
-
-	public List<TaskPar> getTaskPar() {
-		return taskPar;
-	}
-
-	public void setTaskPar(List<TaskPar> taskPar) {
-		this.taskPar = taskPar;
-	}
-
-	public Task getDepTask() {
-		return depTask;
-	}
-
-	public void setDepTask(Task depTask) {
-		this.depTask = depTask;
-	}
-
-	public List<Task> getChild() {
-		return child;
-	}
-
-	public void setChild(List<Task> child) {
-		this.child = child;
-	}
-
-	public List<TaskToTask> getInside() {
-		return inside;
-	}
-
-	public void setInside(List<TaskToTask> inside) {
-		this.inside = inside;
-	}
-
-	public List<TaskToTask> getOutside() {
-		return outside;
-	}
-
-	public void setOutside(List<TaskToTask> outside) {
-		this.outside = outside;
-	}
-
-	public String getNpp() {
-		return npp;
-	}
-
-	public void setNpp(String npp) {
-		this.npp = npp;
-	}
-
-
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof Task))

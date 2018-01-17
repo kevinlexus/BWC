@@ -615,7 +615,7 @@ public class PayordMngImpl implements PayordMng {
 			payordFlowDao.delPayordFlow(genDt);
 		}
 		
-		// сумма оплаты 
+		// суммы оплаты 
 		List<PaymentDet> lstDetPrep = paymentDetDao.getPaymentDetByPeriod(period, curDt1, curDt2, trimDt).stream().collect(Collectors.toList());
 		// distinct список УК
 		List<Org> ukLst = orgMng.getOrgAll(1);

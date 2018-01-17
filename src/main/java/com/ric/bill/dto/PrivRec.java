@@ -29,17 +29,20 @@ public class PrivRec {
 	private BigDecimal vol;
 	// привиления проживающего
 	private PersPrivilege persPriv;
+	// расценка с учетом льготы 
+	private BigDecimal price;
 	// дата начала, окончания
     private Date dt1, dt2;
 
     // конструктор
-	public PrivRec(Serv serv, Org org, BigDecimal summa, BigDecimal vol, PersPrivilege persPriv, Date dt1,
+	public PrivRec(Serv serv, Org org, BigDecimal summa, BigDecimal vol, PersPrivilege persPriv, BigDecimal price, Date dt1,
 			Date dt2) {
 		super();
 		this.serv = serv;
 		this.org = org;
 		this.summa = summa;
 		this.vol = vol;
+		this.price = price;
 		this.persPriv = persPriv;
 		this.dt1 = dt1;
 		this.dt2 = dt2;
