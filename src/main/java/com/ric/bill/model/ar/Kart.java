@@ -31,6 +31,7 @@ import com.ric.bill.TarifContains;
 import com.ric.bill.model.bs.Dw;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.fn.Chrg;
+import com.ric.bill.model.fn.PrivilegeChrg;
 import com.ric.bill.model.mt.MeterLog;
 import com.ric.bill.model.oralv.Ko;
 import com.ric.bill.model.ps.Reg;
@@ -100,7 +101,7 @@ public class Kart implements java.io.Serializable, MeterContains, TarifContains,
 	@JoinColumn(name="FK_KW", referencedColumnName="ID", updatable = false, insertable = false)
 	private Kw kw;
 
-	//Обслуживающая УК
+	// Обслуживающая УК
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_UK", referencedColumnName="ID", updatable = false, insertable = false)
 	private Org uk;
@@ -130,11 +131,11 @@ public class Kart implements java.io.Serializable, MeterContains, TarifContains,
 	@Column(name = "FK_KW", nullable = true)
 	private Integer fkKw;
 
-	//Лиц.счет из квартплаты - для поиска
+	// Лиц.счет из квартплаты - для поиска
 	@Column(name = "FLSK", nullable = true, updatable = false, insertable = false)
 	private String flsk;
 
-	//Записи начисления
+	// Записи начисления
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="LSK", referencedColumnName="LSK", updatable = false)
 //	@BatchSize(size = 50)
@@ -143,7 +144,13 @@ public class Kart implements java.io.Serializable, MeterContains, TarifContains,
 	    @Filter(name = "FILTER_CHRG1")})
 	private List<Chrg> chrg = new ArrayList<Chrg>(0);
 
-    // даты начала и окончания обслуживания лиц.счета
+	// Записи возмешений по льготе
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="LSK", referencedColumnName="LSK", updatable = false)
+	@Fetch(FetchMode.SUBSELECT)
+	private List<PrivilegeChrg> privilegeChrg = new ArrayList<PrivilegeChrg>(0);
+
+	// даты начала и окончания обслуживания лиц.счета
     @Column(name = "DT1", updatable = false, nullable = true)
     private Date dt1;
 
@@ -252,6 +259,14 @@ public class Kart implements java.io.Serializable, MeterContains, TarifContains,
 	
 	public void setDt2(Date dt2) {
 		this.dt2 = dt2;
+	}
+
+	public List<PrivilegeChrg> getPrivilegeChrg() {
+		return privilegeChrg;
+	}
+
+	public void setPrivilegeChrg(List<PrivilegeChrg> privilegeChrg) {
+		this.privilegeChrg = privilegeChrg;
 	}
 	
 	public boolean equals(Object o) {

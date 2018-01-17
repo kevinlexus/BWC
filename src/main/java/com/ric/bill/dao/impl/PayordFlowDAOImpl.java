@@ -29,6 +29,7 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
      * @param period - период
      * @return
      */
+    @Override
     public List<PayordFlow> getPayordFlowByTpPeriod(Integer tp, Org uk, String period) {
 		Query query =em.createQuery("select t from PayordFlow t where "
 				+ "t.period = :period and t.tp = :tp and t.uk.id = :id and "
@@ -48,6 +49,7 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
      * @param uk - УК
      * @return
      */
+    @Override
     public List<PayordFlow> getPayordFlowByTpDt(Integer tp, Date dt1, Date dt2, Integer uk) {
     	int ukId;
 		if (uk==null) {
@@ -86,6 +88,7 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
      * @param tp - тип
      * @param dt - дата
      */
+    @Override
     public List<PayordFlow> getPayordFlowBeforeDt(Integer payordId, Org uk, Integer tp, Date dt) {
 		Query query =em.createQuery("select t from PayordFlow t join t.payord p where p.id = :payordId "
 				+ "and t.dt <= :dt and t.tp = :tp and t.uk.id = :id and "
@@ -122,13 +125,15 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
     /**
      * Получить движение по платежке, до определенного периода даты (напр.для вычисления сальдо)
      */
-    public List<PayordFlow> getPayordFlowBeforePeriod(Integer payordId, Org uk, Integer tp, String period) {
+    @Override
+    public List<PayordFlow> getPayordFlowBeforePeriod(Integer payordId, Org uk, Integer tp, String period, Integer status) {
 		Query query =em.createQuery("select t from PayordFlow t join t.payord p where p.id = :payordId "
 				+ "and t.period <= :period and t.tp = :tp and t.uk.id = :id and "
-				+ "t.status = 1 "
+				+ "(:status is null or t.status = :status)"
 				+ "order by t.period desc");
 		query.setParameter("payordId", payordId);
 		query.setParameter("period", period);
+		query.setParameter("status", status);
 		query.setParameter("tp", tp);
 		query.setParameter("id", uk.getId());
 		return query.getResultList();
@@ -138,6 +143,7 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
      * Удалить движение по платежке по определенной дате или периоду
      * @param dt - дата
      */
+    @Override
     public void delPayordFlow(Date dt) {
     	Query query = em.createNativeQuery("delete from fn.payord_flow t where "
     			+ "t.dt = :dt");

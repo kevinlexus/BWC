@@ -7,6 +7,6 @@ package com.ric.bill;
  */
 @SuppressWarnings("serial")
 public class Standart implements java.io.Serializable {
-	public Double vol; //значение норматива
-	public Double partVol; //доля норматива в контексте дня (умноженная на кол-во прожив)
+	public Double vol; // значение соцнормы
+	public Double partVol; // доля соцнормы в контексте дня (умноженная на кол-во прожив)
 }

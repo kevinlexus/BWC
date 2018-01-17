@@ -24,6 +24,9 @@ import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.tr.Serv;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Результат начисления
  * @author lev
@@ -33,6 +36,7 @@ import com.ric.bill.model.tr.Serv;
 @Entity
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "CHRG", schema="FN")
+@Getter @Setter
 public class Chrg implements java.io.Serializable, Simple {
 
 
@@ -66,6 +70,9 @@ public class Chrg implements java.io.Serializable, Simple {
 	@Column(name = "SUM_FULL")
 	private Double sumFull;
 	
+	@Column(name = "SUM_PREF")
+	private Double sumPref;
+
 	@Column(name = "SUM_AMNT")
 	private Double sumAmnt;
 
@@ -106,21 +113,23 @@ public class Chrg implements java.io.Serializable, Simple {
 	@JoinColumn(name="FK_ORG", referencedColumnName="ID")
 	private Org org; 
 
+	// перерасчет
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_CHNG", referencedColumnName="ID")
 	private Chng chng; 
 
-	// Номер ввода
+	// номер ввода
 	@Column(name = "ENTRY")
 	private Integer entry;
 	
+    // default конструктор
 	public Chrg() {
 		
 	}
 			
 	// конструктор для окончательно рассчитанных данных (умноженная расценка на объем)
 	public Chrg(Kart kart, Serv serv, Org org, int status, String period,
-			BigDecimal sumFull, BigDecimal sumAmnt, BigDecimal vol,
+			BigDecimal sumFull, BigDecimal sumPref, BigDecimal sumAmnt, BigDecimal vol,
 			BigDecimal price, BigDecimal stdt, Integer cntFact, BigDecimal area, Lst tp, 
 			Chng chng, Integer met, Integer entry, Date dt1, Date dt2, Integer cntOwn) {
 		
@@ -130,6 +139,7 @@ public class Chrg implements java.io.Serializable, Simple {
 		setStatus(status);
 		setPeriod(period);
 		setSumFull(sumFull.doubleValue());
+		setSumPref(sumPref.doubleValue());
 		setSumAmnt(sumAmnt.doubleValue());
 		if (vol!=null) {
 			setVol(vol.doubleValue());
@@ -155,7 +165,7 @@ public class Chrg implements java.io.Serializable, Simple {
 
 	// конструктор для подготовительных данных, рассчитанных в потоке
 	public Chrg(Kart kart, Serv serv, Org org, int status, String period,
-			Double sumFull, Double sumAmnt, Double vol,
+			Double sumFull, Double sumPref, Double sumAmnt, Double vol,
 			Double price, Double stdt, Integer cntFact, Double area, Lst tp, 
 			Date dt1, Date dt2, Integer met, Integer entry, Chng chng, Integer cntOwn) {
 		
@@ -165,6 +175,7 @@ public class Chrg implements java.io.Serializable, Simple {
 		setStatus(status);
 		setPeriod(period);
 		setSumFull(sumFull);
+		setSumPref(sumPref);
 		setSumAmnt(sumAmnt);
 		setVol(vol);
 		setPrice(price);
@@ -178,175 +189,6 @@ public class Chrg implements java.io.Serializable, Simple {
 		setChng(chng);
 		setMet(met);
 		setEntry(entry);
-	}
-
-	public Integer getId() {
-		return this.id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Kart getKart() {
-		return kart;
-	}
-
-	public void setKart(Kart kart) {
-		this.kart = kart;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-
-	public Integer getLsk() {
-		return lsk;
-	}
-
-	public void setLsk(Integer lsk) {
-		this.lsk = lsk;
-	}
-
-	public String getPeriod() {
-		return period;
-	}
-
-	public void setPeriod(String period) {
-		this.period = period;
-	}
-
-	public Double getSumFull() {
-		return sumFull;
-	}
-
-	public void setSumFull(Double sumFull) {
-		this.sumFull = sumFull;
-	}
-
-	public Double getSumAmnt() {
-		return sumAmnt;
-	}
-
-	public void setSumAmnt(Double sumAmnt) {
-		this.sumAmnt = sumAmnt;
-	}
-
-	public Double getVol() {
-		return vol;
-	}
-
-	public void setVol(Double vol) {
-		this.vol = vol;
-	}
-
-	public Double getPrice() {
-		return price;
-	}
-
-	public void setPrice(Double price) {
-		this.price = price;
-	}
-
-	public Date getDt1() {
-		return dt1;
-	}
-
-	public void setDt1(Date dt1) {
-		this.dt1 = dt1;
-	}
-
-	public Date getDt2() {
-		return dt2;
-	}
-
-	public void setDt2(Date dt2) {
-		this.dt2 = dt2;
-	}
-
-	public Lst getTp() {
-		return tp;
-	}
-
-	public void setTp(Lst tp) {
-		this.tp = tp;
-	}
-
-	public Serv getServ() {
-		return serv;
-	}
-
-	public void setServ(Serv serv) {
-		this.serv = serv;
-	}
-
-	public Org getOrg() {
-		return org;
-	}
-
-	public void setOrg(Org org) {
-		this.org = org;
-	}
-
-	public Double getStdt() {
-		return stdt;
-	}
-
-	public void setStdt(Double stdt) {
-		this.stdt = stdt;
-	}
-
-	public Chng getChng() {
-		return chng;
-	}
-
-	public void setChng(Chng chng) {
-		this.chng = chng;
-	}
-
-	public Double getArea() {
-		return area;
-	}
-
-	public void setArea(Double area) {
-		this.area = area;
-	}
-
-	public Integer getMet() {
-		return met;
-	}
-
-	public void setMet(Integer met) {
-		this.met = met;
-	}
-
-	public Integer getEntry() {
-		return entry;
-	}
-
-	public void setEntry(Integer entry) {
-		this.entry = entry;
-	}
-
-	
-	public Integer getCntFact() {
-		return cntFact;
-	}
-
-	public void setCntFact(Integer cntFact) {
-		this.cntFact = cntFact;
-	}
-
-	public Integer getCntOwn() {
-		return cntOwn;
-	}
-
-	public void setCntOwn(Integer cntOwn) {
-		this.cntOwn = cntOwn;
 	}
 
 	public boolean equals(Object o) {

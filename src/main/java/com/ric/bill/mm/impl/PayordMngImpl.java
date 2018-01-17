@@ -509,7 +509,7 @@ public class PayordMngImpl implements PayordMng {
 	 */
     @Cacheable(cacheNames="PayordMngImpl.getInsal", key="{ #p.getId(), #uk.getId(), #period, #tp }")
 	public PayordFlow getInsal(Payord p, Org uk, String period, Integer tp) {
-		PayordFlow payordFlow = payordFlowDao.getPayordFlowBeforePeriod(p.getId(), uk, tp, period).stream().findFirst().orElse(null);
+		PayordFlow payordFlow = payordFlowDao.getPayordFlowBeforePeriod(p.getId(), uk, tp, period, null).stream().findFirst().orElse(null);
 		return payordFlow;
 	}
 	
@@ -520,7 +520,7 @@ public class PayordMngImpl implements PayordMng {
 	 * @return
 	 */
 	public BigDecimal getInsalSumm(Payord p, Org uk, String period, Integer tp) {
-		PayordFlow payordFlow = payordFlowDao.getPayordFlowBeforePeriod(p.getId(), uk, tp, period).stream().findFirst().orElse(null);
+		PayordFlow payordFlow = payordFlowDao.getPayordFlowBeforePeriod(p.getId(), uk, tp, period, null).stream().findFirst().orElse(null);
 		if (payordFlow != null) {
 			return BigDecimal.valueOf(payordFlow.getSumma());
 		} else {

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import com.ric.bill.ResultSetKlsk;
 import com.ric.bill.dao.KartDAO;
 import com.ric.bill.model.ar.Kart;
+import com.ric.bill.model.ps.Pers;
 
 
 @Repository
@@ -37,6 +38,8 @@ public class KartDAOImpl implements KartDAO {
     	
     }
     
+    
+    
     /**
      * Получить список лиц.счетов
      * @param houseId
@@ -45,6 +48,7 @@ public class KartDAOImpl implements KartDAO {
      * @param dt1
      * @return
      */
+    @Override
 	public List<Kart> findAll(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2) {
 		@SqlResultSetMapping(name= STATEMENT_SQLMAP, classes = { //эту часть кода можно закинуть в любое место
 		        @ConstructorResult(targetClass = ResultSetKlsk.class,
@@ -130,6 +134,6 @@ public class KartDAOImpl implements KartDAO {
 		return lstKart;
 		
 	}
-    
-    
+
+
 }
