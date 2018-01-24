@@ -42,6 +42,10 @@ public class PrivilegeServ implements java.io.Serializable, Simple {
 	@Column(name = "DISCOUNT", updatable = true, nullable = true)
 	private Double discount; 
 	
+	// Тип расчета
+	@Column(name = "TP", updatable = true, nullable = true)
+	private Integer tp; 
+
 	// Увеличение соцнормы (объем)
 	@Column(name = "EXT_SOC", updatable = true, nullable = true)
 	private Double extSoc; 

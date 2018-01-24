@@ -34,7 +34,7 @@ public class VolDet {
 	private Integer met;
 	private Integer entry;
 	private PersPrivilege persPriv;
-	private BigDecimal discount;
+	private Integer tp;
 	
     /**
      * конструктор 
@@ -42,7 +42,7 @@ public class VolDet {
      * @param vol - объем
      * @param price - расценка
      * @param pricePriv - расценка по льготе (null по нельготной услуге)
-     * @param discount - дисконт по расценке
+     * @param tp - вариант расчета льготы
      * @param stdt - норматив
      * @param cntFact - кол-во прожив по факту (без собственников)
      * @param serv - услуга
@@ -55,12 +55,12 @@ public class VolDet {
      * @param pers - проживающий
      * @param priv - привилегия
 	 */
-	public VolDet(BigDecimal vol, BigDecimal price, BigDecimal pricePriv, BigDecimal discount, BigDecimal stdt, Integer cntFact, BigDecimal area, 
+	public VolDet(BigDecimal vol, BigDecimal price, BigDecimal pricePriv, Integer tp, BigDecimal stdt, Integer cntFact, BigDecimal area, 
 				   Serv serv, Org org, Integer met, Integer entry, Date dt1, Date dt2, Integer cntOwn, PersPrivilege persPriv) {
 		setVol(vol);
 		setPrice(price);
 		setPricePriv(pricePriv);
-		setDiscount(discount);
+		setTp(tp);
 		setStdt(stdt);
 		setArea(area);
 		setServ(serv);
