@@ -315,6 +315,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param chng - перерасчет
 	 */
 	private boolean isGetVol(Vol vol, Chng chng) {
+		log.info("CHNG.ID={}", chng.getId());
 		if (chng==null && vol.getChng()==null || // брать обычный объем, без перерасчетов
 			chng!=null && vol.getChng()!=null && vol.getChng().getId().equals(chng.getId())  
 					   && chng.getTp().getCd().equals("Корректировка показаний ИПУ") || // брать перерасчетный объем для данного типа перерасчета
