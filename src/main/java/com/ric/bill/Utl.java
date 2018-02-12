@@ -483,6 +483,22 @@ public class Utl {
         return calendar.getTime();
     }
 
+
+	/**
+	 * Выполнить усечение даты+время до даты 	
+	 * @param date
+	 * @return
+	 */
+	public static Date truncDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }	
+	
 	/**
 	 * Добавить путь в classpath
 	 * @param s

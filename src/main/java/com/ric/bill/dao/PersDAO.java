@@ -16,6 +16,7 @@ public interface PersDAO extends JpaRepository<Pers, Integer> {
 
 	/**
 	 * Получить список льгот по проживающему и услуге на дату
+	 * отсортированно по наличию увеличения соц.нормы и по дисконту льготы
 	 * @param persId - Id проживающего
 	 * @param servId - Id услуги
 	 * @param genDt - дата формирования
@@ -23,7 +24,8 @@ public interface PersDAO extends JpaRepository<Pers, Integer> {
 	 */
 	@Query("select p from PersPrivilege p join PrivilegeServ s with p.privilege.id = s.privilege.id "
 			+ "and p.pers.id = ?1 and ?3 between p.privilege.dt1 and p.privilege.dt2 "
-			+ "where s.serv.id = ?2 and ?3 between p.dt1 and p.dt2 ")
+			+ "where s.serv.id = ?2 and ?3 between p.dt1 and p.dt2 "
+			+ "order by nvl(s.extSoc,0) desc, nvl(s.discount,0) desc")
 	  List<PersPrivilege> getPersPrivilege(Integer persId, Integer servId, Date genDt);
 
 	/**

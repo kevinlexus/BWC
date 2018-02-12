@@ -155,11 +155,18 @@ public class EolinkDAOImpl implements EolinkDAO {
 	 */
 	@Override
 	public List<Eolink> getEolinkByTpWoTaskTp(String eolTp, String actTp) {
-		
-		Query query = em.createQuery("select e from Eolink e "
-				+ "join AddrTp b with e.objTp.id=b.id and b.cd =:eolTp "
-				+ "where e.id in (7350, 7343, 6440) and e.parent is not null " // TODO УБРАТЬ ВРЕМЕННЫЕ ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-				+ "and not exists (select t from Task t where e.id=t.eolink.id and t.act.cd = :actTp) ");
+		Query query = null;
+		if (eolTp.equals("Организация")) {
+			query = em.createQuery("select e from Eolink e "
+					+ "join AddrTp b with e.objTp.id=b.id and b.cd =:eolTp "
+					+ "where "
+					+ "not exists (select t from Task t where e.id=t.eolink.id and t.act.cd = :actTp) ");
+		} else if (eolTp.equals("Дом")) {
+			query = em.createQuery("select e from Eolink e "
+					+ "join AddrTp b with e.objTp.id=b.id and b.cd =:eolTp "
+					+ "where e.id in (7350, 7343, 6440) and e.parent is not null " // TODO УБРАТЬ ВРЕМЕННЫЕ ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+					+ "and not exists (select t from Task t where e.id=t.eolink.id and t.act.cd = :actTp) ");
+		}
 		query.setParameter("eolTp", eolTp);
 		query.setParameter("actTp", actTp);
 		return query.getResultList();		

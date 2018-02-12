@@ -65,15 +65,15 @@ public class Config {
 	// Период -1 месяц 
 	String periodBack;
 	// Тип приложения, по умолчанию - 0
-	Integer appTp = 0;
+	//Integer appTp = 0;
 	// Путь и наименование файла, для отправки в квартплату показаний по счетчикам 
-	String pathCounter ="C:\\temp\\test1.txt"; 
+	//String pathCounter ="C:\\temp\\test1.txt"; 
 
 	// Запретить начислять по лиц.счетам, если формируется глобальное начисление
 	Boolean isRestrictChrgLsk = false;
 	// загрузить свойства
 	private void loadProp() {
-		Boolean isLoaded = false;
+		/*Boolean isLoaded = false;
 		Properties prop = new Properties();
 		FileInputStream file = null;
 		String filename = ".\\config.properties";
@@ -117,7 +117,7 @@ public class Config {
 		} else {
 			log.error("Properties file is not loaded", pathCounter);
 		}
-		
+		*/
 	}
 	
 	// внутренний класс, для обработки блокировок по объектам
@@ -307,7 +307,7 @@ public class Config {
 		return this.reqNum++;
 	}
 
-	public Integer getAppTp() {
+	/*public Integer getAppTp() {
 		return appTp;
 	}
 
@@ -321,7 +321,7 @@ public class Config {
 
 	public void setPathCounter(String pathCounter) {
 		this.pathCounter = pathCounter;
-	}
+	}*/
 
 	public Boolean getIsRestrictChrgLsk() {
 		return isRestrictChrgLsk;
