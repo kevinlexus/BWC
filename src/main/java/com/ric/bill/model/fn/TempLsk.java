@@ -23,7 +23,7 @@ import lombok.Setter;
 @Immutable
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "TEMP_LSK", schema="FN")
-@IdClass(TempLskId.class) // суррогантый первичный ключ
+@IdClass(TempLskId.class) // суррогатный первичный ключ
 @Setter
 @Getter
 public class TempLsk implements java.io.Serializable {
