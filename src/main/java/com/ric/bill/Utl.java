@@ -1,6 +1,8 @@
 package com.ric.bill;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.InetAddress;
@@ -518,6 +520,7 @@ public class Utl {
 
 	/**
 	 * Логгер выполнения программы
+	 * @return 
 	 */
 	//public static void logger (Boolean isReset, Integer step, Integer lsk, Integer servId) {
 	//	return;
@@ -529,5 +532,11 @@ public class Utl {
 		startTime = System.currentTimeMillis();*/
 	//}
 
+	
+	public static String getStackTraceString(Throwable ex) {
+		StringWriter errors = new StringWriter();
+		ex.printStackTrace(new PrintWriter(errors));
+		return errors.toString();
+	}
 }
 

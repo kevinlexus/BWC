@@ -2,6 +2,7 @@ package com.ric.bill.dto;
 
 
 import com.ric.bill.model.exs.ServGis;
+import com.ric.bill.model.exs.Ulist;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +15,8 @@ import lombok.Setter;
 @Getter @Setter
 public class SumChrgRec {
 
-	// отношение услуги к услуги из ГИС 
-	private ServGis servGis; 
+	// услуга из ГИС 
+	private Ulist ulist; 
 
 	// сумма
 	private Double summa;
@@ -27,9 +28,9 @@ public class SumChrgRec {
 	private Double price;
 
 	// конструктор
-	public SumChrgRec(ServGis servGis, Double summa, Double vol, Double price) {
+	public SumChrgRec(Ulist ulist, Double summa, Double vol, Double price) {
 		super();
-		this.servGis = servGis;
+		this.ulist = ulist;
 		this.summa = summa;
 		this.vol = vol;
 		this.price = price;
