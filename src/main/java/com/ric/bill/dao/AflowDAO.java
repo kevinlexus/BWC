@@ -24,11 +24,15 @@ public interface AflowDAO extends JpaRepository<Aflow, Integer> {
 	 * @param type - тип записи 0 - начислено без учета льгот, 1 - начислено с учетом льгот
 	 * @return
 	 */
-	@Query(value = "select new com.ric.bill.dto.SumChrgRec(s.ulist, sum(t.summa), sum(t.n1), sum(t.n2)) from Aflow t "
+	@Query(value = "select new com.ric.bill.dto.SumChrgRec(s.ulist, sum(t.summa), sum(t.n1), min(t.n2)) from Aflow t "
 			+ "join ServGis s with t.usl.id=s.usl "
+			+ "join Ulist u with s.ulist.id=u.id "
+			+ "join UlistTp tp with u.ulistTp.id=tp.id "
 			+ "where t.kart.lsk = ?1 and t.mg = ?2 "
+			+ "and NVL(tp.eolink.id, ?4) = ?4 "
 			+ "and t.type = ?3 "
+			+ "and t.usl.id <= '073' "
 			+ "group by s.ulist")
-	  List<SumChrgRec> getGrp(String lsk, String mg, Integer type);
+	  List<SumChrgRec> getGrp(String lsk, String mg, Integer type, Integer orgId);
 	
 }

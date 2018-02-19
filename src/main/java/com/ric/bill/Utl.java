@@ -538,5 +538,20 @@ public class Utl {
 		ex.printStackTrace(new PrintWriter(errors));
 		return errors.toString();
 	}
+	
+	/**
+	 * Преобразовать в BigDecimal, округлить до roundTo знаков, если null вернуть ZERO
+	 * @param val - значение для конвертации
+	 * @param roundTo - округлить до знаков
+	 * @return
+	 */
+	public static BigDecimal getBigDecimalRound(Double val, Integer roundTo) {
+		BigDecimal retVal = BigDecimal.ZERO;
+		if (val != null) {
+			retVal = BigDecimal.valueOf(val);
+			retVal = retVal.setScale(roundTo, BigDecimal.ROUND_HALF_UP);
+		}
+		return retVal;
+	}
 }
 

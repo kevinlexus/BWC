@@ -41,7 +41,7 @@ public class Ulist implements java.io.Serializable  {
 
 	public Ulist(String cd, String name, String guid, Date dt1, Date dt2,
 			Boolean actual, UlistTp ulistTp, Integer npp, String value, Ulist parent,
-			String refCode, String refGuid, String tp) {
+			String refCode, String refGuid, String valTp) {
 		super();
 		this.cd = cd;
 		this.name = name;
@@ -55,7 +55,7 @@ public class Ulist implements java.io.Serializable  {
 		this.parent = parent;
 		this.refCode = refCode;
 		this.refGuid = refGuid;
-		this.valTp = tp;
+		this.valTp = valTp;
 	}
 
 	// CD элемента
@@ -110,11 +110,11 @@ public class Ulist implements java.io.Serializable  {
 
 	// ЗАПОЛНЯТЬ ТОЛЬКО У УСЛУГ С GUID<>null! Тип услуги 0-жилищная, 1-коммунальная (напр.Х.В.), 2-дополнительная (напр Замок), 3 - в т.ч. усл.на ОИ
 	@Column(name = "TP", updatable = true, nullable = true)
-	private String tp;
+	private Integer tp;
 	
 	// Родительский элемент
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
+	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", updatable = false, nullable = false)
 	private Ulist parent; 
 
 	// Связь записи услуги ОИ с основной услугой
