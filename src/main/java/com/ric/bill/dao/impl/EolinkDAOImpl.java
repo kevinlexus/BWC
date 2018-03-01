@@ -149,26 +149,30 @@ public class EolinkDAOImpl implements EolinkDAO {
 
 	/**
 	 * Получить все объекты, определенного типа, по которым 
-	 * НЕТ созданных заданий определенного типа
+	 * НЕТ созданных заданий определенного типа действия
 	 * @param eolTp - тип объекта
 	 * @param actTp - тип действия
+	 * @param parentCD - CD родительского задания
 	 */
 	@Override
-	public List<Eolink> getEolinkByTpWoTaskTp(String eolTp, String actTp) {
+	public List<Eolink> getEolinkByTpWoTaskTp(String eolTp, String actTp, String parentCD) {
 		Query query = null;
 		if (eolTp.equals("Организация")) {
 			query = em.createQuery("select e from Eolink e "
 					+ "join AddrTp b with e.objTp.id=b.id and b.cd =:eolTp "
 					+ "where "
-					+ "not exists (select t from Task t where e.id=t.eolink.id and t.act.cd = :actTp) ");
+					+ "not exists (select t from TaskToTask t where t.child.eolink.id=e.id "
+					+ "and t.child.act.cd = :actTp and t.parent.cd = :parentCD) ");
 		} else if (eolTp.equals("Дом")) {
 			query = em.createQuery("select e from Eolink e "
 					+ "join AddrTp b with e.objTp.id=b.id and b.cd =:eolTp "
 					+ "where e.id in (7350, 7343, 6440) and e.parent is not null " // TODO УБРАТЬ ВРЕМЕННЫЕ ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-					+ "and not exists (select t from Task t where e.id=t.eolink.id and t.act.cd = :actTp) ");
+					+ "and not exists (select t from TaskToTask t where t.child.eolink.id=e.id "
+					+ "and t.child.act.cd = :actTp and t.parent.cd = :parentCD) ");
 		}
 		query.setParameter("eolTp", eolTp);
 		query.setParameter("actTp", actTp);
+		query.setParameter("parentCD", parentCD);
 		return query.getResultList();		
 	}
 }

@@ -71,54 +71,6 @@ public class Config {
 
 	// Запретить начислять по лиц.счетам, если формируется глобальное начисление
 	Boolean isRestrictChrgLsk = false;
-	// загрузить свойства
-	private void loadProp() {
-		/*Boolean isLoaded = false;
-		Properties prop = new Properties();
-		FileInputStream file = null;
-		String filename = ".\\config.properties";
-		try {
-			file = new FileInputStream(filename);
-			// загрузить свойства из файла
-			prop.load(file);
-			isLoaded = true;
-		} catch (FileNotFoundException e1) {
-            log.error("ERROR! Loading from file: Unable to find properties file:{}", filename);
-			//e1.printStackTrace();
-		} catch (IOException e) {
-            log.error("ERROR! Loading from file: Unable to load properties from file:{}", filename);
-			//e.printStackTrace();
-		}
-		
-		if (!isLoaded) {
-			InputStream input = null;
-			filename = "config.properties";
-			try {
-				input = Config.class.getClassLoader().getResourceAsStream(filename);
-				// загрузить свойства из ресурса
-				prop.load(input);
-				isLoaded = true;
-			} catch (IOException e) {
-	            log.error("ERROR! Loading from stream: Unable to load properties from file:{}", filename);
-			}
-
-		}
-		
-		if (isLoaded) {
-			// получить свойства, сохранить, распечатать
-			String appTp = prop.getProperty("appTp");
-			String pathCounter = prop.getProperty("pathCounter");
-			log.info("********* Properties *********");
-			log.info("param appTp={}", appTp);
-			log.info("param pathCounter={}", pathCounter);
-			log.info("********* Properties *********");
-			setAppTp(Integer.valueOf(appTp));
-			setPathCounter(pathCounter);
-		} else {
-			log.error("Properties file is not loaded", pathCounter);
-		}
-		*/
-	}
 	
 	// внутренний класс, для обработки блокировок по объектам
 	class Lock {
@@ -191,24 +143,9 @@ public class Config {
 	
 	// конструктор
 	public Config() {
-		// Загрузить параметры приложения
-		System.out.println("");
-		System.out.println("");
-		log.info("Start loading properties");
-		loadProp();
-		log.info("End loading properties");
-		System.out.println("");
-		System.out.println("");
-		
 		TimeZone.setDefault(TimeZone.getTimeZone("GMT+7"));
-		//calendar = new GregorianCalendar(1940, Calendar.JANUARY, 1);
-		//calendar.clear(Calendar.ZONE_OFFSET);
 		firstDt = Utl.getFirstDt();//calendar.getTime();
-		//calendar = new GregorianCalendar(2940, Calendar.JANUARY, 1);
-		//calendar.clear(Calendar.ZONE_OFFSET);
 		lastDt = Utl.getLastDt();//calendar.getTime();
-		//workLst = new ArrayList<Integer>();
-		
 		// блокировщик процессов
 		lock = new Lock();
 	}
@@ -224,7 +161,9 @@ public class Config {
 	
 	@PostConstruct
 	private void setUp() throws EmptyStorable {
-		log.info("Версия модуля начисления - {}", "1.0.14");
+		log.info("");
+		log.info("-----------------------------------------------------------------");
+		log.info("Версия модуля начисления - {}", "1.0.15");
 		 
 		// Добавить path в Classpath, относительно нахождения Jar
 		try {
@@ -244,6 +183,8 @@ public class Config {
 		
 		log.info("Начало расчетного периода = {}", getCurDt1());
 		log.info("Конец расчетного периода = {}", getCurDt2());
+		log.info("-----------------------------------------------------------------");
+		log.info("");
 	}
 
 	// Получить Calendar текущего периода
