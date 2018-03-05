@@ -166,7 +166,8 @@ public class EolinkDAOImpl implements EolinkDAO {
 		} else if (eolTp.equals("Дом")) {
 			query = em.createQuery("select e from Eolink e "
 					+ "join AddrTp b with e.objTp.id=b.id and b.cd =:eolTp "
-					+ "where e.id in (7350, 7343, 6440) and e.parent is not null " // TODO УБРАТЬ ВРЕМЕННЫЕ ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+					+ "where e.guid is not null and e.id in (7350, 7343, 6440) " // TODO УБРАТЬ ВРЕМЕННЫЕ ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+					+ "and e.parent is not null " // где есть организация
 					+ "and not exists (select t from TaskToTask t where t.child.eolink.id=e.id "
 					+ "and t.child.act.cd = :actTp and t.parent.cd = :parentCD) ");
 		}
