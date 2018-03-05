@@ -33,7 +33,7 @@ public class TaskDAOImpl implements TaskDAO {
      */
     public List<Task> getAllUnprocessed() {
 			Query query =em.createQuery("select t from Task t left join t.depTask d where t.state in ('INS','ACK','RPT') and t.parent is null "
-					+ "and (t.depTask is null or t.depTask.state in ('ACP','STP')) order by t.id");
+					+ "and (t.depTask is null or t.depTask.state in ('ACP')) order by t.id");  //,'STP'
 			return query.getResultList();
 	}
     
