@@ -30,11 +30,26 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Утилиты
  * @author lev
+ * @version 1.00
  *
  */
 @Slf4j
 public class Utl {
 
+	
+	/**
+	 * Аналог SQL IN
+	 * @param значение
+	 * @param список
+	 * @return - находится в списке?
+	 */
+	public static <T> boolean in(T value, T... list) {
+	    for (T item : list) {
+	        if (value.equals(item))
+	            return true;
+	    }
+	    return false;
+	}
 	
 	/**
 	 * Аналог LTRIM в Oracle
