@@ -9,7 +9,6 @@ import com.ric.bill.model.ar.House;
 public interface HouseDAO {
 
 
-	public List<House> findAll();
 	public List<House> findAll2(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2);
 	
 }

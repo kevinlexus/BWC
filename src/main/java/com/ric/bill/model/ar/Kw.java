@@ -23,7 +23,7 @@ import com.ric.bill.model.bs.Base;
 
 
 /**
- * Квартира
+ * Помещение
  * @author lev
  *
  */
@@ -58,6 +58,10 @@ public class Kw extends Base implements java.io.Serializable, Storable {
 
 	@Column(name = "FK_HOUSE", nullable = true)
 	private Integer fkHouse;
+
+	// номер квартиры
+	@Column(name = "KW", nullable = true)
+	private String num;
 
 	public House getHouse() {
 		return house;

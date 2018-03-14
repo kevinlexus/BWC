@@ -35,6 +35,7 @@ public class VolDet {
 	private Integer entry;
 	private PersPrivilege persPriv;
 	private Integer tp;
+	boolean onlyVol;
 	
     /**
      * конструктор 
@@ -54,9 +55,10 @@ public class VolDet {
      * @param cntOwn - кол-во собственников
      * @param pers - проживающий
      * @param priv - привилегия
+     * @param onlyVol - учитывать только объемы (без начисления)
 	 */
 	public VolDet(BigDecimal vol, BigDecimal price, BigDecimal pricePriv, Integer tp, BigDecimal stdt, Integer cntFact, BigDecimal area, 
-				   Serv serv, Org org, Integer met, Integer entry, Date dt1, Date dt2, Integer cntOwn, PersPrivilege persPriv) {
+				   Serv serv, Org org, Integer met, Integer entry, Date dt1, Date dt2, Integer cntOwn, PersPrivilege persPriv, boolean onlyVol) {
 		setVol(vol);
 		setPrice(price);
 		setPricePriv(pricePriv);
@@ -72,6 +74,7 @@ public class VolDet {
 		setCntFact(cntFact);
 		setCntOwn(cntOwn);
 		setPersPriv(persPriv);
+		setOnlyVol(onlyVol);
 	}
 	
 }

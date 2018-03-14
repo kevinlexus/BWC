@@ -28,6 +28,7 @@ import com.ric.bill.model.tr.TarifKlsk;
 /**
  * Дом
  * @author lev
+ * @version 1.00
  *
  */
 @SqlResultSetMapping(name="HouseMapping",

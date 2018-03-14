@@ -10,6 +10,7 @@ import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.SqlResultSetMapping;
@@ -22,9 +23,16 @@ import org.springframework.stereotype.Repository;
 import com.ric.bill.ResultSet;
 import com.ric.bill.dao.HouseDAO;
 import com.ric.bill.model.ar.House;
+import com.ric.bill.model.bs.Org;
 
 
 
+/**
+ * DAO House
+ * @author Lev
+ * @version 1.00
+ *
+ */
 @Repository
 @Slf4j
 public class HouseDAOImpl implements HouseDAO {
@@ -41,12 +49,7 @@ public class HouseDAOImpl implements HouseDAO {
     public HouseDAOImpl() {
     	
     }
-	public List<House> findAll() {
-		return em.createQuery("select t from House t "
-				+ "where t.klsk in (-1)").getResultList(); //
-
-	}
-
+    
 	/**
 	 * Поиск домов по условию
 	 * @param houseId - наличию ID дома
@@ -136,4 +139,5 @@ public class HouseDAOImpl implements HouseDAO {
 		return lstHouse;
 		
 	}
+    
 }

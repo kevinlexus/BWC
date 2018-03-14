@@ -9,6 +9,7 @@ import com.ric.bill.model.ps.Pers;
 
 public interface KartDAO {
 
+	public Kart getByFlsk(String flsk);
 	public List<Kart> findAll(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2);
 	
 }

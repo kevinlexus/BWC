@@ -26,7 +26,7 @@ public interface AflowDAO extends JpaRepository<Aflow, Integer> {
 	 */
 	@Query(value = "select new com.ric.bill.dto.SumChrgRec(s.ulist, sum(t.summa), sum(t.n1), min(t.n2)) from Aflow t "
 			+ "join ServGis s with t.usl.id=s.usl "
-			+ "join Ulist u with s.ulist.id=u.id "
+			+ "join Ulist u with s.ulist.id=u.id " 
 			+ "join UlistTp tp with u.ulistTp.id=tp.id "
 			+ "where t.kart.lsk = ?1 and t.mg = ?2 "
 			+ "and NVL(tp.eolink.id, ?4) = ?4 "
