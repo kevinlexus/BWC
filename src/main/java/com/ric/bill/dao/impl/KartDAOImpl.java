@@ -40,8 +40,6 @@ public class KartDAOImpl implements KartDAO {
     	
     }
     
-    
-    
     /**
      * Получить список лиц.счетов
      * @param houseId
