@@ -158,6 +158,10 @@ public class Eolink implements java.io.Serializable  {
 	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="ID")
 	private Ko koObj;
 
+	// Klsk (пришлось вынести сюда, так как нужен прямой доступ к полю, не через Ko)
+	//@Column(name = "FK_KLSK_OBJ")
+	//private Integer klsk;
+
 	// Родительский объект 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", nullable = true, updatable = true)

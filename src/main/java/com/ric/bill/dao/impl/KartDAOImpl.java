@@ -9,6 +9,7 @@ import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.SqlResultSetMapping;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import com.ric.bill.ResultSetKlsk;
 import com.ric.bill.dao.KartDAO;
 import com.ric.bill.model.ar.Kart;
+import com.ric.bill.model.oralv.Ko;
 import com.ric.bill.model.ps.Pers;
 
 
@@ -133,6 +135,22 @@ public class KartDAOImpl implements KartDAO {
 		
 		return lstKart;
 		
+	}
+
+
+
+    /**
+     * Найти лицевой счет по его идентификатору
+     */
+	@Override
+	public Kart getByFlsk(String flsk) {
+		Query query =em.createQuery("select t from Kart t where t.flsk = :flsk");
+		query.setParameter("flsk", flsk);
+		try {
+			return (Kart)query.getSingleResult();
+		} catch (NoResultException e) {
+		  return null;
+		} 
 	}
 
 
