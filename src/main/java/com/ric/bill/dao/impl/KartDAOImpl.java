@@ -142,7 +142,7 @@ public class KartDAOImpl implements KartDAO {
      */
 	@Override
 	public Kart getByFlsk(String flsk) {
-		Query query =em.createQuery("select t from Kart t where t.flsk = :flsk");
+		Query query =em.createQuery("select t from com.ric.bill.model.ar.Kart t where t.flsk = :flsk");
 		query.setParameter("flsk", flsk);
 		try {
 			return (Kart)query.getSingleResult();
