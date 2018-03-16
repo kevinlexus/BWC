@@ -31,7 +31,7 @@ public interface AflowDAO extends JpaRepository<Aflow, Integer> {
 			+ "where t.kart.lsk = ?1 and t.mg = ?2 "
 			+ "and NVL(tp.eolink.id, ?4) = ?4 "
 			+ "and t.type = ?3 "
-			+ "and t.usl.id <= '064' "
+			+ "and t.usl.id < '073' "
 			+ "group by s.ulist")
 	  List<SumChrgRec> getGrp(String lsk, String mg, Integer type, Integer orgId);
 	
