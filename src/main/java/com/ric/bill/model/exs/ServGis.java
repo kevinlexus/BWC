@@ -49,6 +49,11 @@ public class ServGis implements java.io.Serializable  {
 	@JoinColumn(name="FK_LIST", referencedColumnName="ID")
 	private Ulist ulist;  
 
+	// групппировка услуг, для нахождения корректной расценке по услуге
+	@Id
+	@Column(name = "GRP", updatable = false)
+	private Integer grp;
+	
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof ServGis))

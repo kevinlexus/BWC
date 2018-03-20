@@ -86,8 +86,8 @@ public class Eolink implements java.io.Serializable  {
 
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
-	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_EOLINK", allocationSize=1)	
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EOLINK")
+	@SequenceGenerator(name="SEQ_EOLINK", sequenceName="EXS.SEQ_EOLINK", allocationSize=1)	
     @Column(name = "id", unique=true, updatable = false, nullable = false)
 	private Integer id;
 

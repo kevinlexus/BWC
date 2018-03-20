@@ -41,8 +41,8 @@ public class EolinkPar implements java.io.Serializable  {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
-	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_EOLXPAR", allocationSize=1)	
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EOLINKPAR")
+	@SequenceGenerator(name="SEQ_EOLINKPAR", sequenceName="EXS.SEQ_EOLXPAR", allocationSize=1)	
     @Column(name = "ID", unique=true, updatable = false, nullable = false)
 	private Integer id;
 

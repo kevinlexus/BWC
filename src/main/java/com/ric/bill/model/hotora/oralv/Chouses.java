@@ -22,8 +22,8 @@ public class Chouses implements java.io.Serializable  {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
-	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_BASE", allocationSize=1)	
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CHOUSES")
+	@SequenceGenerator(name="SEQ_CHOUSES", sequenceName="EXS.SEQ_BASE", allocationSize=1)	
     @Column(name = "id", unique=true, updatable = false, nullable = false)
 	private Integer id;
 
