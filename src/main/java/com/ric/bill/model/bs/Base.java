@@ -21,6 +21,7 @@ import com.ric.bill.model.oralv.Ko;
 /**
  * Базовый класс всех сущностей, параметры которых хранятся в dw
  * @author lev
+ * @version 1.00
  *
  */
 @MappedSuperclass

@@ -12,6 +12,6 @@ public interface EolinkDAO {
 	public Eolink getEolinkByReuKulNdTp(String reu, String kul, String nd, 
 			String kw, String entry, String tp);
 	public List<Eolink> getValsNotSaved();
-	public List<Eolink> getEolinkByTpWoTaskTp(String eolTp, String actTp);
+	public List<Eolink> getEolinkByTpWoTaskTp(String eolTp, String actTp, String parentCD);
 	  
 }

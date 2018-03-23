@@ -1,6 +1,8 @@
 package com.ric.bill;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.InetAddress;
@@ -28,11 +30,26 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Утилиты
  * @author lev
+ * @version 1.00
  *
  */
 @Slf4j
 public class Utl {
 
+	
+	/**
+	 * Аналог SQL IN
+	 * @param значение
+	 * @param список
+	 * @return - находится в списке?
+	 */
+	public static <T> boolean in(T value, T... list) {
+	    for (T item : list) {
+	        if (value.equals(item))
+	            return true;
+	    }
+	    return false;
+	}
 	
 	/**
 	 * Аналог LTRIM в Oracle
@@ -518,6 +535,7 @@ public class Utl {
 
 	/**
 	 * Логгер выполнения программы
+	 * @return 
 	 */
 	//public static void logger (Boolean isReset, Integer step, Integer lsk, Integer servId) {
 	//	return;
@@ -529,5 +547,26 @@ public class Utl {
 		startTime = System.currentTimeMillis();*/
 	//}
 
+	
+	public static String getStackTraceString(Throwable ex) {
+		StringWriter errors = new StringWriter();
+		ex.printStackTrace(new PrintWriter(errors));
+		return errors.toString();
+	}
+	
+	/**
+	 * Преобразовать в BigDecimal, округлить до roundTo знаков, если null вернуть ZERO
+	 * @param val - значение для конвертации
+	 * @param roundTo - округлить до знаков
+	 * @return
+	 */
+	public static BigDecimal getBigDecimalRound(Double val, Integer roundTo) {
+		BigDecimal retVal = BigDecimal.ZERO;
+		if (val != null) {
+			retVal = BigDecimal.valueOf(val);
+			retVal = retVal.setScale(roundTo, BigDecimal.ROUND_HALF_UP);
+		}
+		return retVal;
+	}
 }
 

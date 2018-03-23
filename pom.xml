@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.0.RELEASE</version>
+		<version>2.0.0.RELEASE</version>
 		<relativePath />
 	</parent>
 
@@ -66,8 +66,7 @@
 		<dependency>
 		    <groupId>org.springframework.data</groupId>
 		    <artifactId>spring-data-jpa</artifactId>
-		    <version>1.11.6.RELEASE</version>
-		</dependency>
+		    </dependency>
 
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
@@ -88,11 +87,11 @@
 		</dependency>
 
 
-		<!-- mxparser -->
+		<!-- mxparser 1.1--> 
 		<dependency>
 		    <groupId>mxParser</groupId>
 		    <artifactId>org.mariuszgromada</artifactId>
-		    <version>1.0</version>
+		    <version>1.1</version>
 		</dependency>
 
 		<!-- успешно добавил таким образом локальный JAR ВНИМАНИЕ! ТАК не желательно устанавливать! надо через mvn install:install-file 

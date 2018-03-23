@@ -43,12 +43,12 @@ public class Task implements java.io.Serializable  {
 	}
 
 	
-	public Task(Eolink eolink, Task parent, Task depTask, String state, Lst act, String guid, String msgGuid,
+	public Task(Eolink eolink, Task parent, Task master, String state, Lst act, String guid, String msgGuid,
 			String un, String result, Date crtDt, String tguid, Integer appTp, Integer fk_user) {
 		super();
 		this.eolink = eolink;
 		this.parent = parent;
-		this.depTask = depTask;
+		this.master = master;
 		this.state = state;
 		this.act = act;
 		this.guid = guid;
@@ -62,36 +62,46 @@ public class Task implements java.io.Serializable  {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
-	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_TASK", allocationSize=1)	
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TASK")
+	@SequenceGenerator(name="SEQ_TASK", sequenceName="EXS.SEQ_TASK", allocationSize=1)	
     @Column(name = "ID", unique=true, updatable = false, nullable = false)
 	private Integer id;
 
-	// Связь с внешним объектом
+	// связь с внешним объектом
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID")
 	private Eolink eolink;
 	
-	// Родительское задание
+	// родительское задание
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
 	private Task parent; 
 	
-	// Дочерние задания
+	// дочерние задания
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
 	private List<Task> child = new ArrayList<Task>(0);
 	
-	// Дочерние задания ссылаются на данное
+	// зависимые задания ссылаются на данное
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="FK_PARENT", referencedColumnName="ID")
 	private List<TaskToTask> inside = new ArrayList<TaskToTask>(0);
 
-	// Данное задание ссылается на родительские TASKXTASK
+	// данное задание ссылается на ведущее TASKXTASK
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="FK_CHILD", referencedColumnName="ID")
 	private List<TaskToTask> outside = new ArrayList<TaskToTask>(0);
 	
+	// ведущее задание по DEP_ID, после выполнения которого, в статус "ACP", начнёт выполняться текущее
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="DEP_ID", referencedColumnName="ID")
+	private Task master; 
+
+	// ведомые задания по DEP_ID, по отношению к текущему 
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="DEP_ID", referencedColumnName="ID")
+	private List<Task> slave = new ArrayList<Task>(0);
+
 	// Дочерние задания, связанные через TASKXTASK - короче это всё работает, но как обработать тип связи?? TASKXTASK.FK_TP 
 	// Возможный ответ -  @Filter and @FilterJoinTable ред.09.10.2017 почитать: http://www.concretepage.com/hibernate/hibernate-filter-and-filterjointable-annotation-example
 	/*@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -109,10 +119,6 @@ public class Task implements java.io.Serializable  {
 					nullable = false, updatable = false) })
 	private List<Task> parentLinked = new ArrayList<Task>(0);*/
 	
-	// Ведущее задание, после выполнения которого, в статус "ACP", начнёт выполняться текущее
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="DEP_ID", referencedColumnName="ID")
-	private Task depTask; 
 
 	// CD
 	@Column(name = "CD")

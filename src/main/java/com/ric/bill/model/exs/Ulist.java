@@ -16,6 +16,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Справочник элементов
  * @author lev
@@ -24,20 +27,21 @@ import org.hibernate.annotations.Type;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "U_LIST", schema="EXS")
+@Getter@Setter
 public class Ulist implements java.io.Serializable  {
 
 	public Ulist() {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
-	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_BASE", allocationSize=1)	
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ULIST")
+	@SequenceGenerator(name="SEQ_ULIST", sequenceName="EXS.SEQ_BASE", allocationSize=1)	
     @Column(name = "id", unique=true, updatable = false, nullable = false)
 	private Integer id;
 
 	public Ulist(String cd, String name, String guid, Date dt1, Date dt2,
 			Boolean actual, UlistTp ulistTp, Integer npp, String value, Ulist parent,
-			String refCode, String refGuid, String tp) {
+			String refCode, String refGuid, String valTp) {
 		super();
 		this.cd = cd;
 		this.name = name;
@@ -51,7 +55,7 @@ public class Ulist implements java.io.Serializable  {
 		this.parent = parent;
 		this.refCode = refCode;
 		this.refGuid = refGuid;
-		this.tp = tp;
+		this.valTp = valTp;
 	}
 
 	// CD элемента
@@ -102,92 +106,21 @@ public class Ulist implements java.io.Serializable  {
 	
 	// ИЗ ГИС ЖКХ: [(NM)number;  (ST)string;  (DT)date;  (BL) boolean (RF) reference (OK) OkeiRefFieldType]
 	@Column(name = "VAL_TP", updatable = true, nullable = true)
-	private String tp;
+	private String valTp;
 
+	// ЗАПОЛНЯТЬ ТОЛЬКО У УСЛУГ С GUID<>null! Тип услуги 0-жилищная, 1-коммунальная (напр.Х.В.), 2-дополнительная (напр Замок), 3 - в т.ч. усл.на ОИ
+	@Column(name = "TP", updatable = true, nullable = true)
+	private Integer tp;
+	
 	// Родительский элемент
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
+	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", updatable = false, nullable = false)
 	private Ulist parent; 
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getCd() {
-		return cd;
-	}
-
-	public void setCd(String cd) {
-		this.cd = cd;
-	}
-	
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public UlistTp getUlistTp() {
-		return ulistTp;
-	}
-
-	public void setUlistTp(UlistTp ulistTp) {
-		this.ulistTp = ulistTp;
-	}
-
-	public String getGuid() {
-		return guid;
-	}
-
-	public void setS1(String s1) {
-		this.guid = s1;
-	}
-
-	public Date getDt1() {
-		return dt1;
-	}
-
-	public void setDt1(Date dt1) {
-		this.dt1 = dt1;
-	}
-
-	public Date getDt2() {
-		return dt2;
-	}
-
-	public void setDt2(Date dt2) {
-		this.dt2 = dt2;
-	}
-
-	public Boolean getActual() {
-		return actual;
-	}
-
-	public void setActual(Boolean actual) {
-		this.actual = actual;
-	}
-
-	public Integer getNpp() {
-		return npp;
-	}
-
-	public void setNpp(Integer npp) {
-		this.npp = npp;
-	}
-
-	public Ulist getParent() {
-		return parent;
-	}
-
-	public void setParent(Ulist parentUlist) {
-		this.parent = parentUlist;
-	}
+	// Связь записи услуги ОИ с основной услугой
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="PARENT_ID2", referencedColumnName="ID")
+	private Ulist parent2; 
 
 	public boolean equals(Object o) {
 	    if (this == o) return true;
@@ -210,39 +143,6 @@ public class Ulist implements java.io.Serializable  {
 	        return super.hashCode();
 	    }
 	}
-
-	public String getValue() {
-		return s1;
-	}
-
-	public void setValue(String value) {
-		this.s1 = value;
-	}
-
-	public String getRefCode() {
-		return refCode;
-	}
-
-	public void setRefCode(String refCode) {
-		this.refCode = refCode;
-	}
-
-	public String getRefGuid() {
-		return refGuid;
-	}
-
-	public void setRefGuid(String refGuid) {
-		this.refGuid = refGuid;
-	}
-
-	public String getTp() {
-		return tp;
-	}
-
-	public void setTp(String tp) {
-		this.tp = tp;
-	}
-
 
 }
 

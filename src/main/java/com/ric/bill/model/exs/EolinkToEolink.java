@@ -36,8 +36,8 @@ public class EolinkToEolink implements java.io.Serializable  {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EXS")
-	@SequenceGenerator(name="SEQ_EXS", sequenceName="EXS.SEQ_EOLXEOL", allocationSize=1)	
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EOLINKTOEOLINK")
+	@SequenceGenerator(name="SEQ_EOLINKTOEOLINK", sequenceName="EXS.SEQ_EOLXEOL", allocationSize=1)	
     @Column(name = "ID", unique=true, updatable = false, nullable = false)
 	private Integer id;
 
