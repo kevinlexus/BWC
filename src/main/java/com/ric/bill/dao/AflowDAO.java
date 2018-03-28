@@ -94,6 +94,12 @@ public interface AflowDAO extends JpaRepository<Aflow, Integer> {
 		Double getVol();
 		// цена
 		Double getPrice();
+		
+		// услуга из справочника ГИС
+		Ulist getUlist();
+		// услуга из справочника ГИС
+		void setUlist(Ulist ulist);
+
 	}
 	
 }
