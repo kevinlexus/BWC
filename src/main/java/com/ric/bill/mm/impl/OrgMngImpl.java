@@ -12,7 +12,7 @@ import com.ric.bill.dao.OrgDAO;
 import com.ric.bill.mm.OrgMng;
 import com.ric.bill.model.bs.Org;
 
-@Service
+@Service("OrgMng_BWC")
 public class OrgMngImpl implements OrgMng {
 
 	@Autowired

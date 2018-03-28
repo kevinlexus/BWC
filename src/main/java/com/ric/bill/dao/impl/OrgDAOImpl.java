@@ -16,6 +16,12 @@ import com.ric.bill.dao.OrgDAO;
 import com.ric.bill.model.bs.Org;
 
 
+/**
+ * DAO Организации
+ * @author Lev
+ * @version 1.00
+ *
+ */
 @Repository
 @Slf4j
 public class OrgDAOImpl implements OrgDAO {
@@ -24,11 +30,12 @@ public class OrgDAOImpl implements OrgDAO {
     @PersistenceContext
     private EntityManager em;
     
-	//работает это медленнее чем была итерация по всем параметрам объекта!
+	/**
+	 * Получить организацию по klsk
+	 */
+    @Override
 	@Cacheable(cacheNames="OrgDAOImpl.getByKlsk", key="{#klsk }")
 	public Org getByKlsk(int klsk) {
-		
-		log.trace("Org klsk={}", klsk);
 		
 		Query query =em.createQuery("from Org t where t.klskId = :klsk");
 		query.setParameter("klsk", klsk);
@@ -40,10 +47,25 @@ public class OrgDAOImpl implements OrgDAO {
 	}
 	
 	/**
+	 * Получить организацию по CD
+	 */
+    @Override
+	public Org getByCD(String cd) {
+		Query query =em.createQuery("from Org t where t.cd = :cd");
+		query.setParameter("cd", cd);
+		try {
+			return (Org) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
+
+	/**
 	 * Получить все организации по типу
 	 * @param tp - 0 - все, 1 - УК
 	 * @return
 	 */
+    @Override
 	@Cacheable(cacheNames="OrgDAOImpl.getOrgAll", key="{#tp }")
 	public List<Org> getOrgAll(int tp) {
 		Query query;
