@@ -216,15 +216,15 @@ public class Config {
 	}
 	
 	public String getPeriod() {
-		return Utl.getPeriodByDate(getCalendarCurrentPeriod().get(0).getTime());
+		return Utl.getPeriodFromDate(getCalendarCurrentPeriod().get(0).getTime());
 	}
 
 	public String getPeriodNext() {
-		return Utl.addMonth(Utl.getPeriodByDate(getCalendarCurrentPeriod().get(0).getTime()), 1);
+		return Utl.addMonth(Utl.getPeriodFromDate(getCalendarCurrentPeriod().get(0).getTime()), 1);
 	}
 
 	public String getPeriodBack() {
-		return Utl.addMonth(Utl.getPeriodByDate(getCalendarCurrentPeriod().get(0).getTime()), -1);
+		return Utl.addMonth(Utl.getPeriodFromDate(getCalendarCurrentPeriod().get(0).getTime()), -1);
 	}
 
 	public Date getCurDt1() {

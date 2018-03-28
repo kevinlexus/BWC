@@ -231,7 +231,7 @@ public class Utl {
 	
 	/**
 	 * Вернуть последнюю дату месяца 
-	 * @param dt
+	 * @param dt - дата вх.
 	 * @return
 	 */
 	public static Date getLastDate(Date dt) {
@@ -243,7 +243,7 @@ public class Utl {
 
 	/**
 	 * Вернуть первую дату месяца 
-	 * @param dt
+	 * @param dt - дата вх
 	 * @return
 	 */
 	public static Date getFirstDate(Date dt) {
@@ -253,6 +253,16 @@ public class Utl {
 		return calendar.getTime();
 	}
 
+	/**
+	 * Вернуть день из даты 
+	 * @param dt
+	 * @return
+	 */
+	public static Integer getDay(Date dt) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(dt);
+		return calendar.get(Calendar.DAY_OF_MONTH);
+	}
 	
 	/**
 	 * Вернуть дату по формату
@@ -272,6 +282,16 @@ public class Utl {
 		return date;
 	}
 
+	/**
+	 * Конвертировать период ГГГГММ в дату
+	 * @param period
+	 * @return
+	 */
+	public static Date getDateFromPeriod(String period) {
+		String str = "01"+"."+period.substring(4, 6)+"."+period.substring(0, 4);
+		return getDateFromStr(str);
+	}
+	
 	/**
 	 * Вернуть дату в виде строки по формату
 	 * @param dt
@@ -348,11 +368,11 @@ public class Utl {
 	}
 	
 	/**
-	 * Конвертировать дату в ГГГГММ
+	 * Конвертировать дату в YYYYMM
 	 * @param dt - дата вх.
 	 * @return
 	 */
-	public static String getPeriodByDate(Date dt) {
+	public static String getPeriodFromDate(Date dt) {
 		Calendar calendar = new GregorianCalendar();
 		calendar.clear(Calendar.ZONE_OFFSET);
 		calendar.setTime(dt);
@@ -363,16 +383,22 @@ public class Utl {
 		return yy+mm;
 	}
 
-	/**
-	 * Конвертировать период ГГГГММ в дату
+	/** 
+	 * Получить составляющую MM из строки период YYYYMM
 	 * @param period
-	 * @return
 	 */
-	public static Date getDateByPeriod(String period) {
-		String str = "01"+"."+period.substring(4, 6)+"."+period.substring(0, 4);
-		return getDateFromStr(str);
+	public static String getPeriodMonth(String period) {
+		return period.substring(4, 6);
 	}
 	
+	/** 
+	 * Получить составляющую YYYY из строки период YYYYMM
+	 * @param period
+	 */
+	public static String getPeriodYear(String period) {
+		return period.substring(0, 4);
+	}
+
 	/**
 	 * Конвертировать период ГГГГММ в наименование периода типа Апрель 2017, со склонением
 	 * @param period
@@ -465,12 +491,12 @@ public class Utl {
 	 * @param period
 	 */
 	public static String addMonth(String period, int n) {
-		Date dt = getDateByPeriod(period);
+		Date dt = getDateFromPeriod(period);
 		Calendar calendar = new GregorianCalendar();
 		calendar.clear(Calendar.ZONE_OFFSET);
 		calendar.setTime(dt);
 		calendar.add(Calendar.MONTH, n);
-		return getPeriodByDate(calendar.getTime());
+		return getPeriodFromDate(calendar.getTime());
 	}
 	
 	

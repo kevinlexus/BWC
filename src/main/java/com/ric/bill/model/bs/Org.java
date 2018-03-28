@@ -19,6 +19,9 @@ import org.hibernate.annotations.Type;
 import com.ric.bill.Storable;
 import com.ric.bill.model.ar.Street;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Организация
  * 
@@ -27,6 +30,7 @@ import com.ric.bill.model.ar.Street;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "ORG", schema="BS")
+@Getter @Setter
 public class Org extends Base implements java.io.Serializable, Storable {
 
 	@Id
@@ -37,11 +41,23 @@ public class Org extends Base implements java.io.Serializable, Storable {
 	@Column(name = "CD", updatable = false, nullable = false)
 	private String cd; 
 
-	// Наименование
+	// наименование
     @Column(name = "NAME")
 	private String name; 
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	// ИНН
+    @Column(name = "INN")
+	private String inn;
+    
+	// БИК
+    @Column(name = "BIK")
+	private String bik;
+    
+	// расчетный счет
+    @Column(name = "R_SCH")
+	private String operAcc;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="FK_ORG", referencedColumnName="ID")
 	@BatchSize(size = 50)
 	private List<OrgTp> orgTp = new ArrayList<OrgTp>(0);
@@ -55,49 +71,6 @@ public class Org extends Base implements java.io.Serializable, Storable {
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", updatable = false)
 	private Org parent;
 	
-	public Integer getId() {
-		return this.id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
-    public String getCd() {
-		return this.cd;
-	}
-	public void setCd(String cd) {
-		this.cd = cd;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public List<OrgTp> getOrgTp() {
-		return orgTp;
-	}
-	public void setOrgTp(List<OrgTp> orgTp) {
-		this.orgTp = orgTp;
-	}
-	
-	public Boolean getIsMnt() {
-		return isMnt;
-	}
-	
-	public void setIsMnt(Boolean isMnt) {
-		this.isMnt = isMnt;
-	}
-
-	public Org getParent() {
-		return parent;
-	}
-
-	public void setParent(Org parent) {
-		this.parent = parent;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 	    if (this == o) return true;

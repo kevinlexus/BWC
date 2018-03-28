@@ -134,7 +134,7 @@ public class RequestConfig implements Serializable {
 		}
 		
 		//задать текущий период в виде ГГГГММ
-		setPeriod(Utl.getPeriodByDate(getCurDt1()));
+		setPeriod(Utl.getPeriodFromDate(getCurDt1()));
 
 		//кол-во дней в месяце
 		setCntCurDays(Utl.getCntDaysByDate(getCurDt1()));
