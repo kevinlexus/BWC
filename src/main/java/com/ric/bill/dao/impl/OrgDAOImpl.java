@@ -37,7 +37,7 @@ public class OrgDAOImpl implements OrgDAO {
 	@Cacheable(cacheNames="OrgDAOImpl.getByKlsk", key="{#klsk }")
 	public Org getByKlsk(int klsk) {
 		
-		Query query =em.createQuery("from Org t where t.klskId = :klsk");
+		Query query =em.createQuery("from com.ric.bill.model.bs.Org t where t.klskId = :klsk");
 		query.setParameter("klsk", klsk);
 		try {
 			return (Org) query.getSingleResult();
@@ -51,7 +51,7 @@ public class OrgDAOImpl implements OrgDAO {
 	 */
     @Override
 	public Org getByCD(String cd) {
-		Query query =em.createQuery("from Org t where t.cd = :cd");
+		Query query =em.createQuery("from com.ric.bill.model.bs.Org t where t.cd = :cd");
 		query.setParameter("cd", cd);
 		try {
 			return (Org) query.getSingleResult();
@@ -71,10 +71,10 @@ public class OrgDAOImpl implements OrgDAO {
 		Query query;
 		if (tp==0) {
 			// все орг
-			query = em.createQuery("from Org t order by nvl(t.isMnt,0) desc, t.name");
+			query = em.createQuery("from com.ric.bill.model.bs.Org t order by nvl(t.isMnt,0) desc, t.name");
 		} else {
 			// УК
-			query = em.createQuery("select t from Org t join t.orgTp otp join otp.addrTp atp where atp.cd='ЖЭО' order by nvl(t.isMnt,0) desc, t.name");
+			query = em.createQuery("select t from com.ric.bill.model.bs.Org t join t.orgTp otp join otp.addrTp atp where atp.cd='ЖЭО' order by nvl(t.isMnt,0) desc, t.name");
 		}
 		return query.getResultList();
 	}

@@ -115,11 +115,26 @@ public class TarifMngImpl implements TarifMng {
 	 * @return
 	 */
 	public Double getChngVal(Calc calc, Serv serv, Date genDt, String cd, int lvlServ) {
-		log.trace("Serv={} lsk={}", serv.getId(), calc.getKart().getLsk());
+		log.info("Serv={} lsk={} lvlServ={}", serv.getId(), calc.getKart().getLsk(), lvlServ);
 		Chng chng = calc.getReqConfig().getChng();	
 		Double val = null;
 		if (chng.getTp().getCd().equals(cd) && (lvlServ == 1 || chng.getServ().equals(serv)) ) {
 			Optional<ChngVal> chngVal;
+			
+/*			calc.getReqConfig().getChng().getChngLsk().stream()
+				.filter(t -> t.getKart().getLsk().equals(calc.getKart().getLsk())) // фильтр по лиц.счету
+				.forEach(t -> {
+					
+					
+					
+				});*/
+
+			chngVal = calc.getReqConfig().getChng().getChngLsk().stream()
+					.filter(t -> t.getKart().getLsk().equals(calc.getKart().getLsk())) // фильтр по лиц.счету
+					.filter(t -> lvlServ == 0 || t.getServ().equals(serv) ) // фильтр по услуге по уровню ChngLsk или без этого фильтра
+					.flatMap(t -> t.getChngVal().stream() // преобразовать в другую коллекцию
+								.filter(d -> genDt == null || Utl.between(genDt, d.getDtVal1(), d.getDtVal2())) // и фильтр по дате или без даты
+							).findFirst();
 			
 			// по дате
 			chngVal = calc.getReqConfig().getChng().getChngLsk().stream()

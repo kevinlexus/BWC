@@ -22,6 +22,9 @@ import com.ric.bill.Simple;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.tr.Serv;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Детали перерасчета - лицевые счета
  * @author lev
@@ -30,8 +33,8 @@ import com.ric.bill.model.tr.Serv;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "CHNG_LSK", schema="FN")
+@Getter @Setter
 public class ChngLsk implements java.io.Serializable, Simple {
-
 
 	public ChngLsk() {
 		
@@ -79,79 +82,11 @@ public class ChngLsk implements java.io.Serializable, Simple {
 	@Fetch(FetchMode.SUBSELECT)
 	private List<ChngVal> chngVal = new ArrayList<ChngVal>(0);
 
+	// родительская запись
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", updatable = false)
+	private ChngLsk parent;
 	
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Kart getKart() {
-		return kart;
-	}
-
-	public void setKart(Kart kart) {
-		this.kart = kart;
-	}
-
-	public Chng getChng() {
-		return chng;
-	}
-
-	public void setChng(Chng chng) {
-		this.chng = chng;
-	}
-
-	public Serv getServ() {
-		return serv;
-	}
-
-	public void setServ(Serv serv) {
-		this.serv = serv;
-	}
-
-	public Chrg getChrg() {
-		return chrg;
-	}
-
-	public void setChrg(Chrg chrg) {
-		this.chrg = chrg;
-	}
-
-	public Double getVolChng() {
-		return volChng;
-	}
-
-	public void setVolChng(Double volChng) {
-		this.volChng = volChng;
-	}
-
-	public Double getSumChng() {
-		return sumChng;
-	}
-
-	public void setSumChng(Double sumChng) {
-		this.sumChng = sumChng;
-	}
-
-	public Double getSumCorr() {
-		return sumCorr;
-	}
-
-	public void setSumCorr(Double sumCorr) {
-		this.sumCorr = sumCorr;
-	}
-
-	public List<ChngVal> getChngVal() {
-		return chngVal;
-	}
-
-	public void setChngVal(List<ChngVal> chngVal) {
-		this.chngVal = chngVal;
-	}
-
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof ChngLsk))
