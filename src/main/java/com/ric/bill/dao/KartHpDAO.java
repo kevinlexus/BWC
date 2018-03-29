@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.ric.bill.model.hotora.scott.Kart;
 
 @Repository
-public interface KartHpDAO extends JpaRepository<Kart, Integer> {
+public interface KartHpDAO extends JpaRepository<Kart, String> {
 
 	 	
 }

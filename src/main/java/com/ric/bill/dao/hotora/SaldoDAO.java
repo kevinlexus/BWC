@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.ric.bill.model.hotora.scott.Saldo;
+import com.ric.bill.model.hotora.scott.SaldoId;
 
 @Repository
-public interface SaldoDAO extends JpaRepository<Saldo, Integer> {
+public interface SaldoDAO extends JpaRepository<Saldo, SaldoId> {
 
 	/**
 	 * Получить совокупное сальдо по лицевому счету

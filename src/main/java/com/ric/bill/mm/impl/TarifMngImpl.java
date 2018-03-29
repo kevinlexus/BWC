@@ -115,32 +115,29 @@ public class TarifMngImpl implements TarifMng {
 	 * @return
 	 */
 	public Double getChngVal(Calc calc, Serv serv, Date genDt, String cd, int lvlServ) {
-		log.info("Serv={} lsk={} lvlServ={}", serv.getId(), calc.getKart().getLsk(), lvlServ);
+		log.trace("Serv={} lsk={}", serv.getId(), calc.getKart().getLsk());
 		Chng chng = calc.getReqConfig().getChng();	
 		Double val = null;
 		if (chng.getTp().getCd().equals(cd) && (lvlServ == 1 || chng.getServ().equals(serv)) ) {
 			Optional<ChngVal> chngVal;
 			
-/*			calc.getReqConfig().getChng().getChngLsk().stream()
-				.filter(t -> t.getKart().getLsk().equals(calc.getKart().getLsk())) // фильтр по лиц.счету
-				.forEach(t -> {
-					
-					
-					
-				});*/
-
+			// если не нашли, искать значение по дочерним записям ред.Lev 29.03.2018 - придумал Диман М.
 			chngVal = calc.getReqConfig().getChng().getChngLsk().stream()
 					.filter(t -> t.getKart().getLsk().equals(calc.getKart().getLsk())) // фильтр по лиц.счету
-					.filter(t -> lvlServ == 0 || t.getServ().equals(serv) ) // фильтр по услуге по уровню ChngLsk или без этого фильтра
+					.filter(t -> lvlServ == 0 || 
+						t.getParent() == null && t.getServ().equals(serv) ) // фильтр по услуге по уровню ChngLsk или без этого фильтра (у кого нет родителя)
 					.flatMap(t -> t.getChngVal().stream() // преобразовать в другую коллекцию
 								.filter(d -> genDt == null || Utl.between(genDt, d.getDtVal1(), d.getDtVal2())) // и фильтр по дате или без даты
 							).findFirst();
-			
-			// по дате
+			if (!chngVal.isPresent()) {
+				val = chngVal.get().getVal();
+				return val;
+			}
+			// если не нашли, искать значение по родительской записи ред.Lev 29.03.2018 - придумал Диман М.
 			chngVal = calc.getReqConfig().getChng().getChngLsk().stream()
 					.filter(t -> t.getKart().getLsk().equals(calc.getKart().getLsk())) // фильтр по лиц.счету
-					.filter(t -> lvlServ == 0 || t.getServ().equals(serv) ) // фильтр по услуге по уровню ChngLsk или без этого фильтра
-					.flatMap(t -> t.getChngVal().stream() // преобразовать в другую коллекцию
+					.filter(t -> lvlServ == 0 || t.getParent() != null) // фильтр у кого есть родитель
+					.flatMap(t -> t.getParent().getChngVal().stream() // преобразовать в другую коллекцию
 								.filter(d -> genDt == null || Utl.between(genDt, d.getDtVal1(), d.getDtVal2())) // и фильтр по дате или без даты
 							).findFirst();
 	
