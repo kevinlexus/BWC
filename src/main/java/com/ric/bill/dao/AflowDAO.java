@@ -62,7 +62,6 @@ public interface AflowDAO extends JpaRepository<Aflow, AflowId> {
 			+ "where t.type = 1250 and t.kart.lsk = ?1 and t.mg = TO_CHAR(?3,'YYYYMM') and t.usl = ?2 and t.dt1=?3")
 	List<SumDebRec> getDebByUsl(String lsk, String usl, Date dt);
 
-	
 	/**
 	 * Получить совокупную пеню по основным услугам
 	 * @param lsk - лиц.счет
