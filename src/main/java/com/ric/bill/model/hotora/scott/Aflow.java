@@ -48,7 +48,7 @@ public class Aflow implements java.io.Serializable  {
 	@Column(name = "MG", updatable = false)
 	private String mg;
 
-	// период задолжности
+	// период задолженности
 	@Id
 	@Column(name = "DOPL", updatable = false)
 	private String dopl;

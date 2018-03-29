@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.ric.bill.dto.SumChrgRec;
 import com.ric.bill.dto.SumDebRec;
 import com.ric.bill.model.hotora.scott.Aflow;
+import com.ric.bill.model.hotora.scott.AflowId;
 
 /**
  * DAO сущности Aflow - начисления, долги (cтарая разработка)
@@ -19,7 +20,7 @@ import com.ric.bill.model.hotora.scott.Aflow;
  *
  */
 @Repository
-public interface AflowDAO extends JpaRepository<Aflow, Integer> {
+public interface AflowDAO extends JpaRepository<Aflow, AflowId> {
 
 	/**
 	 * Получить сгруппированные записи начислений, связанных с услугой из ГИС ЖКХ по лиц.счету и периоду
