@@ -125,24 +125,25 @@ public class TarifMngImpl implements TarifMng {
 			chngVal = calc.getReqConfig().getChng().getChngLsk().stream()
 					.filter(t -> t.getKart().getLsk().equals(calc.getKart().getLsk())) // фильтр по лиц.счету
 					.filter(t -> lvlServ == 0 || 
-						t.getParent() == null && t.getServ().equals(serv) ) // фильтр по услуге по уровню ChngLsk или без этого фильтра (у кого нет родителя)
+						t.getParent() == null && t.getServ() !=null && t.getServ().equals(serv) ) // фильтр по услуге по уровню ChngLsk или без этого фильтра (у кого нет родителя)
 					.flatMap(t -> t.getChngVal().stream() // преобразовать в другую коллекцию
 								.filter(d -> genDt == null || Utl.between(genDt, d.getDtVal1(), d.getDtVal2())) // и фильтр по дате или без даты
 							).findFirst();
-			if (!chngVal.isPresent()) {
-				val = chngVal.get().getVal();
-				return val;
-			}
-			// если не нашли, искать значение по родительской записи ред.Lev 29.03.2018 - придумал Диман М.
-			chngVal = calc.getReqConfig().getChng().getChngLsk().stream()
-					.filter(t -> t.getKart().getLsk().equals(calc.getKart().getLsk())) // фильтр по лиц.счету
-					.filter(t -> lvlServ == 0 || t.getParent() != null) // фильтр у кого есть родитель
-					.flatMap(t -> t.getParent().getChngVal().stream() // преобразовать в другую коллекцию
-								.filter(d -> genDt == null || Utl.between(genDt, d.getDtVal1(), d.getDtVal2())) // и фильтр по дате или без даты
-							).findFirst();
-	
 			if (chngVal.isPresent()) {
 				val = chngVal.get().getVal();
+				return val;
+			} else {
+				// если не нашли, искать значение по родительской записи ред.Lev 29.03.2018 - придумал Диман М.
+				chngVal = calc.getReqConfig().getChng().getChngLsk().stream()
+						.filter(t -> t.getKart().getLsk().equals(calc.getKart().getLsk())) // фильтр по лиц.счету
+						.filter(t -> lvlServ == 0 || t.getParent() != null) // фильтр у кого есть родитель
+						.flatMap(t -> t.getParent().getChngVal().stream() // преобразовать в другую коллекцию
+									.filter(d -> genDt == null || Utl.between(genDt, d.getDtVal1(), d.getDtVal2())) // и фильтр по дате или без даты
+								).findFirst();
+		
+				if (chngVal.isPresent()) {
+					val = chngVal.get().getVal();
+				}
 			}
 		}
 		return val;

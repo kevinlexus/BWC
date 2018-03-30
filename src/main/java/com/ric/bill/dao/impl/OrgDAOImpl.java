@@ -17,7 +17,7 @@ import com.ric.bill.model.bs.Org;
 
 
 /**
- * DAO Организации
+ * DAO сущности com.ric.bill.model.bs.Org
  * @author Lev
  * @version 1.00
  *

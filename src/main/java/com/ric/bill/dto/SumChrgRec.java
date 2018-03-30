@@ -11,7 +11,7 @@ import com.ric.bill.model.exs.Ulist;
  */
 public interface SumChrgRec {
 	// Id услуги из ГИС 
-	BigDecimal getUlistId(); 
+	Integer getUlistId(); 
 	// сумма
 	Double getSumma();
 	// объем

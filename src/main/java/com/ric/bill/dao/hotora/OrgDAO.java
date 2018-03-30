@@ -8,7 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import com.ric.bill.model.hotora.oralv.Org;
 
-@Repository("OrgDAO_BWC")
+/**
+ * DAO сущности com.ric.bill.model.hotora.oralv.Org
+ * @author Lev
+ * @version 1.00
+ *
+ */
+@Repository("OrgDAO_BWC_hotora")
 public interface OrgDAO extends JpaRepository<Org, Integer> {
 
 	/**

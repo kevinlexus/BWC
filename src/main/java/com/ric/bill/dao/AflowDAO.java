@@ -59,7 +59,7 @@ public interface AflowDAO extends JpaRepository<Aflow, AflowId> {
 	 * @return
 	 */
 	@Query(value = "select t.summa, t.summap, t.dopl from Aflow t "
-			+ "where t.type = 1250 and t.kart.lsk = ?1 and t.mg = TO_CHAR(?3,'YYYYMM') and t.usl = ?2 and t.dt1=?3")
+			+ "where t.type = 1250 and t.kart.lsk = ?1 and t.mg = TO_CHAR(?3,'YYYYMM') and t.usl.id = ?2 and t.dt1=?3")
 	List<SumDebRec> getDebByUsl(String lsk, String usl, Date dt);
 
 	/**
@@ -80,7 +80,7 @@ public interface AflowDAO extends JpaRepository<Aflow, AflowId> {
 	 * @return
 	 */
 	@Query(value = "select sum(t.summap) from Aflow t "
-			+ "where t.type = 1250 and t.kart.lsk = ?1 and t.mg = TO_CHAR(?3,'YYYYMM') and t.usl = ?2 and t.dt1=?3")
+			+ "where t.type = 1250 and t.kart.lsk = ?1 and t.mg = TO_CHAR(?3,'YYYYMM') and t.usl.id = ?2 and t.dt1=?3")
 	BigDecimal getPenAmntByUsl(String lsk, String usl, Date dt);
 
 }
