@@ -108,7 +108,8 @@ public class Ulist implements java.io.Serializable  {
 	@Column(name = "VAL_TP", updatable = true, nullable = true)
 	private String valTp;
 
-	// ЗАПОЛНЯТЬ ТОЛЬКО У УСЛУГ С GUID<>null! Тип услуги 0-жилищная, 1-коммунальная (напр.Х.В.), 2-дополнительная (напр Замок), 3 - в т.ч. усл.на ОИ
+	// ЗАПОЛНЯТЬ ТОЛЬКО У УСЛУГ С GUID<>null! Тип услуги 0-жилищная, 1-коммунальная (напр.Х.В.), 
+	// 2-дополнительная (напр Замок), 3 - в т.ч. усл.на ОИ, 4 - Капремонт
 	@Column(name = "TP", updatable = true, nullable = true)
 	private Integer tp;
 	

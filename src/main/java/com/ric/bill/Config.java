@@ -163,7 +163,7 @@ public class Config {
 	private void setUp() throws EmptyStorable {
 		log.info("");
 		log.info("-----------------------------------------------------------------");
-		log.info("Версия модуля начисления - {}", "1.0.15");
+		log.info("Версия модуля начисления - {}", "1.0.16");
 		 
 		// Добавить path в Classpath, относительно нахождения Jar
 		try {
@@ -216,15 +216,15 @@ public class Config {
 	}
 	
 	public String getPeriod() {
-		return Utl.getPeriodByDate(getCalendarCurrentPeriod().get(0).getTime());
+		return Utl.getPeriodFromDate(getCalendarCurrentPeriod().get(0).getTime());
 	}
 
 	public String getPeriodNext() {
-		return Utl.addMonth(Utl.getPeriodByDate(getCalendarCurrentPeriod().get(0).getTime()), 1);
+		return Utl.addMonth(Utl.getPeriodFromDate(getCalendarCurrentPeriod().get(0).getTime()), 1);
 	}
 
 	public String getPeriodBack() {
-		return Utl.addMonth(Utl.getPeriodByDate(getCalendarCurrentPeriod().get(0).getTime()), -1);
+		return Utl.addMonth(Utl.getPeriodFromDate(getCalendarCurrentPeriod().get(0).getTime()), -1);
 	}
 
 	public Date getCurDt1() {

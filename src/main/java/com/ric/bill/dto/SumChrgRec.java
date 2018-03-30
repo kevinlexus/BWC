@@ -1,40 +1,26 @@
 package com.ric.bill.dto;
 
+import java.math.BigDecimal;
 
-import com.ric.bill.model.exs.ServGis;
 import com.ric.bill.model.exs.Ulist;
 
-import lombok.Getter;
-import lombok.Setter;
-
-/**
- * Строка значений сумм начислений, услуги из ГИС, summa
- * @author lev
- *
+/*
+ * DTO для хранения записи начисления
+ * @author - Lev
+ * @ver 1.01
  */
-@Getter @Setter
-public class SumChrgRec {
-
-	// услуга из ГИС 
-	private Ulist ulist; 
-
+public interface SumChrgRec {
+	// Id услуги из ГИС 
+	Integer getUlistId(); 
 	// сумма
-	private Double summa;
-
+	Double getSumma();
 	// объем
-	private Double vol;
-
+	Double getVol();
 	// цена
-	private Double price;
-
-	// конструктор
-	public SumChrgRec(Ulist ulist, Double summa, Double vol, Double price) {
-		super();
-		this.ulist = ulist;
-		this.summa = summa;
-		this.vol = vol;
-		this.price = price;
-	}
+	Double getPrice();
+	// услуга из справочника ГИС
+	Ulist getUlist();
+	// услуга из справочника ГИС
+	void setUlist(Ulist ulist);
 	
 }
-

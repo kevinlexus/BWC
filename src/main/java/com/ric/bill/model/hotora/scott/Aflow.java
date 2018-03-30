@@ -1,5 +1,7 @@
 package com.ric.bill.model.hotora.scott;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -46,9 +48,18 @@ public class Aflow implements java.io.Serializable  {
 	@Column(name = "MG", updatable = false)
 	private String mg;
 
+	// период задолженности
+	@Id
+	@Column(name = "DOPL", updatable = false)
+	private String dopl;
+
 	// Сумма; (METER)Объем общий; (CENA_USL_LSK)Расценка; (NORMATIV_USL_LSK)Норма
 	@Column(name = "SUMMA", updatable = false)
 	private Double summa;
+
+	// Сумма пени
+	@Column(name = "SUMMAP", updatable = false)
+	private Double summap;
 
 	// (CHRG)Месячный расход сч.; (VOLUME)Показание ХВС; (VOL_NORM)Норма ХВС; (METER)ID гр/сч.(кварп.)
 	@Column(name = "N1", updatable = false)
@@ -62,6 +73,9 @@ public class Aflow implements java.io.Serializable  {
 	@Id
 	@Column(name = "FK_TYPE", updatable = false)
 	private Integer type;
+	
+	@Column(name = "DT1", updatable = false)
+	private Date dt1;
 	
 }
 
