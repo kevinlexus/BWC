@@ -19,7 +19,7 @@ import com.ric.bill.Simple;
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
+//@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
 @Table(name = "LISTTP", schema="BS")
 public class LstTp implements java.io.Serializable, Simple {
 

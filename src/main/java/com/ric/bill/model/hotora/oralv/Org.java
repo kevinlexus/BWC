@@ -5,8 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.ric.bill.model.ar.House;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +26,9 @@ import lombok.Setter;
 @Getter @Setter
 public class Org implements java.io.Serializable {
 
+	public Org() {
+	}
+	
 	@Id
     @Column(name = "ID", updatable = false, nullable = false)
 	private Integer id;
@@ -42,9 +49,9 @@ public class Org implements java.io.Serializable {
     @Column(name = "TREST")
 	private String trest; 
 
-    // услуга из Новой разработки
-    @OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="FK_ORG", referencedColumnName="ID")
+    // контрагент Lev:30.03.2018 - неудается сделать OneToOne, сделал пока так 
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="ID", referencedColumnName="FK_ORG", insertable = false, updatable = false, nullable = false)
 	private SchetContragent schetContr; 
     
     @Override

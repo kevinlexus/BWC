@@ -54,7 +54,7 @@ public class ServMngImpl implements ServMng {
 	 * @throws TooManyRecursiveCalls 
 	 * @throws NotFoundUpperLevel 
 	 */
-	@Cacheable(cacheNames="ServMngImpl.getUpper", key="{ #serv.getId(), #tp }")
+	//@Cacheable(cacheNames="ServMngImpl.getUpper", key="{ #serv.getId(), #tp }")
 	public Serv getUpper(Serv serv, String tp) throws TooManyRecursiveCalls, NotFoundUpperLevel {
 		Lst tpTree = lstMng.getByCD(tp);
 		for(ServTree rec : serv.getServTree()) {
@@ -72,7 +72,7 @@ public class ServMngImpl implements ServMng {
 	 * @return - искомая запись
 	 * @throws TooManyRecursiveCalls 
 	 */
-	@Cacheable(cacheNames="ServMngImpl.getUpperTree", key="{ #servTree.getId(), #tp }")
+	//@Cacheable(cacheNames="ServMngImpl.getUpperTree", key="{ #servTree.getId(), #tp }")
 	public ServTree getUpperTree(ServTree servTree, String tp, int itr) throws TooManyRecursiveCalls {
 		//System.out.println("-------->"+itr);
 		itr++;

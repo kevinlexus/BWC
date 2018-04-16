@@ -16,6 +16,9 @@ import com.ric.bill.model.bs.AddrTp;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.dc.Doc;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Справочник всех объектов Klsk Objects - KO
  * 
@@ -24,6 +27,7 @@ import com.ric.bill.model.dc.Doc;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "K_LSK", schema="ORALV")
+@Getter @Setter
 public class Ko implements java.io.Serializable, Simple {
 
 	@Id
@@ -52,49 +56,6 @@ public class Ko implements java.io.Serializable, Simple {
 
 	// TODO можно добавить счетчик, и т.п.
 	
-	public Ko() {
-		super();
-	}
-    
-	public Integer getId() {
-		return this.id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
-	public AddrTp getAddrTp() {
-		return addrTp;
-	}
-	
-	public void setAddrTp(AddrTp addrTp) {
-		this.addrTp = addrTp;
-	}
-	
-	
-	public Org getOrg() {
-		return org;
-	}
-
-	public void setOrg(Org org) {
-		this.org = org;
-	}
-
-	public House getHouse() {
-		return house;
-	}
-
-	public void setHouse(House house) {
-		this.house = house;
-	}
-
-	public Doc getDoc() {
-		return doc;
-	}
-
-	public void setDoc(Doc doc) {
-		this.doc = doc;
-	}
 
 	public boolean equals(Object o) {
 	    if (this == o) return true;

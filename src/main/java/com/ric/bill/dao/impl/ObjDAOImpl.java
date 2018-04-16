@@ -21,7 +21,7 @@ public class ObjDAOImpl implements ObjDAO {
 	/**
 	 * Найти элемент списка по CD 
 	 */
-	@Cacheable("ObjDAOImpl.getByCD")
+	//@Cacheable("ObjDAOImpl.getByCD")
 	public synchronized Obj getByCD(int rqn, String cd) {
 		Query query =em.createQuery("from Obj t where t.cd in (:cd)");
 		query.setParameter("cd", cd);

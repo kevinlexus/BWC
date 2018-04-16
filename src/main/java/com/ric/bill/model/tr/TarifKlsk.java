@@ -27,7 +27,7 @@ import com.ric.bill.model.fn.Chng;
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
+//@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
 @Table(name = "TARIFXKLSK", schema="TR")
 public class TarifKlsk implements java.io.Serializable, Simple {
 

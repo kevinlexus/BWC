@@ -36,7 +36,7 @@ import com.ric.bill.model.tr.Serv;
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
+//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "METER_LOG", schema="MT")
 public class MeterLog extends Base implements java.io.Serializable, MLogs {
 

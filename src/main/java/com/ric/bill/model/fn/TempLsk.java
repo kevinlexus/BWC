@@ -21,7 +21,7 @@ import lombok.Setter;
  */
 @Entity
 @Immutable
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
+//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "TEMP_LSK", schema="FN")
 @IdClass(TempLskId.class) // суррогантый первичный ключ
 @Setter

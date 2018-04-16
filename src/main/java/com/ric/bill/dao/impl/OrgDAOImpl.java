@@ -22,7 +22,7 @@ import com.ric.bill.model.bs.Org;
  * @version 1.00
  *
  */
-@Repository
+@Repository("OrgDAO_BWC")
 @Slf4j
 public class OrgDAOImpl implements OrgDAO {
 
@@ -34,7 +34,7 @@ public class OrgDAOImpl implements OrgDAO {
 	 * Получить организацию по klsk
 	 */
     @Override
-	@Cacheable(cacheNames="OrgDAOImpl.getByKlsk", key="{#klsk }")
+	//@Cacheable(cacheNames="OrgDAOImpl.getByKlsk", key="{#klsk }")
 	public Org getByKlsk(int klsk) {
 		
 		Query query =em.createQuery("from com.ric.bill.model.bs.Org t where t.klskId = :klsk");
@@ -66,7 +66,7 @@ public class OrgDAOImpl implements OrgDAO {
 	 * @return
 	 */
     @Override
-	@Cacheable(cacheNames="OrgDAOImpl.getOrgAll", key="{#tp }")
+	//@Cacheable(cacheNames="OrgDAOImpl.getOrgAll", key="{#tp }")
 	public List<Org> getOrgAll(int tp) {
 		Query query;
 		if (tp==0) {

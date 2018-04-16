@@ -34,7 +34,7 @@ import lombok.Setter;
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
+//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "CHRG", schema="FN")
 @Getter @Setter
 public class Chrg implements java.io.Serializable, Simple {

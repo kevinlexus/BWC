@@ -26,7 +26,7 @@ import com.ric.bill.model.fn.Chng;
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
+//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "METER_VOL", schema="MT")
 public class Vol implements java.io.Serializable, Simple {
 

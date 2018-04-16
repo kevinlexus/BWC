@@ -5,11 +5,14 @@ import java.util.List;
 
 import com.ric.bill.model.ps.Pers;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Хранение кол-ва проживающих, записи о их регистрациях
  * @author lev
  *
  */
+@Slf4j
 public class CntPers implements java.io.Serializable {
 	
 	/**
@@ -32,7 +35,5 @@ public class CntPers implements java.io.Serializable {
 		cntFact = 0; 
 		cntOwn = 0; 
 	}
-	
-	// Добавить список проживающих с persId
 	
 }

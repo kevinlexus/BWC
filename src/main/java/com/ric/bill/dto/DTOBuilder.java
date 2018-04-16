@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.ric.bill.dao.AreaDAO;
@@ -37,10 +38,14 @@ public class DTOBuilder {
 	
 @Autowired
 AreaDAO areaDao;
+
 @Autowired
+@Qualifier("OrgDAO_BWC")
 OrgDAO orgDao;
+
 @Autowired
 KoDAO klskDao;
+
 @Autowired
 HouseMng houseMng;
 

@@ -11,6 +11,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -26,6 +28,7 @@ import com.ric.bill.model.oralv.Ko;
  */
 @MappedSuperclass
 @EqualsAndHashCode(callSuper=false)
+@Getter @Setter
 public abstract class Base implements Storable {
 	
     @Column(name = "FK_K_LSK", updatable = false, nullable = false)
@@ -41,29 +44,6 @@ public abstract class Base implements Storable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_K_LSK", referencedColumnName="ID", updatable = false, insertable = false)
 	private Ko ko;
-	
-	public List<Dw> getDw() {
-		return dw;
-	}
-	public void setDw(List<Dw> dw) {
-		this.dw = dw;
-	}
-	
-	public Integer getKlskId() {
-		return klskId;
-	}
-	
-	public void setKlskId(Integer klsk) {
-		this.klskId = klsk;
-	}
-	
-	public Ko getKo() {
-		return ko;
-	}
-	
-	public void setKo(Ko klsk) {
-		this.ko = klsk;
-	}
 	
 	
 }
