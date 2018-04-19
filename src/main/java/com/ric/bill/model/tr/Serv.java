@@ -19,8 +19,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
+import com.ric.bill.CntPers;
 import com.ric.bill.Storable;
 import com.ric.bill.model.bs.Base;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 
 
@@ -31,23 +36,16 @@ import com.ric.bill.model.bs.Base;
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
+////@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
 @Table(name = "SERV", schema="TR")
+@Getter @Setter
 public class Serv extends Base implements java.io.Serializable, Storable {
-
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", updatable = false, nullable = false)
 	private Integer id; // id записи
 
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
 	@Column(name = "CD", updatable = false, nullable = false)
     private String cd;// CD 
 
@@ -144,176 +142,6 @@ public class Serv extends Base implements java.io.Serializable, Storable {
 	@Column(name = "INCL_PRSN", nullable = true)
 	private Boolean inclPrsn;
 
-	public String getCd() {
-		return cd;
-	}
-
-	public void setCd(String cd) {
-		this.cd = cd;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Integer getNpp() {
-		return npp;
-	}
-
-	public void setNpp(Integer npp) {
-		this.npp = npp;
-	}
-
-	public Integer getNpp2() {
-		return npp2;
-	}
-
-	public void setNpp2(Integer npp2) {
-		this.npp2 = npp2;
-	}
-
-	public Boolean getInclAbsn() {
-		if (inclAbsn==null) {
-			return false;
-		} else {
-			return inclAbsn;
-		}
-	}
-
-	public void setInclAbsn(Boolean inclAbsn) {
-		this.inclAbsn = inclAbsn;
-	}
-
-	public Boolean getInclPrsn() {
-		if (inclPrsn==null) {
-			return false;
-		} else {
-			return inclPrsn;
-		}
-	}
-
-	public void setInclPrsn(Boolean inclPrsn) {
-		this.inclPrsn = inclPrsn;
-	}
-
-	public Serv getServMet() {
-		return servMet;
-	}
-
-	public void setServMet(Serv met) {
-		this.servMet = met;
-	}
-
-	public Serv getServOdn() {
-		return servOdn;
-	}
-
-	public void setServOdn(Serv odn) {
-		this.servOdn = odn;
-	}
-
-	public Serv getServChrg() {
-		return servChrg;
-	}
-
-	public void setServChrg(Serv chrg) {
-		this.servChrg = chrg;
-	}
-
-	public Serv getServUpst() {
-		return servUpst;
-	}
-	public void setServUpst(Serv upst) {
-		this.servUpst = upst;
-	}
-
-	public Serv getServWokpr() {
-		return servWokpr;
-	}
-	
-	public void setServWokpr(Serv wokpr) {
-		this.servWokpr = wokpr;
-	}
-
-	public Serv getServOrg() {
-		return servOrg;
-	}
-	
-	public void setServOrg(Serv org) {
-		this.servOrg = org;
-	}
-
-	public Boolean getCheckOrg() {
-		if (checkOrg==null) {
-			return false;
-		} else {
-			return checkOrg;
-		}
-	}
-	
-	public void setCheckOrg(Boolean checkOrg) {
-		this.checkOrg = checkOrg;
-	}
-	
-	public Serv getServStKeep() {
-		return servStKeep;
-	}
-	public void setServStKeep(Serv servStKeep) {
-		this.servStKeep = servStKeep;
-	}
-	public Serv getServSt() {
-		return servSt;
-	}
-	public void setServSt(Serv servSt) {
-		this.servSt = servSt;
-	}
-	
-	public Serv getServPrice() {
-		return servPrice;
-	}
-	public void setServPrice(Serv servPrice) {
-		this.servPrice = servPrice;
-	}
-	public Boolean getVrt() {
-		if (vrt==null) {
-			return false;
-		} else {
-			return vrt;
-		}
-	}
-	public void setVrt(Boolean vrt) {
-		this.vrt = vrt;
-	}
-	public Serv getServRound() {
-		return servRound;
-	}
-	public void setServRound(Serv servRound) {
-		this.servRound = servRound;
-	}
-	public Serv getServVrt() {
-		return servVrt;
-	}
-	public void setServVrt(Serv servVrt) {
-		this.servVrt = servVrt;
-	}
-		
-	public List<ServTree> getServTree() {
-		return servTree;
-	}
-	public void setServTree(List<ServTree> servTree) {
-		this.servTree = servTree;
-	}
-	
-	public Serv getServDep() {
-		return servDep;
-	}
-	public void setServDep(Serv servDep) {
-		this.servDep = servDep;
-	}
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof Serv))
@@ -337,6 +165,12 @@ public class Serv extends Base implements java.io.Serializable, Storable {
 	}
 
 
-	
+/*	@Override
+	public void finalize() throws Throwable {
+		super.finalize();
+		log.info("============================= FINALIZED Serv! ==============================");
+		
+	}
+*/	
 }
 

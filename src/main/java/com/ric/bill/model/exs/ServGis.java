@@ -50,7 +50,6 @@ public class ServGis implements java.io.Serializable  {
 	private Ulist ulist;  
 
 	// групппировка услуг, для нахождения корректной расценке по услуге
-	@Id
 	@Column(name = "GRP", updatable = false)
 	private Integer grp;
 	

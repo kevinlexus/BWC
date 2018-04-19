@@ -27,7 +27,7 @@ import com.ric.bill.model.bs.Lst;
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
+//@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
 @Table(name = "METER_LOG_GRAPH", schema="MT")
 public class MeterLogGraph implements java.io.Serializable, Simple {
 

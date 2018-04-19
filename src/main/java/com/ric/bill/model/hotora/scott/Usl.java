@@ -16,7 +16,7 @@ import lombok.Setter;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "USL")  // TODO СХЕМА КАКАЯ, ЕСЛИ ЭТО Синоним, да еще и по DBLINK? 
+@Table(name = "USL@HP", schema="SCOTT") 
 @Getter @Setter
 public class Usl implements java.io.Serializable  {
 

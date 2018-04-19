@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.ric.bill.dao.OrgDAO;
@@ -16,6 +17,7 @@ import com.ric.bill.model.bs.Org;
 public class OrgMngImpl implements OrgMng {
 
 	@Autowired
+	@Qualifier("OrgDAO_BWC")
 	private OrgDAO orgDao;
 
     @PersistenceContext

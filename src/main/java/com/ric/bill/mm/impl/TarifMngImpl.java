@@ -39,7 +39,7 @@ public class TarifMngImpl implements TarifMng {
 	 * @param cd - код свойства
 	 * @return - свойство
 	 */
-	@Cacheable(cacheNames="TarifMngImpl.getProp", key="{#rqn, #tc.getKo().getId(), #serv.getId(), #cd, #genDt }") 
+	//@Cacheable(cacheNames="TarifMngImpl.getProp", key="{#rqn, #tc.getKo().getId(), #serv.getId(), #cd, #genDt }") 
 	public Double getProp(Calc calc, int rqn, TarifContains tc, Serv serv, String cd, Date genDt) {
 			Boolean isChng = false;
 			Chng chng = null; 
@@ -72,7 +72,7 @@ public class TarifMngImpl implements TarifMng {
 	 * @param cd - код свойства
 	 * @return - свойство
 	 */
-	@Cacheable(cacheNames="TarifMngImpl.getOrg", key="{#rqn,  #tc.getKo().getId(), #serv.getId(), #genDt }") 
+	//@Cacheable(cacheNames="TarifMngImpl.getOrg", key="{#rqn,  #tc.getKo().getId(), #serv.getId(), #genDt }") 
 	public Org getOrg(Calc calc, int rqn, TarifContains tc, Serv serv, Date genDt) {
 		Boolean isChng = false;
 		Chng chng = null; 

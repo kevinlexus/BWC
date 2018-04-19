@@ -22,7 +22,7 @@ import com.ric.bill.Simple;
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
+//@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
 @Table(name = "LIST", schema="BS")
 public class Lst implements java.io.Serializable, Simple {
 

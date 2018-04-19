@@ -2,7 +2,11 @@ package com.ric.bill.model.hotora.oralv;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -19,6 +23,9 @@ import lombok.Setter;
 @Getter @Setter
 public class SchetContragent implements java.io.Serializable {
 
+	public SchetContragent() {
+	}
+	
 	@Id
     @Column(name = "ID", updatable = false, nullable = false)
 	private Integer id;
@@ -35,7 +42,12 @@ public class SchetContragent implements java.io.Serializable {
     @Column(name = "RASCHET_SCHET")
 	private String operAcc;
 
-	@Override
+    // организация (для обеспечения OneToOne)
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_ORG", referencedColumnName="ID", nullable = false)
+	private SchetContragent schetContr; 
+    
+    @Override
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof SchetContragent))

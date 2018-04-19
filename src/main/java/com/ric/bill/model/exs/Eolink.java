@@ -28,6 +28,8 @@ import com.ric.bill.model.sec.User;
 
 import lombok.Getter;
 import lombok.Setter;
+import javax.annotation.Generated;
+import java.util.Collections;
 
 
 /**
@@ -48,7 +50,7 @@ public class Eolink implements java.io.Serializable  {
 	// Конструктор
 	public Eolink(String reu, String kul, String nd, String kw, String lsk,
 			Integer entry, String usl, Integer idCnt, String guid, String un,
-			String cdExt, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, Eolink parent, User user, Integer status) {
+			String cd, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, Eolink parent, User user, Integer status) {
 		super();
 		this.reu = reu;
 		this.kul = kul;
@@ -60,7 +62,7 @@ public class Eolink implements java.io.Serializable  {
 		this.idCnt = idCnt;
 		this.guid = guid;
 		this.un = un;
-		this.cdExt = cdExt;
+		this.cd = cd;
 		this.objTp = objTp;
 		this.appTp = appTp;
 		this.objTpx = objTpx;
@@ -72,11 +74,11 @@ public class Eolink implements java.io.Serializable  {
 
 	// Конструктор
 	public Eolink(String guid, String un,
-			String cdExt, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, User user) {
+			String cd, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, User user) {
 		super();
 		this.guid = guid;
 		this.un = un;
-		this.cdExt = cdExt;
+		this.cd = cd;
 		this.objTp = objTp;
 		this.appTp = appTp;
 		this.objTpx = objTpx;
@@ -135,9 +137,9 @@ public class Eolink implements java.io.Serializable  {
 	@Column(name = "UNIQNUM")
 	private String un;
 
-	// ID объекта во внешней системе (алфавитно-цифровой)
-	@Column(name = "CD_EXT", updatable = true, nullable = true)
-	private String cdExt;
+	// CD (для ПД - номер документа в биллинге)
+	@Column(name = "CD", updatable = true, nullable = true)
+	private String cd;
 
 	// Тип объекта (например "Договор") (используется для обмена с "Квартплатой") 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -221,12 +223,44 @@ public class Eolink implements java.io.Serializable  {
 	private Integer cLskId;
 
 	// Дата создания
-	@Column(name = "DT_CRT")
+	@Column(name = "DT_CRT", updatable = false)
 	private Date crtDt;
 
 	// Дата обновления
 	@Column(name = "DT_UPD")
 	private Date updDt;
+
+	@Generated("SparkTools")
+	private Eolink(Builder builder) {
+		this.id = builder.id;
+		this.reu = builder.reu;
+		this.kul = builder.kul;
+		this.nd = builder.nd;
+		this.kw = builder.kw;
+		this.lsk = builder.lsk;
+		this.entry = builder.entry;
+		this.usl = builder.usl;
+		this.idCnt = builder.idCnt;
+		this.idGrp = builder.idGrp;
+		this.guid = builder.guid;
+		this.un = builder.un;
+		this.cd = builder.cd;
+		this.objTp = builder.objTp;
+		this.appTp = builder.appTp;
+		this.objTpx = builder.objTpx;
+		this.koObj = builder.koObj;
+		this.parent = builder.parent;
+		this.ogrn = builder.ogrn;
+		this.user = builder.user;
+		this.eolinkPar = builder.eolinkPar;
+		this.child = builder.child;
+		this.childLinked = builder.childLinked;
+		this.parentLinked = builder.parentLinked;
+		this.status = builder.status;
+		this.cLskId = builder.cLskId;
+		this.crtDt = builder.crtDt;
+		this.updDt = builder.updDt;
+	}
 
 	public boolean equals(Object o) {
 	    if (this == o) return true;
@@ -245,6 +279,198 @@ public class Eolink implements java.io.Serializable  {
 	    } else {
 	        return super.hashCode();
 	    }
+	}
+
+
+	/**
+	 * Creates builder to build {@link Eolink}.
+	 * @return created builder
+	 */
+	@Generated("SparkTools")
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	/**
+	 * Builder to build {@link Eolink}.
+	 */
+	@Generated("SparkTools")
+	public static final class Builder {
+		private Integer id;
+		private String reu;
+		private String kul;
+		private String nd;
+		private String kw;
+		private String lsk;
+		private Integer entry;
+		private String usl;
+		private Integer idCnt;
+		private Integer idGrp;
+		private String guid;
+		private String un;
+		private String cd;
+		private AddrTp objTp;
+		private Integer appTp;
+		private Lst objTpx;
+		private Ko koObj;
+		private Eolink parent;
+		private String ogrn;
+		private User user;
+		private List<EolinkPar> eolinkPar = Collections.emptyList();
+		private List<Eolink> child = Collections.emptyList();
+		private List<Eolink> childLinked = Collections.emptyList();
+		private List<Eolink> parentLinked = Collections.emptyList();
+		private Integer status;
+		private Integer cLskId;
+		private Date crtDt;
+		private Date updDt;
+
+		private Builder() {
+		}
+
+		public Builder withId(Integer id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder withReu(String reu) {
+			this.reu = reu;
+			return this;
+		}
+
+		public Builder withKul(String kul) {
+			this.kul = kul;
+			return this;
+		}
+
+		public Builder withNd(String nd) {
+			this.nd = nd;
+			return this;
+		}
+
+		public Builder withKw(String kw) {
+			this.kw = kw;
+			return this;
+		}
+
+		public Builder withLsk(String lsk) {
+			this.lsk = lsk;
+			return this;
+		}
+
+		public Builder withEntry(Integer entry) {
+			this.entry = entry;
+			return this;
+		}
+
+		public Builder withUsl(String usl) {
+			this.usl = usl;
+			return this;
+		}
+
+		public Builder withIdCnt(Integer idCnt) {
+			this.idCnt = idCnt;
+			return this;
+		}
+
+		public Builder withIdGrp(Integer idGrp) {
+			this.idGrp = idGrp;
+			return this;
+		}
+
+		public Builder withGuid(String guid) {
+			this.guid = guid;
+			return this;
+		}
+
+		public Builder withUn(String un) {
+			this.un = un;
+			return this;
+		}
+
+		public Builder withCd(String cd) {
+			this.cd = cd;
+			return this;
+		}
+
+		public Builder withObjTp(AddrTp objTp) {
+			this.objTp = objTp;
+			return this;
+		}
+
+		public Builder withAppTp(Integer appTp) {
+			this.appTp = appTp;
+			return this;
+		}
+
+		public Builder withObjTpx(Lst objTpx) {
+			this.objTpx = objTpx;
+			return this;
+		}
+
+		public Builder withKoObj(Ko koObj) {
+			this.koObj = koObj;
+			return this;
+		}
+
+		public Builder withParent(Eolink parent) {
+			this.parent = parent;
+			return this;
+		}
+
+		public Builder withOgrn(String ogrn) {
+			this.ogrn = ogrn;
+			return this;
+		}
+
+		public Builder withUser(User user) {
+			this.user = user;
+			return this;
+		}
+
+		public Builder withEolinkPar(List<EolinkPar> eolinkPar) {
+			this.eolinkPar = eolinkPar;
+			return this;
+		}
+
+		public Builder withChild(List<Eolink> child) {
+			this.child = child;
+			return this;
+		}
+
+		public Builder withChildLinked(List<Eolink> childLinked) {
+			this.childLinked = childLinked;
+			return this;
+		}
+
+		public Builder withParentLinked(List<Eolink> parentLinked) {
+			this.parentLinked = parentLinked;
+			return this;
+		}
+
+		public Builder withStatus(Integer status) {
+			this.status = status;
+			return this;
+		}
+
+		public Builder withCLskId(Integer cLskId) {
+			this.cLskId = cLskId;
+			return this;
+		}
+
+		public Builder withCrtDt(Date crtDt) {
+			this.crtDt = crtDt;
+			return this;
+		}
+
+		public Builder withUpdDt(Date updDt) {
+			this.updDt = updDt;
+			return this;
+		}
+
+		public Eolink build() {
+			return new Eolink(this);
+		}
 	}
 
 }

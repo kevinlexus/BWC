@@ -52,7 +52,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param tp - Тип, если не указан - по всем
 	 * @return - искомый список
 	 */
-	@Cacheable(cacheNames="MeterLogMngImpl.getAllMetLogByServTp", key="{ #rqn, #mm.getKo().getId(), #serv.getId(), #tp }") 
+	//@Cacheable(cacheNames="MeterLogMngImpl.getAllMetLogByServTp", key="{ #rqn, #mm.getKo().getId(), #serv.getId(), #tp }") 
 	public List<MLogs> getAllMetLogByServTp(int rqn, MeterContains mm, Serv serv, String tp) {
 		List<MLogs> lstMlg = new ArrayList<MLogs>(0); 
 		for (MLogs ml : mm.getMlog()) {
@@ -75,7 +75,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param genDt - дата проверки
 	 * @return - существует/нет
 	 */
-	@Cacheable(cacheNames="MeterLogMngImpl.checkExsKartMet", key="{ #rqn, #kart.getLsk(), #serv.getId(), #genDt}")
+	//@Cacheable(cacheNames="MeterLogMngImpl.checkExsKartMet", key="{ #rqn, #kart.getLsk(), #serv.getId(), #genDt}")
 	public boolean checkExsKartMet(int rqn, Kart kart, Serv serv, Date genDt) {
 		Optional<MeterLog> mLog;
 		/*mLog = kart.getMlog().stream().filter(t -> t.getServ().equals(serv)) - старый метод, пока не удалять, ред. 29.11.17
@@ -95,7 +95,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param genDt - дата
 	 * @param isFindGrp - поиск группового, если не найден по заданному
 	 */
-	@Cacheable(cacheNames="MeterLogMngImpl.checkExsMet", key="{ #rqn, #mLog.getId(), #genDt, #isFindGrp}")
+	//@Cacheable(cacheNames="MeterLogMngImpl.checkExsMet", key="{ #rqn, #mLog.getId(), #genDt, #isFindGrp}")
 	public boolean checkExsMet(int rqn, MLogs mLog, Date genDt, boolean isFindGrp) {
 		//log.info("check mLog.id={}", mLog.getId());
     	// проверить существование хотя бы одного из физ счетчиков, по этому лог.сч.
@@ -137,7 +137,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param dt2 - кон.период
 	 * @return - возвращаемый объем
 	 */
-	@Cacheable(cacheNames="MeterLogMngImpl.getVolPeriod1", key="{ #rqn, #chngId, #chng, #mLog.getId(), #tp, #dt1, #dt2}")
+	//@Cacheable(cacheNames="MeterLogMngImpl.getVolPeriod1", key="{ #rqn, #chngId, #mLog.getId(), #tp, #dt1, #dt2}")
     public  SumNodeVol getVolPeriod(int rqn, Integer chngId, Chng chng, MLogs mLog, int tp, Date dt1, Date dt2) {
 		SumNodeVol lnkVol = new SumNodeVol();
 		/* Java 8 */         	
@@ -170,8 +170,8 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param dt2 - кон.период
 	 * @return - возвращаемый объем
 	 */
-	@Cacheable(cacheNames="MeterLogMngImpl.getVolPeriod2", key="{ #rqn, #chngId, #chng, #mc.getId(), #serv.getId(), #dt1, #dt2}")
-	public /*synchronized */SumNodeVol getVolPeriod (int rqn, Integer chngId, Chng chng, MeterContains mc, Serv serv, Date dt1, Date dt2) {
+	//@Cacheable(cacheNames="MeterLogMngImpl.getVolPeriod2", key="{ #rqn, #chngId, #mc.getId(), #serv.getId(), #dt1, #dt2}")
+	public SumNodeVol getVolPeriod (int rqn, Integer chngId, Chng chng, MeterContains mc, Serv serv, Date dt1, Date dt2) {
 		SumNodeVol amntSum = new SumNodeVol();
 		MLogs lastMlwithVol = null, lastMl = null;
 		//перебрать все лог.счетчики, доступные по объекту, сложить объемы
@@ -215,7 +215,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param serv - услуга (может быть не указана)
 	 * @return лог.счетчик
 	 */
-	@Cacheable("MeterLogMngImpl.getLinkedNode") 
+	//@Cacheable(cacheNames = "MeterLogMngImpl.getLinkedNode", key="{#rqn, #mLog.getId(), #tp, #genDt, #isCheckServ }") 
 	public MLogs getLinkedNode(int rqn, MLogs mLog, String tp, Date genDt, boolean isCheckServ) {
 		MLogs lnkMLog = null;
 		//найти прямую связь (направленную внутрь или наружу, не важно) указанного счетчика со счетчиком указанного типа 
@@ -255,7 +255,7 @@ public class MeterLogMngImpl implements MeterLogMng {
      * @return 
      * @throws CyclicMeter 
      */
-	@Cacheable("MeterLogMngImpl.delNodeVol") // пока оставил кэширование, не должно мешать
+	@Cacheable(cacheNames = "MeterLogMngImpl.delNodeVol", key="{#rqn, #chngId, #mLog.getId(), #tp, #dt1, #dt2 }") 
 	public void delNodeVol(int rqn, Integer chngId, Chng chng, MLogs mLog, int tp, Date dt1, Date dt2) 
 			throws CyclicMeter {
 
@@ -303,8 +303,8 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param mLog - Счетчик
 	 * @return
 	 */
-	@Cacheable(cacheNames="MeterLogMngImpl.getKart") 
-	public /*synchronized*/ Kart getKart(int rqn, MLogs mLog) {
+	//@Cacheable(cacheNames="MeterLogMngImpl.getKart", key="{#rqn, #mLog.getId()}" ) 
+	public Kart getKart(int rqn, MLogs mLog) {
 		return mDao.getKart(rqn, mLog);
 	}
 

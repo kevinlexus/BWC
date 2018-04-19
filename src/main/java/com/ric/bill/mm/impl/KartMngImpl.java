@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.ric.bill.Calc;
 import com.ric.bill.CntPers;
-import com.ric.bill.RegContains;
 import com.ric.bill.Standart;
 import com.ric.bill.TarifContains;
 import com.ric.bill.Utl;
@@ -34,6 +33,7 @@ import com.ric.bill.model.ps.Reg;
 import com.ric.bill.model.ps.Registrable;
 import com.ric.bill.model.tr.Serv;
 import com.ric.bill.Config;
+import com.ric.bill.ResultSet;
 
 
 @Service
@@ -51,7 +51,7 @@ public class KartMngImpl implements KartMng {
     @Autowired
     private Config config;
 
-	//внутренний класс, состояние проживающего
+	// состояние проживающего
 	private class PersStatus {
 		boolean exist;
 		String kinShip;
@@ -66,7 +66,7 @@ public class KartMngImpl implements KartMng {
 	 * Проверить, считали ли персону
 	 * нельзя кэшировать!
 	 */
-	private synchronized boolean foundPers (List<Pers> counted, Pers p) {
+	private /*synchronized*/ boolean foundPers (List<Pers> counted, Pers p) {
 		if (counted.contains(p)) {
 			//уже считали персону
 			return true;
@@ -80,9 +80,9 @@ public class KartMngImpl implements KartMng {
 	/**
 	 * Проверить наличие проживающего по постоянной регистрации или по временному присутствию на дату формирования! (на Calc.getGenDt())
 	 */
-	@Cacheable("KartMngImpl.checkPersStatusExt")
-	private /*synchronized */boolean checkPersStatus (int rqn, Calc calc, RegContains regc, Pers p, String status, int tp, Date genDt) {
-		PersStatus ps = checkPersStatusExt(rqn, calc, regc, p, status, tp, genDt);
+	//@Cacheable(cacheNames="KartMngImpl.checkPersStatus", key="{#rqn, #rc.getLsk(), #p.getId(), #status, #tp,  #genDt}")
+	private /*synchronized */boolean checkPersStatus (int rqn, Calc calc, Kart rc, Pers p, String status, int tp, Date genDt) {
+		PersStatus ps = checkPersStatusExt(rqn, calc, rc, p, status, tp, genDt);
 		return ps.exist;
 	}
 
@@ -91,14 +91,14 @@ public class KartMngImpl implements KartMng {
 	 * Проверить наличие проживающего по постоянной регистрации или по временному присутствию на дату формирования! (на Calc.getGenDt())
 	 * и вернуть объект, содержащий наличие проживающего и его отношение к нанимателю
 	 */
-	@Cacheable("KartMngImpl.checkPersStatus")
-	private /*synchronized */PersStatus checkPersStatusExt (int rqn, Calc calc, RegContains regc, Pers p, String status, int tp, Date genDt) {
+	//@Cacheable(cacheNames="KartMngImpl.checkPersStatusExt", key="{#rqn, #rc.getLsk(), #p.getId(), #status, #tp,  #genDt}")
+	private /*synchronized */PersStatus checkPersStatusExt (int rqn, Calc calc, Kart rc, Pers p, String status, int tp, Date genDt) {
 		Date dt1, dt2;
 		List<? extends Registrable> rg;
 		if (tp==0) {
-			rg = regc.getReg();
+			rg = rc.getReg();
 		} else {
-			rg = regc.getRegState();
+			rg = rc.getRegState();
 		}
 		for (Registrable r : rg) {
 			//проверять только у тех, где pers (fk_pers) заполнено!
@@ -140,8 +140,8 @@ public class KartMngImpl implements KartMng {
 	/**
 	 * Проверить наличие проживающего при fk_pers = null на дату формирования! (на Calc.getGenDt())
 	 */
-	@Cacheable("KartMngImpl.checkPersNullStatus")
-	private /*synchronized*/ boolean checkPersNullStatus (int rqn, Calc calc, Registrable reg, Date genDt) {
+	//@Cacheable(cacheNames="KartMngImpl.checkPersNullStatus", key="{#rqn, #reg.getId(), #genDt}")
+	private boolean checkPersNullStatus (int rqn, Calc calc, Registrable reg, Date genDt) {
 		//проверить статус, даты
 		Date dt1, dt2;
 		if (reg.getTp().getCd().equals("Временное присутствие")) {
@@ -177,8 +177,9 @@ public class KartMngImpl implements KartMng {
 	 * @throws EmptyStorable 
 	 */
 	@Override
-	@Cacheable(cacheNames="KartMngImpl.getCntPers", key="{#rqn, #rc.getKo().getId(), #serv.getId(), #cntPers, #genDt}") 
-	public void getCntPers(int rqn, Calc calc, RegContains rc, Serv serv, CntPers cntPers, Date genDt) throws EmptyStorable{
+	//@Cacheable(cacheNames="KartMngImpl.getCntPers", key="{#rqn, #rc.getLsk(), #serv.getId(), #genDt}")
+	public CntPers getCntPers(int rqn, Calc calc, Kart rc, Serv serv, Date genDt) throws EmptyStorable{
+		CntPers cntPers = new CntPers();
 		List<Pers> counted = new ArrayList<Pers>();
 		Chng chng = calc.getReqConfig().getChng();
 		cntPers.setUp();
@@ -187,7 +188,7 @@ public class KartMngImpl implements KartMng {
 			if (p.getPers()!=null && !foundPers(counted, p.getPers())) {
 				if (checkPersStatus(rqn, calc, rc, p.getPers(), "Постоянная прописка", 0, genDt)) {
 					//постоянная регистрация есть, проверить временное отсутствие, если надо по этой услуге
-					if (!serv.getInclAbsn()) {
+					if (!Utl.nvl(serv.getInclAbsn(), false)) {
 						if (!checkPersStatus(rqn, calc, rc, p.getPers(), "Временное отсутствие", 1, genDt)) {
 							//временного отсутствия нет, считать проживающего
 							cntPers.cnt++;
@@ -207,7 +208,7 @@ public class KartMngImpl implements KartMng {
 					//нет постоянной регистрации, поискать временную прописку
 					if (checkPersStatus(rqn, calc, rc, p.getPers(), "Временная прописка", 0, genDt)) {
 						//временное присутствие есть, считать проживающего
-						if (serv.getInclPrsn()) {
+						if (Utl.nvl(serv.getInclPrsn(), false)) {
 							cntPers.cnt++;
 							cntPers.cntVol++;
 							cntPers.cntFact++;
@@ -224,7 +225,7 @@ public class KartMngImpl implements KartMng {
 			//там где NULL fk_pers,- обычно временно зарег., считать их
 			if (p.getPers()==null) {
 				if (checkPersNullStatus(rqn, calc, p, genDt)){
-					if (serv.getInclPrsn()) {
+					if (Utl.nvl(serv.getInclPrsn(), false)) {
 						cntPers.cnt++;
 						cntPers.cntVol++;
 						cntPers.cntFact++;
@@ -240,6 +241,7 @@ public class KartMngImpl implements KartMng {
 			cntPers.cntOwn = Utl.nvl(parMng.getDbl(rqn, calc.getKart(), "Количество собственников на ЛС", genDt, chng), 0d).intValue();
 			cntPers.cntVol = cntPers.cntOwn;
 		}
+		return cntPers;
 	}
 	
 	/**
@@ -252,8 +254,8 @@ public class KartMngImpl implements KartMng {
 	 * @throws EmptyServ 
 	 */
 	@Override
-	@Cacheable(cacheNames="KartMngImpl.getStandartVol", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") // сделал отдельный кэш, иначе валится с Cannot Cast Standart to Boolean! 
-	public Standart getStandartVol(int rqn, Calc calc, Serv serv, CntPers cntPers, Date genDt, int tp) throws EmptyStorable {
+	//@Cacheable(cacheNames="KartMngImpl.getStandartVol", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") // сделал отдельный кэш, иначе валится с Cannot Cast Standart to Boolean! 
+	public Standart getStandartVol(int rqn, Calc calc, Serv serv, Date genDt, int tp) throws EmptyStorable {
 		log.trace("STANDART1="+serv.getId()+" dt="+genDt);	
 		Chng chng = calc.getReqConfig().getChng();
 		//получить услугу основную, для начисления
@@ -264,13 +266,7 @@ public class KartMngImpl implements KartMng {
 		Standart st = new Standart();
 
 		Double stVol = 0d;
-		if (cntPers == null) {
-			//если кол-во проживающих не передано, получить его
-			cntPers= new CntPers();
-			log.trace("STANDART2="+serv.getId()+" dt="+genDt);	
-			getCntPers(rqn, calc, calc.getKart(), servChrg, cntPers, genDt);
-			log.trace("STANDART3="+serv.getId()+" dt="+genDt);	
-		}
+		CntPers cntPers = getCntPers(rqn, calc, calc.getKart(), servChrg, genDt);
 		
 		int cnt;
 		if (tp==0) {
@@ -381,7 +377,7 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 */
 	@Override
-	@Cacheable(cacheNames="KartMngImpl.getServPropByCD", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #cd, #genDt }") 
+	//@Cacheable(cacheNames="KartMngImpl.getServPropByCD", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #cd, #genDt }") 
 	public Double getServPropByCD(int rqn, Calc calc, Serv serv, String cd, Date genDt) {
 		//log.info("проверка кэша ----------> rqn={}, serv.id={}, cd={}, genDt={}", rqn, serv.getId(), cd, genDt);
 		Double val;
@@ -406,7 +402,7 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 */
 	@Override
-	@Cacheable(cacheNames="KartMngImpl.getOrg", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
+	//@Cacheable(cacheNames="KartMngImpl.getOrg", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
 	public /*synchronized*/ Org getOrg(int rqn, Calc calc, Serv serv, Date genDt) {
 		Org org;
 		
@@ -439,7 +435,7 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 */
 	@Override
-	@Cacheable(cacheNames="KartMngImpl.getServ", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
+	//@Cacheable(cacheNames="KartMngImpl.getServ", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
 	public /*synchronized*/ boolean getServ(int rqn, Calc calc, Serv serv, Date genDt) {
 		boolean exs = false;
 		//искать свойство "Поставщик"
@@ -518,7 +514,7 @@ public class KartMngImpl implements KartMng {
     }
 	
 	/**
-	 * Получить distinct список всех услуг потенциально начисляемых в лиц.счете в данном периоде
+	 * Получить distinct список всех услуг потенциально начисляемых в лиц.счете
 	 * @param tc - объект
 	 * @return
 	 * @throws EmptyServ 
@@ -553,8 +549,8 @@ public class KartMngImpl implements KartMng {
 	 * @param genDt
 	 */
 	@Override
-	@Cacheable("KartMngImpl.getCapPrivs")
-	public /*synchronized*/ double getCapPrivs(int rqn, Calc calc, RegContains rc, Date genDt) { //TODO! ВРЕМЕННО ВКЛЮЧИЛ кэш
+	//@Cacheable(cacheNames="KartMngImpl.getCapPrivs", key="{#rqn, #calc.getKart().getLsk(), #genDt }")
+	public double getCapPrivs(int rqn, Calc calc, Kart rc, Date genDt) {
 		boolean above70owner=false;
 		boolean above70=false;
 		boolean under70=false;
@@ -605,14 +601,14 @@ public class KartMngImpl implements KartMng {
 	}
 
 	
-	// все лицевые по определённому критерию
+	// все Id лицевых по определённому критерию
 	@Override
-	public List<Kart> findAll(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2) {
-		return kDao.findAll(houseId, areaId, tempLskId, dt1, dt2);
+	public List<ResultSet> findAllLsk(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2) {
+		return kDao.findAllLsk(houseId, areaId, tempLskId, dt1, dt2);
 	}
 
 	/**
-	 * получить Льготу проживающему, по услуге
+	 * получить Льготу по проживающему, по услуге
 	 * @param pers - проживающий
 	 * @param serv - услуга
 	 * @param genDt - дата формирования
@@ -620,7 +616,13 @@ public class KartMngImpl implements KartMng {
 	 */
 	@Override
 	public PersPrivilege getPersPrivilege(Pers pers, Serv serv, Date genDt) {
-		return persDao.getPersPrivilege(pers.getId(), serv.getId(), genDt).stream().findFirst().orElse(null);
+		if (pers == null) {
+			// по пустому проживающему - нет льготы
+			return null;
+		} else {
+			// вернуть льготу
+			return persDao.getPersPrivilege(pers.getId(), serv.getId(), genDt).stream().findFirst().orElse(null);
+		}
 	}
 
 	/**

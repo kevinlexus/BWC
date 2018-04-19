@@ -31,7 +31,7 @@ import com.ric.bill.model.bs.Base;
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
+//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "METER", schema="MT")
 public class Meter extends Base implements java.io.Serializable, Storable {
 

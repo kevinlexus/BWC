@@ -17,7 +17,8 @@ import javax.persistence.TemporalType;
 
 import org.springframework.stereotype.Repository;
 
-import com.ric.bill.ResultSetKlsk;
+import com.ric.bill.ResultSet;
+import com.ric.bill.ResultSetLsk;
 import com.ric.bill.dao.KartDAO;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.oralv.Ko;
@@ -40,8 +41,9 @@ public class KartDAOImpl implements KartDAO {
     	
     }
     
+
     /**
-     * Получить список лиц.счетов
+     * Получить список id(lsk) лиц.счетов
      * @param houseId
      * @param areaId
      * @param tempLskId
@@ -49,18 +51,17 @@ public class KartDAOImpl implements KartDAO {
      * @return
      */
     @Override
-	public List<Kart> findAll(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2) {
+	public List<ResultSet> findAllLsk(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2) {
 		@SqlResultSetMapping(name= STATEMENT_SQLMAP, classes = { //эту часть кода можно закинуть в любое место
-		        @ConstructorResult(targetClass = ResultSetKlsk.class,
+		        @ConstructorResult(targetClass = ResultSet.class,
 		            columns = {
 		                @ColumnResult(name="lsk",type = Integer.class)
 		            }
 		        )
-		    }) @Entity class SQLMappingCfgEntity{@Id String lsk;} // <- walkaround
-
+		    }) @Entity class SQLMappingCfgEntity{@Id Integer lsk;} // <- walkaround
+		List<ResultSet> lst = null;
 
 		Query q;
-		List<Kart> lstKart = null;
 		try {
 
 			if (areaId != null) {
@@ -70,7 +71,7 @@ public class KartDAOImpl implements KartDAO {
 						   "where k.fk_kw = kw.id "+
 						   "and h.id = kw.fk_house "+//and h.id in (187, 168, 2009) and 1=2 "+  //TODO УБРАТЬ!УБРАТЬ!УБРАТЬ!УБРАТЬ!УБРАТЬ!УБРАТЬ!
 						   "and o.parent_id=u.id "+
-						   "and k.fk_uk = u.id "+
+						   "and k.fk_uk = u.id "+//and k.lsk >= 12870 "+
 						   //"and (:dt1 between k.dt1 and k.dt2 or :dt2 between k.dt1 and k.dt2) "+ ред.31.10.2017 НЕЛЬЗЯ использовать так даты, так как не будут найдены и пересчитаны лс
 						   "and h.fk_street = s.id and s.fk_area = :areaId "+ // с датой позже текущего периода (ошибочно начисленные, и т.п.) TODO подумать!
 						   "order by k.lsk ",  STATEMENT_SQLMAP);
@@ -120,22 +121,16 @@ public class KartDAOImpl implements KartDAO {
 			}
 			
 			
-			List<ResultSetKlsk> lst = q.getResultList();
-			lstKart = new ArrayList<Kart>();
-			for (ResultSetKlsk rs: lst) {
-				lstKart.add(em.find(Kart.class, rs.getLsk()));
-			}
+			lst = q.getResultList();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		
-		return lstKart;
+		return lst;
 		
 	}
-
-
 
     /**
      * Найти лицевой счет по его идентификатору

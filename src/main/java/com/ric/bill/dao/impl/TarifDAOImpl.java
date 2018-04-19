@@ -19,7 +19,7 @@ public class TarifDAOImpl implements TarifDAO {
     private EntityManager em;
 
 	@SuppressWarnings("unchecked")
-	@Cacheable(cacheNames="TarifDAOImpl.getPropByCD")
+	//@Cacheable(cacheNames="TarifDAOImpl.getPropByCD")
 	public synchronized Prop getPropByCD(String cd) {
 		Query query =em.createQuery("from Prop t where t.cd in (:cd)");
 		query.setParameter("cd", cd);

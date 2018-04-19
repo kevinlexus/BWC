@@ -26,7 +26,6 @@ import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.ParamDef;
 
 import com.ric.bill.MeterContains;
-import com.ric.bill.RegContains;
 import com.ric.bill.TarifContains;
 import com.ric.bill.model.bs.Dw;
 import com.ric.bill.model.bs.Org;
@@ -61,7 +60,7 @@ parameters = {@ParamDef(name = "STATUS", type = "integer"),
 }
 )
 })
-public class Kart implements java.io.Serializable, MeterContains, TarifContains, RegContains  {  /* extends Base не может наследовать Base, так как свой FK_KLSK_OBJ*/
+public class Kart implements java.io.Serializable, MeterContains, TarifContains  {  /* extends Base не может наследовать Base, так как свой FK_KLSK_OBJ*/
 																								 /* пришлось сделать что метод getKlsk ссылается на klskObj из за тупости в архитектуре таблиц*/
 
 	public Kart() {

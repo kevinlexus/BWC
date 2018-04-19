@@ -22,13 +22,13 @@ import com.ric.bill.Config;
  */
 @Slf4j
 //@Scope("request")
-@Scope("prototype")
-@Service
-public class RequestConfig implements Serializable {
+//@Scope("prototype")
+//@Service
+public class RequestConfig /*implements Serializable */{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8660269564151054878L;
+	//private static final long serialVersionUID = 8660269564151054878L;
 	
 	// тип операции (0-начисление, 1-перерасчет)
 	private Integer operTp;
@@ -54,10 +54,10 @@ public class RequestConfig implements Serializable {
 	// номер запроса
 	private int rqn;
 		
-    @PersistenceContext
+/*    @PersistenceContext
     private EntityManager em;
 	@Autowired
-	private Config config;
+	private Config config;*/
 	
 	/**
 	 * инициализация
@@ -70,7 +70,7 @@ public class RequestConfig implements Serializable {
 	 * @param dt1 - заданная принудительно начальная дата начисления
 	 * @param dt2 - заданная принудительно конечная дата начисления
 	 */
-	public Boolean setUp(/*Config config, */String dist, String tp, Integer chngId, int rqn, Date genDt1, Date genDt2) {
+	public Boolean setUp(/*Config config, */String dist, String tp, Integer chngId, int rqn, Date genDt1, Date genDt2, Chng chng, Date curDt1, Date curDt2 ) {
 		// установить текущий номер запроса
 		setRqn(rqn);
 		// основные настройки
@@ -89,11 +89,11 @@ public class RequestConfig implements Serializable {
     	} else if (tp.equals("1")) {
 			// перерасчет
 	    	setOperTp(1);  // тип-перерасчёт
-        	Chng chng = em.find(Chng.class, chngId); // ID перерасчета = 175961
+        	/*Chng chng = em.find(Chng.class, chngId); // ID перерасчета = 175961
         	if (chng == null) {
         		log.error("Не найден перерасчет с Chng.id={}", chngId);
         		return false;
-        	}
+        	}*/
         	setChng(chng);
         	if (chng.getTp().getCd().equals("Корректировка показаний ИПУ")) {
 	        	setIsDist(true); // распределять объем
@@ -123,8 +123,10 @@ public class RequestConfig implements Serializable {
 		    	setCurDt2(dt2);
 			} else {
 				// установить текущие даты периода
-		    	setCurDt1(config.getCurDt1());
-		    	setCurDt2(config.getCurDt2());
+		    	setCurDt1(curDt1);
+		    	setCurDt2(curDt2);
+		    	/*setCurDt1(config.getCurDt1());
+		    	setCurDt2(config.getCurDt2());*/
 			}
 		} else if (operTp==1) {
 			// установить параметры перерасчета

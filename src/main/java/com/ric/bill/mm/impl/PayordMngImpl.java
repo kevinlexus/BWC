@@ -184,7 +184,7 @@ public class PayordMngImpl implements PayordMng {
 		Date dt1 = parMng.getDate(-1, obj, "Начало расчетного периода");
 		Date dt2 = parMng.getDate(-1, obj, "Конец расчетного периода");
 		RequestConfig reqConfig = ctx.getBean(RequestConfig.class);
-		reqConfig.setUp(/*config, */"0", "0", null, -1, dt1, dt2);
+		reqConfig.setUp(/*config, */"0", "0", null, -1, dt1, dt2, null, config.getCurDt1(), config.getCurDt2());
 
 		//PayordGrp grp = em.find(PayordGrp.class, p.getPayordGrpFk());
 		//Lst period =  em.find(Lst.class, p.getPeriodTpFk());
@@ -452,7 +452,7 @@ public class PayordMngImpl implements PayordMng {
 	 * @param tp - Тип записи:  2-платежка, 3-корр.перечисл., 4-корр.сборов, 5- корр.удерж, (0-вх.сал., 1-вх.сал.Бух, - не использовать!)
 	 * @return
 	 */
-	@Cacheable(cacheNames="PayordMngImpl.calcFlow", key="{ #p.getId(), #uk.getId(), #period, #dt1, #dt2, #tp }")
+	//@Cacheable(cacheNames="PayordMngImpl.calcFlow", key="{ #p.getId(), #uk.getId(), #period, #dt1, #dt2, #tp }")
 	private AmntFlow calcFlow(Payord p, Org uk, String period, Date dt1, Date dt2, Integer tp) {
 		// кроме 0 и 1
 		assert(!tp.equals(0) && !tp.equals(1));
@@ -507,7 +507,7 @@ public class PayordMngImpl implements PayordMng {
 	 * @param period - период выборки
 	 * @return
 	 */
-    @Cacheable(cacheNames="PayordMngImpl.getInsal", key="{ #p.getId(), #uk.getId(), #period, #tp }")
+    //@Cacheable(cacheNames="PayordMngImpl.getInsal", key="{ #p.getId(), #uk.getId(), #period, #tp }")
 	public PayordFlow getInsal(Payord p, Org uk, String period, Integer tp) {
 		PayordFlow payordFlow = payordFlowDao.getPayordFlowBeforePeriod(p.getId(), uk, tp, period, null).stream().findFirst().orElse(null);
 		return payordFlow;
@@ -567,7 +567,7 @@ public class PayordMngImpl implements PayordMng {
 	 * @throws EmptyStorable 
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	@CacheEvict(value = {"PayordMngImpl.calcFlow", "PayordMngImpl.getInsal"})
+	//@CacheEvict(value = {"PayordMngImpl.calcFlow", "PayordMngImpl.getInsal"})
 	public void genPayord(Date genDt, Boolean isFinal, Boolean isEndMonth, Integer payordId, Integer payordCmpId
 			) throws WrongDate, ParseException, EmptyStorable, WrongExpression {
 		long beginTime = System.currentTimeMillis();
@@ -576,8 +576,8 @@ public class PayordMngImpl implements PayordMng {
     	Obj obj = objMng.getByCD(-1, "Модуль платежек");
 		Date dt1 = parMng.getDate(-1, obj, "Начало расчетного периода");
 		Date dt2 = parMng.getDate(-1, obj, "Конец расчетного периода");
-		RequestConfig reqConfig = ctx.getBean(RequestConfig.class);
-		reqConfig.setUp("0", "0", null, -1, dt1, dt2);
+		RequestConfig reqConfig = new RequestConfig();
+		reqConfig.setUp("0", "0", null, -1, dt1, dt2, null, config.getCurDt1(), config.getCurDt2());
 		
 		// Даты текущего периода
 		Date curDt1 = reqConfig.getCurDt1(); 

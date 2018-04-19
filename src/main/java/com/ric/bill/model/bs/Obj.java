@@ -19,7 +19,7 @@ import com.ric.bill.Storable;
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
+//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "OBJ", schema="BS")
 public class Obj extends Base implements java.io.Serializable, Storable {
 

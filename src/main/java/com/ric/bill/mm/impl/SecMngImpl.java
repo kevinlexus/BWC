@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.ric.bill.dao.AreaDAO;
@@ -26,6 +27,7 @@ public class SecMngImpl implements SecMng {
     @Autowired
 	private VsecDAO vDao;
     @Autowired
+    @Qualifier("OrgDAO_BWC")
 	private OrgDAO orgDao;
     @Autowired
 	private AreaDAO areaDao;

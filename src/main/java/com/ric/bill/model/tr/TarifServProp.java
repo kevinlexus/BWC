@@ -25,7 +25,7 @@ import com.ric.bill.model.bs.Org;
  */
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
+//@Cache(usage=CacheConcurrencyStrategy.READ_ONLY, region="rrr1")
 @Table(name = "TARIF_SERV_PROP", schema="TR")
 public class TarifServProp implements java.io.Serializable, Simple {
 

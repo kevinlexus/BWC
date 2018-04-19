@@ -20,6 +20,9 @@ import org.hibernate.annotations.FetchMode;
 import com.ric.bill.Storable;
 import com.ric.bill.model.bs.Base;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 
 /**
@@ -31,6 +34,7 @@ import com.ric.bill.model.bs.Base;
 @Entity
 @Table(name = "KW", schema="AR")
 @AttributeOverride(name = "klsk", column = @Column(name = "FK_K_LSK"))
+@Getter @Setter
 public class Kw extends Base implements java.io.Serializable, Storable {
 
 
@@ -39,13 +43,6 @@ public class Kw extends Base implements java.io.Serializable, Storable {
     @Column(name = "ID", updatable = false, nullable = false)
 	protected Integer id; //id записи
 
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_HOUSE", referencedColumnName="ID", updatable = false, insertable = false)
 	private House house;
@@ -62,29 +59,6 @@ public class Kw extends Base implements java.io.Serializable, Storable {
 	// номер квартиры
 	@Column(name = "KW", nullable = true)
 	private String num;
-
-	public House getHouse() {
-		return house;
-	}
-
-	public void setHouse(House house) {
-		this.house = house;
-	}
-	
-	public List<Kart> getLsk() {
-		return kart;
-	}
-	public void setLsk(List<Kart> kart) {
-		this.kart = kart;
-	}
-
-	public Integer getFkHouse() {
-		return fkHouse;
-	}
-
-	public void setFkHouse(Integer fkHouse) {
-		this.fkHouse = fkHouse;
-	}
 
 	public boolean equals(Object o) {
 	    if (this == o) return true;
