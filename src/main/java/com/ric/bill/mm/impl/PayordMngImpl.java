@@ -782,7 +782,18 @@ public class PayordMngImpl implements PayordMng {
 						amntFlow = calcFlow(p, uk, period, null, null, 5);
 						summa5 = amntFlow.summa;
 						// получить вх. сальдо по Платежке + УК
-						salFlow = getInsal(p, uk, period, 0);
+						List<PayordFlow> saldo = p.getPayordFlow().stream().filter(f -> f.getUk().getId().equals(uk.getId()))
+						                          .filter(f -> f.getTp().equals(0))
+						                          .collect(Collectors.toList());
+						Integer maxPeriod = 0;
+						Integer t_period;
+						for (PayordFlow s : saldo) {
+						    t_period = Integer.parseInt(s.getPeriod());
+						    if (t_period > maxPeriod) {
+						        maxPeriod = t_period;
+						        salFlow = s;
+						    }
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 						log.error("Ошибка при формировании платежки: Payord.id={} uk.id={}", p.getId(), uk.getId());
