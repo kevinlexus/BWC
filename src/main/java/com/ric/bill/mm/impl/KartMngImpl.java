@@ -602,11 +602,11 @@ public class KartMngImpl implements KartMng {
 
 	
 	// все Id лицевых по определённому критерию
-	@Override
+/*	@Override
 	public List<ResultSet> findAllLsk(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2) {
 		return kDao.findAllLsk(houseId, areaId, tempLskId, dt1, dt2);
 	}
-
+*/
 	/**
 	 * получить Льготу по проживающему, по услуге
 	 * @param pers - проживающий

@@ -12,7 +12,12 @@ import org.springframework.stereotype.Repository;
 import com.ric.bill.dao.ServDAO;
 import com.ric.bill.model.tr.Serv;
 
-
+/**
+ * DAO сущности Serv
+ * @author Lev
+ * @version 1.00
+ *
+ */
 @Repository
 public class ServDAOImpl implements ServDAO {
 
@@ -25,8 +30,9 @@ public class ServDAOImpl implements ServDAO {
 	 * @param serv - услуга ОДН
 	 * @return
 	 */
+	@Override
 	@Cacheable(cacheNames="ServDAOImpl.findMain", key="{#serv.getId() }")
-	public synchronized Serv findMain(Serv serv) {
+	public synchronized Serv getMain(Serv serv) {
 		Query query =em.createQuery("from Serv t where t.servOdn=:serv");
 		query.setParameter("serv", serv);
 		return (Serv) query.getSingleResult();
@@ -35,8 +41,9 @@ public class ServDAOImpl implements ServDAO {
 	/**
 	 * Найти и отсортировать, все услуги для распределения объемов 
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	public List<Serv> findForDistVol() {
+	public List<Serv> getForDistVol() {
 		Query query =em.createQuery("from Serv t where t.cd in (:s1,:s2,:s3,:s4,:s5) order by t.npp2");
 		query.setParameter("s1", "Холодная вода");
 		query.setParameter("s2", "Горячая вода");
@@ -47,16 +54,15 @@ public class ServDAOImpl implements ServDAO {
 	}
 
 	/**
-	 * Найти и отсортировать, все услуги для распределения объемов 
+	 * Найти и отсортировать, все услуги автоначисления 
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	public List<Serv> findForDistVolForKart() {
-		Query query =em.createQuery("from Serv t where t.cd in (:s1,:s2,:s3,:s4,:s5) order by t.npp2");
+	public List<Serv> getServAutoVol() {
+		Query query =em.createQuery("from Serv t where t.cd in (:s1,:s2,:s3) order by t.npp2");
 		query.setParameter("s1", "Холодная вода");
 		query.setParameter("s2", "Горячая вода");
-		query.setParameter("s3", "Водоотведение");
-		query.setParameter("s4", "Отопление");
-		query.setParameter("s5", "Электроснабжение");
+		query.setParameter("s3", "Электроснабжение");
 		return query.getResultList();
 	}
 
@@ -66,6 +72,7 @@ public class ServDAOImpl implements ServDAO {
 	 * @return
 	 */
 	//@Cacheable(cacheNames="ServDAOImpl.getByCD", key ="{#cd }")    
+	@Override
 	public synchronized Serv getByCD(String cd){
 		Query query =em.createQuery("from Serv t where t.cd=:cd");
 		query.setParameter("cd", cd);
@@ -76,6 +83,7 @@ public class ServDAOImpl implements ServDAO {
 	 * Получить все услуги
 	 * 
 	 */
+	@Override
 	public List<Serv> getServAll() {
 		Query query =em.createQuery("from Serv t order by t.name");
 		return query.getResultList();

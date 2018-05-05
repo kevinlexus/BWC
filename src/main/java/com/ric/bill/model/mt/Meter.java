@@ -23,6 +23,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import com.ric.bill.Storable;
 import com.ric.bill.model.bs.Base;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 /**
  * Физический счетчик
@@ -33,6 +36,7 @@ import com.ric.bill.model.bs.Base;
 @Entity
 //@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "METER", schema="MT")
+@Getter @Setter
 public class Meter extends Base implements java.io.Serializable, Storable {
 
 	public Meter (){
@@ -44,20 +48,6 @@ public class Meter extends Base implements java.io.Serializable, Storable {
     @Column(name = "ID", updatable = false, nullable = false)
 	protected Integer id; //id записи
 
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	/* даты начала и окончания действия счетчика - используются ли?
-    @Column(name = "DT1", updatable = false, nullable = true)
-	private Date dt1;
-
-    @Column(name = "DT2", updatable = false, nullable = true)
-	private Date dt2;*/
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_METER_LOG", referencedColumnName="ID")
 	private MeterLog meterLog ; 
@@ -75,55 +65,6 @@ public class Meter extends Base implements java.io.Serializable, Storable {
 	@Column(name = "TRANS_RATIO", updatable = true, nullable = true)
 	private Double trRatio; 
 	
-	
-/*	public Date getDt1() {
-		return dt1;
-	}
-
-	public void setDt1(Date dt1) {
-		this.dt1 = dt1;
-	}
-
-	public Date getDt2() {
-		return dt2;
-	}
-
-	public void setDt2(Date dt2) {
-		this.dt2 = dt2;
-	}*/
-
-	public MeterLog getMeterLog() {
-		return meterLog;
-	}
-
-	public void setMeterLog(MeterLog meterLog) {
-		this.meterLog = meterLog;
-	}
-
-	public List<Vol> getVol() {
-		return vol;
-	}
-
-	public void setVol(List<Vol> vol) {
-		this.vol = vol;
-	}
-
-	public List<MeterExs> getExs() {
-		return exs;
-	}
-
-	public void setExs(List<MeterExs> exs) {
-		this.exs = exs;
-	}
-	
-	public Double getTrRatio() {
-		return trRatio;
-	}
-
-	public void setTrRatio(Double trRatio) {
-		this.trRatio = trRatio;
-	}
-
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof Meter))

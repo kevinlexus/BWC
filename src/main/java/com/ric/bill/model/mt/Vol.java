@@ -18,6 +18,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import com.ric.bill.Simple;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.fn.Chng;
+import com.ric.bill.model.sec.User;
+
+import lombok.Getter;
+import lombok.Setter;
+import javax.annotation.Generated;
 
 /**
  * Объемы счетчика 
@@ -28,24 +33,25 @@ import com.ric.bill.model.fn.Chng;
 @Entity
 //@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "METER_VOL", schema="MT")
+@Getter @Setter
 public class Vol implements java.io.Serializable, Simple {
 
 	public Vol (){
 		
 	}
 
-	public Vol (MeterLog ml, Lst tp, Double vol1, Double vol2, Date date, Date date2, Integer status, Chng chng){
+/*	public Vol (MeterLog ml, Lst tp, Double vol1, Double vol2, Date dt1, Date dt2, Integer status, Chng chng){
 		setMLog(ml);
 		setTp(tp);
 		setVol1(vol1);
 		setVol2(vol2);
-		setDt1(date);
-		setDt2(date2);
+		setDt1(dt1);
+		setDt2(dt2);
 		setStatus(status);
 		setChng(chng);
 	}
 
-	@Id
+*/	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_VOL")
 	@SequenceGenerator(name="SEQ_VOL", sequenceName="MT.SEQ_METER_VOL", allocationSize=10) //делал allocationSize=100 тогда надо increment by делать 100, работает быстрее, на 10%.. но тогда гэп большой от других инсертов 	
     @Column(name = "ID", unique=true, updatable = false, nullable = false)					
@@ -85,91 +91,26 @@ public class Vol implements java.io.Serializable, Simple {
 	@JoinColumn(name="FK_CHNG", referencedColumnName="ID")
 	private Chng chng; 
 
-	public Integer getId() {
-		return this.id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
+	// Пользователь создавший запись
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="FK_USER", referencedColumnName="ID")
+	private User user;
+
+	@Generated("SparkTools")
+	private Vol(Builder builder) {
+		this.id = builder.id;
+		this.tp = builder.tp;
+		this.mLog = builder.mLog;
+		this.met = builder.met;
+		this.vol1 = builder.vol1;
+		this.vol2 = builder.vol2;
+		this.dt1 = builder.dt1;
+		this.dt2 = builder.dt2;
+		this.status = builder.status;
+		this.chng = builder.chng;
+		this.user = builder.user;
 	}
 	
-	public Date getDt1() {
-		return dt1;
-	}
-
-	public void setDt1(Date dt1) {
-		this.dt1 = dt1;
-	}
-
-	public Date getDt2() {
-		return dt2;
-	}
-
-	public void setDt2(Date dt2) {
-		this.dt2 = dt2;
-	}
-	
-	public Lst getTp() {
-		return tp;
-	}
-
-	public void setTp(Lst tp) {
-		this.tp = tp;
-	}
-	
-	public Double getVol1() {
-		return vol1;
-	}
-	
-	public void setVol1(Double vol1) {
-		this.vol1 = vol1;
-	}
-	public Double getVol2() {
-		return vol2;
-	}
-	public void setVol2(Double vol2) {
-		this.vol2 = vol2;
-	}
-
-	public MLogs getMLog() {
-		return mLog;
-	}
-
-	public void setMLog(MeterLog ml) {
-		this.mLog = ml;
-	}
-
-	public Meter getMet() {
-		return met;
-	}
-
-	public void setMet(Meter met) {
-		this.met = met;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-
-	public MeterLog getmLog() {
-		return mLog;
-	}
-
-	public void setmLog(MeterLog mLog) {
-		this.mLog = mLog;
-	}
-
-	public Chng getChng() {
-		return chng;
-	}
-
-	public void setChng(Chng chng) {
-		this.chng = chng;
-	}
-
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof Vol))
@@ -190,6 +131,95 @@ public class Vol implements java.io.Serializable, Simple {
 	    } else {
 	        return super.hashCode();
 	    }
+	}
+
+	/**
+	 * Creates builder to build {@link Vol}.
+	 * @return created builder
+	 */
+	@Generated("SparkTools")
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	/**
+	 * Builder to build {@link Vol}.
+	 */
+	@Generated("SparkTools")
+	public static final class Builder {
+		private Integer id;
+		private Lst tp;
+		private MeterLog mLog;
+		private Meter met;
+		private Double vol1;
+		private Double vol2;
+		private Date dt1;
+		private Date dt2;
+		private Integer status;
+		private Chng chng;
+		private User user;
+
+		private Builder() {
+		}
+
+		public Builder withId(Integer id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder withTp(Lst tp) {
+			this.tp = tp;
+			return this;
+		}
+
+		public Builder withMLog(MeterLog mLog) {
+			this.mLog = mLog;
+			return this;
+		}
+
+		public Builder withMet(Meter met) {
+			this.met = met;
+			return this;
+		}
+
+		public Builder withVol1(Double vol1) {
+			this.vol1 = vol1;
+			return this;
+		}
+
+		public Builder withVol2(Double vol2) {
+			this.vol2 = vol2;
+			return this;
+		}
+
+		public Builder withDt1(Date dt1) {
+			this.dt1 = dt1;
+			return this;
+		}
+
+		public Builder withDt2(Date dt2) {
+			this.dt2 = dt2;
+			return this;
+		}
+
+		public Builder withStatus(Integer status) {
+			this.status = status;
+			return this;
+		}
+
+		public Builder withChng(Chng chng) {
+			this.chng = chng;
+			return this;
+		}
+
+		public Builder withUser(User user) {
+			this.user = user;
+			return this;
+		}
+
+		public Vol build() {
+			return new Vol(this);
+		}
 	}
 
 	

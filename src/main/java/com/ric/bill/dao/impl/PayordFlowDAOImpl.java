@@ -11,11 +11,15 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.ric.bill.dao.PayordFlowDAO;
+import com.ric.bill.mm.impl.PayordMngImpl;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.fn.PayordFlow;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 @Repository
+@Slf4j
 public class PayordFlowDAOImpl implements PayordFlowDAO {
 
 	//EntityManager - EM нужен на каждый DAO или сервис свой!
@@ -127,6 +131,7 @@ public class PayordFlowDAOImpl implements PayordFlowDAO {
      */
     @Override
     public List<PayordFlow> getPayordFlowBeforePeriod(Integer payordId, Org uk, Integer tp, String period, Integer status) {
+    	log.info("===============getPayordFlowBeforePeriod 1={}, 2={}, 3={}, 4={}, 5={}", payordId, period, status, tp, uk.getId());
 		Query query =em.createQuery("select t from PayordFlow t join t.payord p where p.id = :payordId "
 				+ "and t.period <= :period and t.tp = :tp and t.uk.id = :id and "
 				+ "(:status is null or t.status = :status)"

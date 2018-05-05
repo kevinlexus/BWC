@@ -25,6 +25,9 @@ import com.ric.bill.model.bs.Base;
 import com.ric.bill.model.mt.MeterLog;
 import com.ric.bill.model.tr.TarifKlsk;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Дом
  * @author lev
@@ -42,15 +45,7 @@ classes = {
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "HOUSE", schema="AR")
-//Внимание! пока решил не включать предварительные фильтры в связи с некорректностью логики в выражении Between or Between! Подумать! TODO!
-/*@FilterDefs({
-	//фильтр, когда одна из дат входит в диапазон
-    @FilterDef(name = "FILTER_GEN_DT_OUTER", defaultCondition = "(:DT1 BETWEEN DT1 AND DT2 OR :DT2 BETWEEN DT1 AND DT2)", 
-	parameters = {@ParamDef(name = "DT1", type = "date"),
-    			  @ParamDef(name = "DT2", type = "date")
-	}
-    )
-})*/
+@Getter @Setter
 public class House extends Base implements java.io.Serializable, MeterContains, TarifContains {
 
 	public House() { 
@@ -65,13 +60,6 @@ public class House extends Base implements java.io.Serializable, MeterContains, 
     @Column(name = "ID", updatable = false, nullable = false)
 	protected Integer id; //id записи
 
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_HOUSE", referencedColumnName="ID")
 	//@BatchSize(size = 500)
@@ -86,9 +74,6 @@ public class House extends Base implements java.io.Serializable, MeterContains, 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="FK_K_LSK")
 	@BatchSize(size = 50)
-	//@Filters({
-	//    @Filter(name = "FILTER_GEN_DT_OUTER")})
-	//Внимание! пока решил не включать предварительные фильтры!
 	private List<TarifKlsk> tarifklsk = new ArrayList<TarifKlsk>(0);
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -104,54 +89,6 @@ public class House extends Base implements java.io.Serializable, MeterContains, 
 	@Column(name = "ND")
 	private String nd;  
 	
-	public List<Kw> getKw() {
-		return kw;
-	}
-
-	public void setKw(List<Kw> kw) {
-		this.kw = kw;
-	}
-	
-	public List<MeterLog> getMlog() {
-		return mlog;
-	}
-
-	public void setMlog(List<MeterLog> mlog) {
-		this.mlog = mlog;
-	}
-
-	public List<TarifKlsk> getTarifklsk() {
-		return tarifklsk;
-	}
-
-	public void setTarifklsk(List<TarifKlsk> tarifklsk) {
-		this.tarifklsk = tarifklsk;
-	}
-
-	public Street getStreet() {
-		return street;
-	}
-
-	public void setStreet(Street street) {
-		this.street = street;
-	}
-
-	public String getNd() {
-		return nd;
-	}
-
-	public void setNd(String nd) {
-		this.nd = nd;
-	}
-	
-	public List<HouseSite> getHouseSite() {
-		return houseSite;
-	}
-
-	public void setHouseSite(List<HouseSite> houseSite) {
-		this.houseSite = houseSite;
-	}
-
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof House))

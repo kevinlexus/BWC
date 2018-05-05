@@ -13,6 +13,11 @@ import java.net.URLClassLoader;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -162,8 +167,8 @@ public class Utl {
 		return between(checkDt1, dt1, dt2) || between(checkDt2, dt1, dt2);
 	}
 	
-	//вернуть кол-во лет между датами
-	public static int getDiffYears(Date first, Date last) {
+	// вернуть кол-во лет между датами
+	public static int getDiffYears(Date first, Date last) { // TODO Переделать на Java 8 LocalDateTime 
 	    Calendar a = getCalendar(first);
 	    Calendar b = getCalendar(last);
 	    int diff = b.get(Calendar.YEAR) - a.get(Calendar.YEAR);
@@ -172,6 +177,18 @@ public class Utl {
 	        diff--;
 	    }
 	    return diff;
+	}
+
+	// вернуть кол-во месяцев между датами
+	public static long getDiffMonths(Date first, Date last) {
+		LocalDateTime dt1 = Instant.ofEpochMilli(first.getTime())
+			      .atZone(ZoneId.systemDefault())
+			      .toLocalDateTime();
+		LocalDateTime dt2 = Instant.ofEpochMilli(last.getTime())
+			      .atZone(ZoneId.systemDefault())
+			      .toLocalDateTime();
+		
+	    return ChronoUnit.MONTHS.between(dt1, dt2);
 	}
 
 	/**
@@ -490,7 +507,7 @@ public class Utl {
 	 * Получить в виде ГГГГММ месяц + - N мес.
 	 * @param period
 	 */
-	public static String addMonth(String period, int n) {
+	public static String addMonths(String period, int n) {
 		Date dt = getDateFromPeriod(period);
 		Calendar calendar = new GregorianCalendar();
 		calendar.clear(Calendar.ZONE_OFFSET);
@@ -499,7 +516,19 @@ public class Utl {
 		return getPeriodFromDate(calendar.getTime());
 	}
 	
-	
+	/**
+	 * Добавить или отнять N месяцев к дате
+	 * @param dt - базовая дата
+	 * @param nMonths - кол-во месяцев + -
+	 * @return
+	 */
+	public static Date addMonths(Date dt, int nMonths) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dt);
+        calendar.add(Calendar.MONTH, nMonths);
+        return calendar.getTime();
+    }
+
 	/**
 	 * Добавить или отнять N дней к дате
 	 * @param dt - базовая дата

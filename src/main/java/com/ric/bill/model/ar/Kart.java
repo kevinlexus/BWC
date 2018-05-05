@@ -36,6 +36,9 @@ import com.ric.bill.model.oralv.Ko;
 import com.ric.bill.model.ps.Reg;
 import com.ric.bill.model.ps.RegState;
 import com.ric.bill.model.tr.TarifKlsk;
+
+import lombok.Getter;
+import lombok.Setter;
 /**
  * Принадлежность лицевого к управляющей компаниии
  * 
@@ -60,7 +63,8 @@ parameters = {@ParamDef(name = "STATUS", type = "integer"),
 }
 )
 })
-public class Kart implements java.io.Serializable, MeterContains, TarifContains  {  /* extends Base не может наследовать Base, так как свой FK_KLSK_OBJ*/
+@Getter @Setter
+public class Kart implements java.io.Serializable, MeterContains, TarifContains, Comparable<Kart>  {  /* extends Base не может наследовать Base, так как свой FK_KLSK_OBJ*/
 																								 /* пришлось сделать что метод getKlsk ссылается на klskObj из за тупости в архитектуре таблиц*/
 
 	public Kart() {
@@ -82,20 +86,6 @@ public class Kart implements java.io.Serializable, MeterContains, TarifContains 
 	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="ID", updatable = false, insertable = false)
 	private Ko ko;
 	
-	public List<Dw> getDw() {
-		return dw;
-	}
-	public void setDw(List<Dw> dw) {
-		this.dw = dw;
-	}
-
-	public Ko getKo() {
-		return ko;
-	}
-	public void setKo(Ko ko) {
-		this.ko = ko;
-	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_KW", referencedColumnName="ID", updatable = false, insertable = false)
 	private Kw kw;
@@ -155,119 +145,15 @@ public class Kart implements java.io.Serializable, MeterContains, TarifContains 
 
     @Column(name = "DT2", updatable = false, nullable = true)
     private Date dt2;
-    
-	public Kw getKw() {
-		return kw;
-	}
-	
-	public void setKw(Kw kw) {
-		this.kw = kw;
-	}
-	
-	public List<MeterLog> getMlog() {
-		return mlog;
+
+    /**
+     * Сравнить лицевые счета
+     */
+	@Override
+	public int compareTo(Kart other) {
+		return Integer.compare(this.lsk, other.lsk);
 	}
 
-	public void setMlog(List<MeterLog> mlog) {
-		this.mlog = mlog;
-	}
-
-	public List<TarifKlsk> getTarifklsk() {
-		return tarifklsk;
-	}
-
-	public void setTarifklsk(List<TarifKlsk> tarifklsk) {
-		this.tarifklsk = tarifklsk;
-	}
-
-	public List<Reg> getReg() {
-		return reg;
-	}
-
-	public void setReg(List<Reg> reg) {
-		this.reg = reg;
-	}
-
-	public List<RegState> getRegState() {
-		return regState;
-	}
-
-	public void setRegState(List<RegState> regState) {
-		this.regState = regState;
-	}
-
-	public Integer getFkKw() {
-		return fkKw;
-	}
-
-	public void setFkKw(Integer fkKw) {
-		this.fkKw = fkKw;
-	}
-
-	public List<Chrg> getChrg() {
-		return chrg;
-	}
-
-	public void setChrg(List<Chrg> chrg) {
-		this.chrg = chrg;
-	}
-
-	public String getFlsk() {
-		return flsk;
-	}
-
-	public void setFlsk(String flsk) {
-		this.flsk = flsk;
-	}
-
-	public Integer getId() {
-		return lsk;
-	}
-
-	public void setId(Integer lsk) {
-		this.lsk = lsk;
-	}
-
-	public Integer getLsk() {
-		return lsk;
-	}
-
-	public void setLsk(Integer lsk) {
-		this.lsk = lsk;
-	}
-
-	public Org getUk() {
-		return uk;
-	}
-
-	public void setUk(Org uk) {
-		this.uk = uk;
-	}
-
-	public Date getDt1() {
-		return dt1;
-	}
-	
-	public void setDt1(Date dt1) {
-		this.dt1 = dt1;
-	}
-	
-	public Date getDt2() {
-		return dt2;
-	}
-	
-	public void setDt2(Date dt2) {
-		this.dt2 = dt2;
-	}
-
-	public List<PrivilegeChrg> getPrivilegeChrg() {
-		return privilegeChrg;
-	}
-
-	public void setPrivilegeChrg(List<PrivilegeChrg> privilegeChrg) {
-		this.privilegeChrg = privilegeChrg;
-	}
-	
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof Kart))

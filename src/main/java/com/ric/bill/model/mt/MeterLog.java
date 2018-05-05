@@ -28,6 +28,9 @@ import com.ric.bill.model.bs.Base;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.tr.Serv;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 /**
  * Логический счетчик
@@ -38,9 +41,10 @@ import com.ric.bill.model.tr.Serv;
 @Entity
 //@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="rrr1")
 @Table(name = "METER_LOG", schema="MT")
+@Getter @Setter
 public class MeterLog extends Base implements java.io.Serializable, MLogs {
 
-	public MeterLog (){
+	public MeterLog () {
 		
 	}
 	
@@ -49,13 +53,7 @@ public class MeterLog extends Base implements java.io.Serializable, MLogs {
     @Column(name = "ID", updatable = false, nullable = false)
 	protected Integer id; //id записи
 
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
+	// физический счетчик
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_METER_LOG", referencedColumnName="ID")
 	@BatchSize(size = 50)
@@ -73,41 +71,48 @@ public class MeterLog extends Base implements java.io.Serializable, MLogs {
 	 * 
 	 */
 	
+	// объем счетчика
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="FK_METER_LOG", referencedColumnName="ID", updatable = false) //внимание! если здесь убрать updatable = false то будет update meter_vol fk_meter_log!
 	//@BatchSize(size = 50)
 	@Fetch(FetchMode.SUBSELECT) // убрал subselect, так как внезапно начало тормозить  
 	private List<Vol> vol = new ArrayList<Vol>(0);
 
+	// связь счетчика, направленная от него
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name="NOD_SRC", referencedColumnName="ID")
 	//@BatchSize(size = 50)
 	@Fetch(FetchMode.SUBSELECT) // убрал subselect, так как внезапно начало тормозить
 	private List<MeterLogGraph> outside = new ArrayList<MeterLogGraph>(0);
 
+	// связь счетчика, направленная к нему
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name="NOD_DST", referencedColumnName="ID")
 	//@BatchSize(size = 50)
 	@Fetch(FetchMode.SUBSELECT) // убрал subselect, так как внезапно начало тормозить
 	private List<MeterLogGraph> inside = new ArrayList<MeterLogGraph>(0);
 	
+	// тип лог.счетчика
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_TP", referencedColumnName="ID")
 	private Lst tp; 
 	
+	// услуга
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_SERV", referencedColumnName="ID")
 	private Serv serv; 
 
+	// привязка к лиц.счету
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="FK_KLSK_OBJ", updatable = false, insertable = false)
 	private Kart kart; 
 
+	// дом
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="FK_K_LSK", updatable = false, insertable = false)
 	private House house; 
 
-	//klsk объекта, к которому принадлежит данный счетчик
+	// klsk объекта, к которому принадлежит данный счетчик
     @Column(name = "FK_KLSK_OBJ", updatable = false, nullable = true)
 	private Integer klskObj;
 
@@ -115,86 +120,6 @@ public class MeterLog extends Base implements java.io.Serializable, MLogs {
     @Column(name = "ENTRY", updatable = false, nullable = true)
 	private Integer entry;
     
-	public Integer getKlskObj() {
-		return klskObj;
-	}
-
-	public void setKlskObj(Integer klskObj) {
-		this.klskObj=klskObj;
-	}
-
-	public List<Meter> getMeter() {
-		return meter;
-	}
-
-	public void setMeter(List<Meter> meter) {
-		this.meter = meter;
-	}
-
-	public Lst getTp() {
-		return tp;
-	}
-
-	public void setTp(Lst tp) {
-		this.tp = tp;
-	}
-
-	public List<Vol> getVol() {
-		return vol;
-	}
-
-	public void setVol(List<Vol> vol) {
-		this.vol = vol;
-	}
-
-	public Serv getServ() {
-		return serv;
-	}
-
-	public void setServ(Serv serv) {
-		this.serv = serv;
-	}
-
-	public Kart getKart() {
-		return kart;
-	}
-
-	public void setKart(Kart kart) {
-		this.kart = kart;
-	}
-
-	public House getHouse() {
-		return house;
-	}
-
-	public void setHouse(House house) {
-		this.house = house;
-	}
-
-	public List<MeterLogGraph> getInside() {
-		return inside;
-	}
-
-	public void setInside(List<MeterLogGraph> inside) {
-		this.inside = inside;
-	}
-
-	public List<MeterLogGraph> getOutside() {
-		return outside;
-	}
-
-	public void setOutside(List<MeterLogGraph> outside) {
-		this.outside = outside;
-	}
-
-	public Integer getEntry() {
-		return entry;
-	}
-
-	public void setEntry(Integer entry) {
-		this.entry = entry;
-	}
-
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof MeterLog))

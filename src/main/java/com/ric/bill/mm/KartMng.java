@@ -25,7 +25,7 @@ public interface KartMng  {
 	public List<Serv> getServAll(int rqn, Calc calc);
 	public double getCapPrivs(int rqn, Calc calc, Kart rc, Date genDt);
 	public boolean getServ(int rqn, Calc calc, Serv serv, Date genDt);
-	public List<ResultSet> findAllLsk(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2);
+	//public List<ResultSet> findAllLsk(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2);
 	public List<Serv> checkServ(Calc calc, TarifContains tc, List lst, String cd, int cmd);
     public PersPrivilege getPersPrivilege(Pers pers, Serv serv, Date genDt);
     public PrivilegeServ getPrivilegeServ(Privilege priv, Serv serv);

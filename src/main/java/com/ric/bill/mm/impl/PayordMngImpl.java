@@ -520,7 +520,8 @@ public class PayordMngImpl implements PayordMng {
 	 * @return
 	 */
 	public BigDecimal getInsalSumm(Payord p, Org uk, String period, Integer tp) {
-		PayordFlow payordFlow = payordFlowDao.getPayordFlowBeforePeriod(p.getId(), uk, tp, period, null).stream().findFirst().orElse(null);
+		List<PayordFlow> lst = payordFlowDao.getPayordFlowBeforePeriod(p.getId(), uk, tp, period, null);
+		PayordFlow payordFlow = lst.stream().findFirst().orElse(null);
 		if (payordFlow != null) {
 			return BigDecimal.valueOf(payordFlow.getSumma());
 		} else {

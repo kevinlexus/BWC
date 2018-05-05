@@ -127,7 +127,7 @@ public class HouseDAOImpl implements HouseDAO {
 			List<ResultSet> lst = q.getResultList();
 			lstHouse = new ArrayList<House>();
 			for (ResultSet rs: lst) {
-				log.info("Found house id="+rs.getId(), 2);
+				log.info("Найден дом: houseid="+rs.getId(), 2);
 				lstHouse.add(em.find(House.class, rs.getId()));
 			}
 		} catch (Exception e) {

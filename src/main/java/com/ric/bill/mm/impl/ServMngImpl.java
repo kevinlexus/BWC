@@ -30,16 +30,12 @@ public class ServMngImpl implements ServMng {
     @PersistenceContext
     private EntityManager em;
 	
-	public Serv findMain(Serv serv) {
-		return sDao.findMain(serv);
+	public Serv getMain(Serv serv) {
+		return sDao.getMain(serv);
 	}
 
-	public List<Serv> findForDistVol() {
-		return sDao.findForDistVol();
-	}
-
-	public List<Serv> findForDistVolForKart() {
-		return sDao.findForDistVolForKart();
+	public List<Serv> getForDistVol() {
+		return sDao.getForDistVol();
 	}
 
 	public Serv getByCD(String cd) {
@@ -101,5 +97,5 @@ public class ServMngImpl implements ServMng {
 	public List<Serv> getServAll() {
 		return sDao.getServAll();
 	}
-	
+
 }
