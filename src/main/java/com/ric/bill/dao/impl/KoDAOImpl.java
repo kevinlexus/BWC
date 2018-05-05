@@ -42,9 +42,10 @@ public class KoDAOImpl implements KoDAO {
 		String addrTpCd = atp.getCd();
 		// Зная тип адреса, выбрать соотв.запрос
 		if (addrTpCd.equals("РКЦ") || addrTpCd.equals("ЖЭО") || addrTpCd.equals("РЭУ")) {
-			query =em.createQuery("select k from Org o "
-					+ "left join o.ko k join o.orgTp t join t.addrTp tp where tp.cd = :addrTpCd and "
-					+ "upper(o.name) like fn.p_chrg_part.getstrbypart(:flt,  :par) "
+			query =em.createQuery("select k from com.ric.bill.model.bs.Org o "
+					+ "left join o.ko k join o.orgTp t join t.addrTp tp where tp.cd"
+					+ " = :addrTpCd and "
+					+ "upper(o.name) like fn.p_chrg_part.getstrbypart(:flt,  :par)  "
 					+ "order by nvl(o.isMnt, 0) desc, o.name");
 			query.setParameter("addrTpCd", addrTpCd);
 			query.setParameter("flt", flt);
