@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.ric.bill.Calc;
 import com.ric.bill.TarifContains;
-import com.ric.bill.Utl;
+import com.ric.cmn.Utl;
 import com.ric.bill.dao.TarifDAO;
 import com.ric.bill.mm.TarifMng;
 import com.ric.bill.model.bs.Org;

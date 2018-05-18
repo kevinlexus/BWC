@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 //import com.dic.bill.dao.KartDAO;
-import com.ric.bill.Utl;
+import com.ric.cmn.Utl;
 import com.ric.bill.dao.HouseDAO;
 import com.ric.bill.dao.KwDAO;
 import com.ric.bill.mm.HouseMng;

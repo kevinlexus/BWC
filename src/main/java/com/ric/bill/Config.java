@@ -1,25 +1,15 @@
 package com.ric.bill;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Properties;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.core.Authentication;
@@ -30,6 +20,9 @@ import com.ric.bill.excp.EmptyStorable;
 import com.ric.bill.mm.ObjMng;
 import com.ric.bill.mm.ParMng;
 import com.ric.bill.model.bs.Obj;
+import com.ric.cmn.Utl;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Конфигуратор приложения
@@ -52,30 +45,30 @@ public class Config {
 	// даты текущего периода (не зависимо от перерасчета)
 	Date curDt1;
 	Date curDt2;
-	
-	// номер текущего запроса 
-	private int reqNum = 0; 
 
-	//private List<Integer> workLst; // обрабатываемые лицевые счета 
+	// номер текущего запроса
+	private int reqNum = 0;
 
-	// Текущий период (для партицирования и проч.) 
+	//private List<Integer> workLst; // обрабатываемые лицевые счета
+
+	// Текущий период (для партицирования и проч.)
 	String period;
-	// Период +1 месяц 
+	// Период +1 месяц
 	String periodNext;
-	// Период -1 месяц 
+	// Период -1 месяц
 	String periodBack;
 	// Тип приложения, по умолчанию - 0
 	//Integer appTp = 0;
-	// Путь и наименование файла, для отправки в квартплату показаний по счетчикам 
-	//String pathCounter ="C:\\temp\\test1.txt"; 
+	// Путь и наименование файла, для отправки в квартплату показаний по счетчикам
+	//String pathCounter ="C:\\temp\\test1.txt";
 
 	// Запретить начислять по лиц.счетам, если формируется глобальное начисление
 	Boolean isRestrictChrgLsk = false;
-	
+
 	// внутренний класс, для обработки блокировок по объектам
 	class Lock {
-		public List<Integer> lskChrg; 
-		public List<Integer> houseChrg; 
+		public List<Integer> lskChrg;
+		public List<Integer> houseChrg;
 		public List<Integer> houseDist;
 		// конструктор
 		Lock() {
@@ -83,7 +76,7 @@ public class Config {
 			houseChrg = new ArrayList<Integer>();
 			houseDist = new ArrayList<Integer>();
 		}
-		
+
 		// блокировка для начисления и распределения по лиц.счету
 		public synchronized Boolean setLockChrgLsk(Integer rqn, Integer lsk, Integer house) {
 			if (this.houseDist.contains(house)) {
@@ -101,16 +94,16 @@ public class Config {
 				log.info("==LOCK== RQN={}, блокировка для начисления выполнена: house.id={}, lsk={}", rqn, house, lsk);
 				return true;
 			}
-			
+
 		}
-		
+
 		// разблокировать лиц.счет
 		public synchronized void unlockChrgLsk(Integer rqn, Integer lsk, Integer house) {
 			log.info("==LOCK== RQN={}, блокировка для начисления снята: house.id={}, lsk={}", rqn, house, lsk);
 			this.lskChrg.remove(lsk);
 			this.houseChrg.remove(house);
 		}
-		
+
 		// разблокировать дом
 		public synchronized void unlockDistHouse(Integer rqn, Integer house) {
 			log.info("==LOCK== RQN={}, блокировка для распределения снята: house.id={}", rqn, house);
@@ -134,13 +127,13 @@ public class Config {
 				log.info("==LOCK== RQN={}, блокировка для распределения выполнена: house.id={}", rqn, house);
 				return true;
 			}
-			
+
 		}
 	}
-	
+
 	// блокировщик выполнения процессов
 	public Lock lock;
-	
+
 	// конструктор
 	public Config() {
 		TimeZone.setDefault(TimeZone.getTimeZone("GMT+7"));
@@ -149,7 +142,7 @@ public class Config {
 		// блокировщик процессов
 		lock = new Lock();
 	}
-	
+
 	/*
 	 * Получить CD текущего пользователя
 	 */
@@ -158,13 +151,13 @@ public class Config {
 		return auth.getName();
 		//return "ttt";
 	}
-	
+
 	@PostConstruct
 	private void setUp() throws EmptyStorable {
 		log.info("");
 		log.info("-----------------------------------------------------------------");
 		log.info("Версия модуля начисления - {}", "1.0.16");
-		 
+
 		// Добавить path в Classpath, относительно нахождения Jar
 		try {
 			Utl.addPath("reports");
@@ -180,7 +173,7 @@ public class Config {
         	log.info(url.getFile());
         }
     	log.info("**** Check Classpath: END****");*/
-		
+
 		log.info("Начало расчетного периода = {}", getCurDt1());
 		log.info("Конец расчетного периода = {}", getCurDt2());
 		log.info("-----------------------------------------------------------------");
@@ -192,20 +185,20 @@ public class Config {
 	private List<Calendar> getCalendarCurrentPeriod() {
 			List<Calendar> calendarLst = new ArrayList<Calendar>();
 	    	Obj obj = objMng.getByCD(-1, "Модуль начисления");
-			
+
 			Calendar calendar1, calendar2;
 			calendar1 = new GregorianCalendar();
 			calendar1.clear(Calendar.ZONE_OFFSET);
-			
+
 			calendar2 = new GregorianCalendar();
 			calendar2.clear(Calendar.ZONE_OFFSET);
-			
+
 			obj.getDw().size();
-			
+
 			try {
 				calendar1.setTime(parMng.getDate(-1, obj, "Начало расчетного периода"));
 				calendarLst.add(calendar1);
-				
+
 				calendar2.setTime(parMng.getDate(-1, obj, "Конец расчетного периода"));
 				calendarLst.add(calendar2);
 			} catch (EmptyStorable e) {
@@ -214,7 +207,7 @@ public class Config {
 			}
 			return calendarLst;
 	}
-	
+
 	public String getPeriod() {
 		return Utl.getPeriodFromDate(getCalendarCurrentPeriod().get(0).getTime());
 	}
@@ -228,11 +221,11 @@ public class Config {
 	}
 
 	public Date getCurDt1() {
-		return getCalendarCurrentPeriod().get(0).getTime(); 
+		return getCalendarCurrentPeriod().get(0).getTime();
 	}
-	
+
 	public Date getCurDt2() {
-		return getCalendarCurrentPeriod().get(1).getTime(); 
+		return getCalendarCurrentPeriod().get(1).getTime();
 	}
 
 	public static Date getLastDt() {
@@ -272,5 +265,5 @@ public class Config {
 		this.isRestrictChrgLsk = isRestrictChrgLsk;
 	}
 
-	
+
 }

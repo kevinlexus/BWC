@@ -9,12 +9,16 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.ric.cmn.Utl;
 import com.ric.bill.dao.MeterDAO;
 import com.ric.bill.dto.MeterDTO;
 import com.ric.bill.model.ar.House;
 import com.ric.bill.model.mt.Meter;
 import com.ric.bill.model.mt.Vol;
+import com.ric.bill.model.sec.User;
 import com.ric.bill.model.tr.Serv;
 
 
@@ -34,7 +38,7 @@ public class MeterDAOImpl implements MeterDAO {
 	/* 
 	 * Пример, как правильно выполнять запрос JPQL по связанным Enities
 	 * 
-	 * Получить все исправные физические счетчики по действующим лиц.счетам дома и по услуге
+	 * Получить все исправные физические счетчики по действующим лиц.счетам дома (или всего фонда) и по услуге
 	 * по которым не были переданы показания в данном периоде 
 	 * @param house - дом
 	 * @param serv - услуга
@@ -44,22 +48,26 @@ public class MeterDAOImpl implements MeterDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<MeterDTO> getAllWoVolMeterByHouseServ(House house, Serv serv, Date dt1, Date dt2) {
-		Query query =em.createQuery("select new com.ric.bill.dto.MeterDTO(m, nvl(e.tp,0)) from Meter m "
-			+ "join m.exs e with m.id=e.meter.id "
-			+ "join m.meterLog g with m.meterLog.id=g.id "
-			+ "join g.kart k with g.kart.id=k.id and :dt2 between k.dt1 and k.dt2 " // рабочие лиц.сч. (по последней дате периода)
-			+ "join g.serv s with g.serv.id=s.id "
-			+ "join k.kw kw with k.kw.id=kw.id "
-			+ "join kw.house h with kw.house.id=h.id "
+		Query query =em.createQuery("select new com.ric.bill.dto.MeterDTO(k.lsk, m.id, nvl(e.tp,0), 0) from Meter m "
+			+ "join m.exs e "
+			+ "join m.meterLog g "
+			+ "join g.kart k on :dt2 between k.dt1 and k.dt2 " // рабочие лиц.сч. (по последней дате периода)
+			+ "join g.serv s "
+			+ "join k.kw kw "
+			+ "join kw.house h "
 			+ "where s.id = :servId "
-			+ "and kw.house.id = :houseId "
+			+ "and kw.house.id = decode(:houseId, -1, kw.house.id, :houseId) "
 			+ "and :dt2 between e.dt1 and e.dt2 and nvl(e.tp,0) = 0 " // рабочие счетчики (по последней дате периода)
 			+ "and not exists (select v from Vol v where v.met.id=m.id and v.vol1 > 0 "
 			+ "and v.dt1 between :dt1 and :dt2 and v.dt2 between :dt1 and :dt2 "
 			+ "and v.tp.cd='Фактический объем' and v.user.cd <> 'GEN') " // не передан объем, не учитывая автоначисление 
 			);
 		query.setParameter("servId", serv.getId());
-		query.setParameter("houseId", house.getId());
+		if (house != null) {
+			query.setParameter("houseId", house.getId());
+		} else {
+			query.setParameter("houseId", -1);
+		}
 		query.setParameter("dt1", dt1);
 		query.setParameter("dt2", dt2);
 		return query.getResultList();
@@ -68,7 +76,7 @@ public class MeterDAOImpl implements MeterDAO {
 	
 	/* 
 	 * 
-	 * Получить все физические счетчики по действующим лиц.счетам дома и по услуге
+	 * Получить все физические счетчики по действующим лиц.счетам дома (или всего фонда) и по услуге
 	 * которые неисправны (неповерены и т.п.) 
 	 * @param house - дом
 	 * @param serv - услуга
@@ -77,24 +85,28 @@ public class MeterDAOImpl implements MeterDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<MeterDTO> getAllBrokenMeterByHouseServ(House house, Serv serv, Date dt) {
-		Query query =em.createQuery("select new com.ric.bill.dto.MeterDTO(m, nvl(e.tp,0)) from Meter m "
-			+ "join m.exs e with m.id=e.meter.id "
-			+ "join m.meterLog g with m.meterLog.id=g.id "
-			+ "join g.kart k with g.kart.id=k.id and :dt between k.dt1 and k.dt2 " // рабочие лиц.сч. (по последней дате периода)
-			+ "join g.serv s with g.serv.id=s.id "
-			+ "join k.kw kw with k.kw.id=kw.id "
-			+ "join kw.house h with kw.house.id=h.id "
+		Query query =em.createQuery("select new com.ric.bill.dto.MeterDTO(k.lsk, m.id, nvl(e.tp,0), 1) from Meter m "
+			+ "join m.exs e  "
+			+ "join m.meterLog g "
+			+ "join g.kart k on :dt between k.dt1 and k.dt2 " // рабочие лиц.сч. (по последней дате периода)
+			+ "join g.serv s "
+			+ "join k.kw kw "
+			+ "join kw.house h "
 			+ "where s.id = :servId "
-			+ "and kw.house.id = :houseId "
+			+ "and kw.house.id = decode(:houseId, -1, kw.house.id, :houseId) "
 			+ "and :dt between e.dt1 and e.dt2 and nvl(e.tp,0) in (2,3,4) " // не исправный, не поверенный и т.п.
 			+ "");
 		query.setParameter("servId", serv.getId());
-		query.setParameter("houseId", house.getId());
+		if (house != null) {
+			query.setParameter("houseId", house.getId());
+		} else {
+			query.setParameter("houseId", -1);
+		}
 		query.setParameter("dt", dt);
 		return query.getResultList();
 	}
 	
-	@SuppressWarnings("unchecked")
+/*	@SuppressWarnings("unchecked")
 	@Override
 	// TODO удалить позже, для тестов!
 	public List<Meter> getXxx() {
@@ -105,7 +117,7 @@ public class MeterDAOImpl implements MeterDAO {
 		
 	}
 
-	/** 
+*/	/** 
 	 * Получить последнее переданное показание по физическому счетчику,
 	 * в период его работоспособности, включая автоначисление
 	 * @param meter - физ.счетчик
@@ -137,7 +149,7 @@ public class MeterDAOImpl implements MeterDAO {
 	 * @param dt1 - начало периода
 	 * @param dt2 - окончание периода
 	 */
-	@Override
+/*	@Override
 	public Double getVolPeriod(Meter meter, Date dt1, Date dt2) {
 		Query query =em.createQuery("select sum(v.vol1) from Meter m join m.vol v with m.id=v.met.id and v.vol1 > 0 " 
 				+ "where v.dt1 between :dt1 and :dt2 "
@@ -152,6 +164,115 @@ public class MeterDAOImpl implements MeterDAO {
 			  return null;
 		} 
 	}
+*/
+	/** 
+	 * Получить объем по физическому счетчику,
+	 * включая автоначисление. 
+	 * Только положительные значения!!! > 0
+	 * @param meter - физ.счетчик
+	 * @param dt1 - начало периода
+	 * @param dt2 - окончание периода
+	 */
+	@Override
+	public Double getVolPeriod(Meter meter, Date dt1, Date dt2) {
+		Double vol = meter.getVol().stream().filter(t-> Utl.between(t.getDt1(), dt1, dt2) && Utl.between(t.getDt2(), dt1, dt2))
+							   .filter(t-> t.getVol1() > 0D).mapToDouble(t -> t.getVol1()).sum();
+				
+		return vol;
+/*  Lev: Пока не удалять запрос, может понадобиться в будущем, если начнет тормозить на stream()		
+ * Query query =em.createQuery("select sum(v.vol1) from Meter m join m.vol v with m.id=v.met.id and v.vol1 > 0 " 
+				+ "where v.dt1 between :dt1 and :dt2 "
+				+ "and v.dt2 between :dt1 and :dt2  "
+				+ "and m.id = :meterId");
+		query.setParameter("meterId", meter.getId());
+		query.setParameter("dt1", dt1);
+		query.setParameter("dt2", dt2);
+		try {
+			return (Double) query.getSingleResult();
+		} catch (NoResultException e) {
+			  return null;
+		}*/ 
+	}
 
-	
+	/** 
+	 * Получить объемы по физическим счетчикам,
+	 * внесенные пользователем за период  
+	 * по дому (или всему фонду, если не заполнено)
+	 * по услуге (или по всем услугам, если не заполнено)
+	 * @param house - дом
+	 * @param serv - услуга
+	 * @param user - пользователь
+	 * @param dt1 - начало периода
+	 * @param dt2 - окончание периода
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Vol> getVolPeriodByHouse(House house, Serv serv, User user, Date dt1, Date dt2) {
+		Query query =em.createQuery("select v from Meter m "
+				+ "join m.meterLog g "
+				+ "join m.vol v on v.dt1 between :dt1 and :dt2 and v.dt2 between :dt1 and :dt2 "
+				+ "join v.user u on u.cd = :userCd "
+				+ "join g.kart k on :dt2 between k.dt1 and k.dt2 " // рабочие лиц.сч. (по последней дате периода)
+				+ "join g.serv s on s.id = decode(:servId, -1, s.id, :servId) "
+				+ "join k.kw kw "
+				+ "join kw.house h "
+				+ "where kw.house.id = decode(:houseId, -1, kw.house.id, :houseId) ");
+			if (serv != null) {
+				query.setParameter("servId", serv.getId());
+			} else {
+				query.setParameter("servId", -1);
+			}
+			query.setParameter("userCd", user.getCd());
+			if (house != null) {
+				query.setParameter("houseId", house.getId());
+			} else {
+				query.setParameter("houseId", -1);
+			}
+			query.setParameter("dt1", dt1);
+			query.setParameter("dt2", dt2);
+			return query.getResultList();
+	}
+
+	/**
+     * Удалить объемы по физическим счетчикам принадлежащим лиц.счетам дома (фонда), 
+     * внесенные пользователем, по определенной услуге
+     * @param house - дом
+     * @param serv - услуга
+     * @param user - пользователь
+	 * @param dt1 - начало периода
+	 * @param dt2 - окончание периода
+     */
+    @Override
+    public void delHouseMeterVol(House house, Serv serv, User user, Date dt1, Date dt2) {
+
+    	Query query = em.createNativeQuery("delete from mt.meter_vol t "+
+    	    	"where exists "+
+    	    	"(select * from "+
+    	    	" mt.meter m join mt.meter_log g on g.id=m.fk_meter_log and g.fk_serv=:servId "+
+    	    	" join ar.kart k on g.fk_klsk_obj=k.fk_klsk_obj "+
+    	    	" join ar.kw kw on k.fk_kw=kw.id and kw.fk_house=decode(:houseId, -1, kw.fk_house, :houseId) "+
+    	    	" where m.id=t.fk_meter and "+
+    	    	" t.fk_user=:userId "+
+    	    	") "+
+    	    	"and t.dt1 between :dt1 and :dt2 "+
+    	    	"and t.dt2 between :dt1 and :dt2" 
+    			);
+		query.setParameter("dt1", dt1);
+		query.setParameter("dt2", dt2);
+		if (house != null) {
+			query.setParameter("houseId", house.getId());
+		} else {
+			query.setParameter("houseId", -1);
+		}
+		query.setParameter("servId", serv.getServMet());
+		query.setParameter("userId", user.getId());
+    	query.executeUpdate();
+	}
+
+/*	@Override
+    public List<User> testTransactDao() {
+		Query query =em.createQuery("select t from User t ");
+		return (List<User>) query.getResultList();
+	}
+*/
 }

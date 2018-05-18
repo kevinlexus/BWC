@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ric.bill.RequestConfig;
-import com.ric.bill.Utl;
+import com.ric.cmn.Utl;
 import com.ric.bill.dao.PaymentDetDAO;
 import com.ric.bill.dao.PayordCmpDAO;
 import com.ric.bill.dao.PayordDAO;

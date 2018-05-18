@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ric.bill.Config;
-import com.ric.bill.Utl;
+import com.ric.cmn.Utl;
 import com.ric.bill.dao.EolinkParDAO;
 import com.ric.bill.dao.TaskParDAO;
 import com.ric.bill.excp.WrongGetMethod;

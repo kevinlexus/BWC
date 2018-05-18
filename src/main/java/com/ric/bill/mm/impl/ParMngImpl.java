@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.ric.bill.Storable;
-import com.ric.bill.Utl;
+import com.ric.cmn.Utl;
 import com.ric.bill.dao.ParDAO;
 import com.ric.bill.excp.EmptyServ;
 import com.ric.bill.excp.EmptyStorable;

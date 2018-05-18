@@ -14,15 +14,21 @@ import lombok.Setter;
 @Getter @Setter
 public class MeterDTO {
 
-	// счетчик
-	private Meter meter;
+	// ID счетчика
+	private Integer meterId;
+	// лиц.счет
+	private Integer lsk;
 	// статус работы счетчика
 	private Double tp;
+	// для сортировки (1-неисправен и т.п., 0 -исправен, нет показаний)
+	private Integer ord; 
 	
-	public MeterDTO(Meter meter, Double tp) {
+	public MeterDTO(Integer lsk, Integer meterId, Double tp, Integer ord) {
 		super();
-		this.meter = meter;
+		this.lsk = lsk;
+		this.meterId = meterId;
 		this.tp = tp;
+		this.ord = ord;
 	}
 	
 }

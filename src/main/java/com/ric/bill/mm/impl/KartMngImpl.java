@@ -14,7 +14,7 @@ import com.ric.bill.Calc;
 import com.ric.bill.CntPers;
 import com.ric.bill.Standart;
 import com.ric.bill.TarifContains;
-import com.ric.bill.Utl;
+import com.ric.cmn.Utl;
 import com.ric.bill.dao.KartDAO;
 import com.ric.bill.dao.PersDAO;
 import com.ric.bill.excp.EmptyServ;

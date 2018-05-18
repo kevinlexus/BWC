@@ -25,6 +25,13 @@
 
 <dependencies>
 
+		<!-- BillCommon -->
+		<dependency>
+			<groupId>com.ric.cmn</groupId>
+			<artifactId>BillCommon</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 		<!-- Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -114,7 +121,6 @@
 	<dependency>
 	    <groupId>org.apache.commons</groupId>
 	    <artifactId>commons-lang3</artifactId>
-	    <version>3.6</version>
 	</dependency>
 
 </dependencies>

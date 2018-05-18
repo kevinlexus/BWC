@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
@@ -24,6 +25,11 @@ import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.tr.Serv;
 
+import lombok.Getter;
+import lombok.Setter;
+import javax.annotation.Generated;
+import java.util.Collections;
+
 /**
  * Заголовочная таблица - перерасчеты
  * @author lev
@@ -32,16 +38,17 @@ import com.ric.bill.model.tr.Serv;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "CHNG", schema="FN")
+@Getter @Setter
 public class Chng implements java.io.Serializable, Simple {
-
 
 	public Chng() {
 		
 	}
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", updatable = false, nullable = false)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CHNG")
+	@SequenceGenerator(name="SEQ_CHNG", sequenceName="FN.SEQ_CHNG", allocationSize=1) 	
 	private Integer id;
 
 	@OneToMany(fetch = FetchType.LAZY)
@@ -54,9 +61,13 @@ public class Chng implements java.io.Serializable, Simple {
 	@Fetch(FetchMode.SUBSELECT)
 	private List<ChngLsk> chngLsk = new ArrayList<ChngLsk>(0);
 	
-	// период (х.з. какой период, уточнить) TODO
+	// текущий период для партицирования
 	@Column(name = "PERIOD")
-	private String period;
+	private Integer period;
+
+	// период перерасчета
+	@Column(name = "MG")
+	private Integer mg;
 
 	// документ-основание перерасчета
 	@Column(name = "ACT_NAME")
@@ -82,86 +93,21 @@ public class Chng implements java.io.Serializable, Simple {
 	// Главная услугу по перерасчету
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_SERV", referencedColumnName="ID")
-	private Serv serv; 
-	
-	public Integer getId() {
-		return id;
-	}
-	
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	private Serv serv;
 
-	public List<Chrg> getChrg() {
-		return chrg;
-	}
-
-	public void setChrg(List<Chrg> chrg) {
-		this.chrg = chrg;
-	}
-
-	public String getPeriod() {
-		return period;
-	}
-
-	public void setPeriod(String period) {
-		this.period = period;
-	}
-
-	public Date getDt1() {
-		return dt1;
-	}
-
-	public void setDt1(Date dt1) {
-		this.dt1 = dt1;
-	}
-
-	public Date getDt2() {
-		return dt2;
-	}
-
-	public void setDt2(Date dt2) {
-		this.dt2 = dt2;
-	}
-
-	public String getActName() {
-		return actName;
-	}
-
-	public void setActName(String actName) {
-		this.actName = actName;
-	}
-
-	public List<ChngLsk> getChngLsk() {
-		return chngLsk;
-	}
-
-	public void setChngLsk(List<ChngLsk> chngLsk) {
-		this.chngLsk = chngLsk;
-	}
-
-	public Lst getTp() {
-		return tp;
-	}
-
-	public void setTp(Lst tp) {
-		this.tp = tp;
-	}
-
-	public Org getOrg() {
-		return org;
-	}
-
-	public void setOrg(Org org) {
-		this.org = org;
-	}
-
-	public Serv getServ() {
-		return serv;
-	}
-
-	public void setServ(Serv serv) {
-		this.serv = serv;
+	@Generated("SparkTools")
+	private Chng(Builder builder) {
+		this.id = builder.id;
+		this.chrg = builder.chrg;
+		this.chngLsk = builder.chngLsk;
+		this.period = builder.period;
+		this.mg = builder.mg;
+		this.actName = builder.actName;
+		this.dt1 = builder.dt1;
+		this.dt2 = builder.dt2;
+		this.tp = builder.tp;
+		this.org = builder.org;
+		this.serv = builder.serv;
 	}
 
 	public boolean equals(Object o) {
@@ -184,6 +130,95 @@ public class Chng implements java.io.Serializable, Simple {
 	    } else {
 	        return super.hashCode();
 	    }
+	}
+
+	/**
+	 * Creates builder to build {@link Chng}.
+	 * @return created builder
+	 */
+	@Generated("SparkTools")
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	/**
+	 * Builder to build {@link Chng}.
+	 */
+	@Generated("SparkTools")
+	public static final class Builder {
+		private Integer id;
+		private List<Chrg> chrg = Collections.emptyList();
+		private List<ChngLsk> chngLsk = Collections.emptyList();
+		private Integer period;
+		private Integer mg;
+		private String actName;
+		private Date dt1;
+		private Date dt2;
+		private Lst tp;
+		private Org org;
+		private Serv serv;
+
+		private Builder() {
+		}
+
+		public Builder withId(Integer id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder withChrg(List<Chrg> chrg) {
+			this.chrg = chrg;
+			return this;
+		}
+
+		public Builder withChngLsk(List<ChngLsk> chngLsk) {
+			this.chngLsk = chngLsk;
+			return this;
+		}
+
+		public Builder withPeriod(Integer period) {
+			this.period = period;
+			return this;
+		}
+
+		public Builder withMg(Integer mg) {
+			this.mg = mg;
+			return this;
+		}
+
+		public Builder withActName(String actName) {
+			this.actName = actName;
+			return this;
+		}
+
+		public Builder withDt1(Date dt1) {
+			this.dt1 = dt1;
+			return this;
+		}
+
+		public Builder withDt2(Date dt2) {
+			this.dt2 = dt2;
+			return this;
+		}
+
+		public Builder withTp(Lst tp) {
+			this.tp = tp;
+			return this;
+		}
+
+		public Builder withOrg(Org org) {
+			this.org = org;
+			return this;
+		}
+
+		public Builder withServ(Serv serv) {
+			this.serv = serv;
+			return this;
+		}
+
+		public Chng build() {
+			return new Chng(this);
+		}
 	}
 	
 }
