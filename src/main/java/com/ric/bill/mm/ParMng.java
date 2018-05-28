@@ -3,11 +3,11 @@ package com.ric.bill.mm;
 import java.util.Date;
 
 import com.ric.bill.Storable;
-import com.ric.bill.excp.EmptyStorable;
-import com.ric.bill.excp.WrongSetMethod;
 import com.ric.bill.model.bs.Par;
 import com.ric.bill.model.fn.Chng;
 import com.ric.bill.model.fn.ChngVal;
+import com.ric.cmn.excp.EmptyStorable;
+import com.ric.cmn.excp.WrongSetMethod;
 
 public interface ParMng {
 

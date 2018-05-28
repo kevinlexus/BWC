@@ -4,21 +4,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.ric.bill.Calc;
 import com.ric.bill.CntPers;
+import com.ric.bill.Config;
 import com.ric.bill.Standart;
 import com.ric.bill.TarifContains;
-import com.ric.bill.Utl;
 import com.ric.bill.dao.KartDAO;
 import com.ric.bill.dao.PersDAO;
-import com.ric.bill.excp.EmptyServ;
-import com.ric.bill.excp.EmptyStorable;
 import com.ric.bill.mm.KartMng;
 import com.ric.bill.mm.ParMng;
 import com.ric.bill.mm.TarifMng;
@@ -32,8 +28,11 @@ import com.ric.bill.model.ps.Pers;
 import com.ric.bill.model.ps.Reg;
 import com.ric.bill.model.ps.Registrable;
 import com.ric.bill.model.tr.Serv;
-import com.ric.bill.Config;
-import com.ric.bill.ResultSet;
+import com.ric.cmn.Utl;
+import com.ric.cmn.excp.EmptyServ;
+import com.ric.cmn.excp.EmptyStorable;
+
+import lombok.extern.slf4j.Slf4j;
 
 
 @Service
@@ -58,10 +57,10 @@ public class KartMngImpl implements KartMng {
 		//конструктор
 		public PersStatus (boolean exist, String kinShip) {
 			this.exist = exist;
-			this.kinShip = kinShip; 
+			this.kinShip = kinShip;
 		}
 	}
-	
+
 	/**
 	 * Проверить, считали ли персону
 	 * нельзя кэшировать!
@@ -76,7 +75,7 @@ public class KartMngImpl implements KartMng {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Проверить наличие проживающего по постоянной регистрации или по временному присутствию на дату формирования! (на Calc.getGenDt())
 	 */
@@ -86,7 +85,7 @@ public class KartMngImpl implements KartMng {
 		return ps.exist;
 	}
 
-	
+
 	/**
 	 * Проверить наличие проживающего по постоянной регистрации или по временному присутствию на дату формирования! (на Calc.getGenDt())
 	 * и вернуть объект, содержащий наличие проживающего и его отношение к нанимателю
@@ -110,7 +109,7 @@ public class KartMngImpl implements KartMng {
 					} else {
 						dt1=config.getLastDt();
 					}
-					
+
 					if (r.getDtUnRegTs() == null ||
 						r.getDtUnRegTs().before(calc.getReqConfig().getCurDt2())) {
 						dt2=Utl.nvl(r.getDtUnReg(), config.getLastDt());
@@ -136,7 +135,7 @@ public class KartMngImpl implements KartMng {
 		//статус - проживающий отсутствует
 		return new PersStatus(false, null);
 	}
-	
+
 	/**
 	 * Проверить наличие проживающего при fk_pers = null на дату формирования! (на Calc.getGenDt())
 	 */
@@ -151,7 +150,7 @@ public class KartMngImpl implements KartMng {
 			} else {
 				dt1=config.getLastDt();
 			}
-			
+
 			if (reg.getDtUnRegTs() == null ||
 					reg.getDtUnRegTs().before(calc.getReqConfig().getCurDt2())) {
 				dt2=Utl.nvl(reg.getDtUnReg(), config.getLastDt());
@@ -163,18 +162,18 @@ public class KartMngImpl implements KartMng {
 				return true;
 			}
 		}
-				
+
 		//статус отсутствует
 		return false;
 	}
 
 	/**
 	 * Получить кол-во проживающих  на дату формирования! (на Calc.getGenDt())
-	 * @param serv - Рассчитываемая услуга 
+	 * @param serv - Рассчитываемая услуга
 	 * @param rc - Список дат регистрации
 	 * @param cntPers - объект для заполнения
 	 * @return
-	 * @throws EmptyStorable 
+	 * @throws EmptyStorable
 	 */
 	@Override
 	//@Cacheable(cacheNames="KartMngImpl.getCntPers", key="{#rqn, #rc.getLsk(), #serv.getId(), #genDt}")
@@ -183,7 +182,7 @@ public class KartMngImpl implements KartMng {
 		List<Pers> counted = new ArrayList<Pers>();
 		Chng chng = calc.getReqConfig().getChng();
 		cntPers.setUp();
-		//поиск сперва по постоянной регистрации 
+		//поиск сперва по постоянной регистрации
 		for (Registrable p : rc.getReg()) {
 			if (p.getPers()!=null && !foundPers(counted, p.getPers())) {
 				if (checkPersStatus(rqn, calc, rc, p.getPers(), "Постоянная прописка", 0, genDt)) {
@@ -216,11 +215,11 @@ public class KartMngImpl implements KartMng {
 						}
 						cntPers.cntEmpt++;
 					}
-					
+
 				}
 			}
 		}
-		//поиск по временной регистрации 
+		//поиск по временной регистрации
 		for (Registrable p : rc.getRegState()) {
 			//там где NULL fk_pers,- обычно временно зарег., считать их
 			if (p.getPers()==null) {
@@ -232,9 +231,9 @@ public class KartMngImpl implements KartMng {
 						cntPers.persLst.add(p.getPers());
 					}
 				}
-			}		
+			}
 		}
-		
+
 		// если кол-во проживающих для объема установить невозможно, установить по кол-ву собственников
 		// здесь не считать кол-во прожив факт cntFact
 		if (cntPers.cntVol == 0) {
@@ -243,31 +242,31 @@ public class KartMngImpl implements KartMng {
 		}
 		return cntPers;
 	}
-	
+
 	/**
 	 * Получить нормативный объём по лиц.счету
-	 * @param mLog - Расчетный узел 
-	 * @param serv - Рассчитываемая услуга 
+	 * @param mLog - Расчетный узел
+	 * @param serv - Рассчитываемая услуга
 	 * @param cnt - Переданное кол-во проживающих
-	 * @param calcCd - CD Варианта расчета начисления 
+	 * @param calcCd - CD Варианта расчета начисления
 	 * @param tp - тип норматива, 0 - для определения нормы и свыше, 1 - для определения объема
-	 * @throws EmptyServ 
+	 * @throws EmptyServ
 	 */
 	@Override
-	//@Cacheable(cacheNames="KartMngImpl.getStandartVol", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") // сделал отдельный кэш, иначе валится с Cannot Cast Standart to Boolean! 
+	//@Cacheable(cacheNames="KartMngImpl.getStandartVol", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") // сделал отдельный кэш, иначе валится с Cannot Cast Standart to Boolean!
 	public Standart getStandartVol(int rqn, Calc calc, Serv serv, Date genDt, int tp) throws EmptyStorable {
-		log.trace("STANDART1="+serv.getId()+" dt="+genDt);	
+		log.trace("STANDART1="+serv.getId()+" dt="+genDt);
 		Chng chng = calc.getReqConfig().getChng();
 		//получить услугу основную, для начисления
 		Serv servChrg = serv.getServChrg();
-		//получить услугу, по которой записывается норматив (в справочнике 
+		//получить услугу, по которой записывается норматив (в справочнике
 		//строго должна быть указана fk_st_keep! по услуге счетчика)
-		Serv servSt = serv.getServStKeep(); 
+		Serv servSt = serv.getServStKeep();
 		Standart st = new Standart();
 
 		Double stVol = 0d;
 		CntPers cntPers = getCntPers(rqn, calc, calc.getKart(), servChrg, genDt);
-		
+
 		int cnt;
 		if (tp==0) {
 			// для определения нормы и свыше
@@ -276,10 +275,10 @@ public class KartMngImpl implements KartMng {
 			// для определения объема
 			cnt=cntPers.cntVol;
 		}
-		
-		log.trace("STANDART4="+serv.getId()+" dt="+genDt);	
+
+		log.trace("STANDART4="+serv.getId()+" dt="+genDt);
 		log.trace("===="+Utl.nvl(parMng.getDbl(rqn, servChrg, "Вариант расчета по общей площади-1"), 0d));
-		
+
 		if (Utl.nvl(parMng.getDbl(rqn, servChrg, "Вариант расчета по общей площади-1"), 0d)==1d
 				|| Utl.nvl(parMng.getDbl(rqn, servChrg, "Вариант расчета по объему-2"), 0d)==1d) {
 			if (cnt==1) {
@@ -291,7 +290,7 @@ public class KartMngImpl implements KartMng {
 			} else {
 				stVol = 0d;
 			}
-			
+
 		} else if (Utl.nvl(parMng.getDbl(rqn, servChrg, "Вариант расчета по объему-1"),0d)==1d
 				&& !servChrg.getCd().equals("Электроснабжение")) {
 			// получить норматив, не зависящий от кол-ва прожив (например по Х.В., Г.В.)
@@ -304,68 +303,68 @@ public class KartMngImpl implements KartMng {
 			if (Utl.nvl(kitchElStv, 0d) != 0d) {
 				//с эл.плитой
 				switch (cnt) {
-					case 0 : 
+					case 0 :
 						s2 = null;
 						break;
-					case 1 : 
+					case 1 :
 						s2 = "Норматив-1 чел. с эл. плитой";
 						break;
-					case 2 : 
+					case 2 :
 						s2 = "Норматив-2 чел. с эл. плитой";
 						break;
-					case 3 : 
+					case 3 :
 						s2 = "Норматив-3 чел. с эл. плитой";
 						break;
-					case 4 : 
+					case 4 :
 						s2 = "Норматив-4 чел. с эл. плитой";
 						break;
-					case 5 : 
+					case 5 :
 						s2 = "Норматив-5 чел. с эл. плитой";
 						break;
-					default : 
+					default :
 						s2 = "Норматив-6 и более чел. с эл. плитой";
 						break;
 				}
 			} else {
 				//без эл.плиты
 				switch (cnt) {
-				case 0 : 
+				case 0 :
 					s2 = null;
 					break;
-				case 1 : 
+				case 1 :
 					s2 = "Норматив-1 чел. без эл. плиты";
 					break;
-				case 2 : 
+				case 2 :
 					s2 = "Норматив-2 чел. без эл. плиты";
 					break;
-				case 3 : 
+				case 3 :
 					s2 = "Норматив-3 чел. без эл. плиты";
 					break;
-				case 4 : 
+				case 4 :
 					s2 = "Норматив-4 чел. без эл. плиты";
 					break;
-				case 5 : 
+				case 5 :
 					s2 = "Норматив-5 чел. без эл. плиты";
 					break;
-				default : 
+				default :
 					s2 = "Норматив-6 и более чел. без эл. плиты";
 					break;
 			}
 			}
 			//получить норматив, зависящий от проживающих
 			stVol = getServPropByCD(rqn, calc, servSt, s2, genDt);
-			
+
 		}
-		if (stVol!=null) {	
+		if (stVol!=null) {
 			st.vol = stVol;
 			st.partVol=cnt * stVol/calc.getReqConfig().getCntCurDays();
 		} else {
 			st.vol = 0d;
 			st.partVol= 0d;
 		}
-		log.trace("STANDART_END="+serv.getId()+" dt="+genDt);	
+		log.trace("STANDART_END="+serv.getId()+" dt="+genDt);
 		return st;
-		
+
 	}
 
 	/**
@@ -377,14 +376,14 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 */
 	@Override
-	//@Cacheable(cacheNames="KartMngImpl.getServPropByCD", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #cd, #genDt }") 
+	//@Cacheable(cacheNames="KartMngImpl.getServPropByCD", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #cd, #genDt }")
 	public Double getServPropByCD(int rqn, Calc calc, Serv serv, String cd, Date genDt) {
 		//log.info("проверка кэша ----------> rqn={}, serv.id={}, cd={}, genDt={}", rqn, serv.getId(), cd, genDt);
 		Double val;
 		//в начале ищем по дому
 		val=tarMng.getProp(calc, rqn, calc.getHouse(), serv, cd, genDt);
 		if (val==null) {
-			//потом ищем по лиц. счету 
+			//потом ищем по лиц. счету
 			val=tarMng.getProp(calc, rqn, calc.getKart(), serv, cd, genDt);
 		}
 		if (val==null) {
@@ -402,31 +401,31 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 */
 	@Override
-	//@Cacheable(cacheNames="KartMngImpl.getOrg", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
+	//@Cacheable(cacheNames="KartMngImpl.getOrg", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }")
 	public /*synchronized*/ Org getOrg(int rqn, Calc calc, Serv serv, Date genDt) {
 		Org org;
-		
+
 		//в начале ищем по дому
 		org=tarMng.getOrg(calc, rqn, calc.getHouse(), serv, genDt);
 		if (org==null) {
-			//потом ищем по лиц. счету 
+			//потом ищем по лиц. счету
 			org=tarMng.getOrg(calc, rqn, calc.getKart(), serv, genDt);
 		}
 		if (org==null) {
 			//потом ищем по городу
 /*			if (serv.getId()==480 && calc.getArea().getKlskId() == 228) {
-				log.info("Erfind_area1: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}, org.id={}", rqn, calc.getKart().getLsk(), calc.getArea().getKlskId(), serv.getId(), genDt, 
+				log.info("Erfind_area1: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}, org.id={}", rqn, calc.getKart().getLsk(), calc.getArea().getKlskId(), serv.getId(), genDt,
 						org!=null ? org.getId():null);
 			}*/
 			org=tarMng.getOrg(calc, rqn, calc.getArea(), serv, genDt);
 /*			if (serv.getId()==480 && calc.getArea().getKlskId() == 228) {
-				log.info("Erfind_area2: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}, org.id={}", rqn, calc.getKart().getLsk(), calc.getArea().getKlskId(), serv.getId(), genDt, 
+				log.info("Erfind_area2: rqn={}, lsk={}, klskId={}, serv.id={}, genDt={}, org.id={}", rqn, calc.getKart().getLsk(), calc.getArea().getKlskId(), serv.getId(), genDt,
 						org!=null ? org.getId():null);
 			}*/
 		}
 		return org;
 	}
-	
+
 	/**
 	 * Найти наличие услуги (по лиц.счету!)
 	 * @param Kart - Лиц.счет
@@ -435,17 +434,17 @@ public class KartMngImpl implements KartMng {
 	 * @return
 	 */
 	@Override
-	//@Cacheable(cacheNames="KartMngImpl.getServ", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }") 
+	//@Cacheable(cacheNames="KartMngImpl.getServ", key="{#rqn, #calc.getKart().getLsk(), #serv.getId(), #genDt }")
 	public /*synchronized*/ boolean getServ(int rqn, Calc calc, Serv serv, Date genDt) {
 		boolean exs = false;
 		//искать свойство "Поставщик"
 		Double n1 = getServPropByCD(rqn, calc, serv, "Поставщик", genDt);
 		if (n1 != null) {
 			exs = true;
-		}	
+		}
 		return exs;
 	}
-	
+
 	/**
 	 * Создать список услуг, по параметру
 	 * @param tc -тарифосодержащий объект
@@ -475,14 +474,14 @@ public class KartMngImpl implements KartMng {
 							if (lst.contains(d.getServ())) {
 								lst.remove(d.getServ());
 							}
-						
+
 						break;
 					}
 					});
     	});
-    	
+
     	/*for (TarifKlsk k : tc.getTarifklsk()) {
-				//затем по строкам - составляющим тариф 
+				//затем по строкам - составляющим тариф
 				for (TarifServProp t : k.getTarprop()) {
 					if (t.getServ().getServChrg() != null && t.getServ().getServChrg().equals(t.getServ())) {
 						//искать наличие свойства, например, "Поставщик", оно и определяет наличие услуги
@@ -501,7 +500,7 @@ public class KartMngImpl implements KartMng {
 											if (lst.contains(t.getServ())) {
 												lst.remove(t.getServ());
 											}
-										
+
 										break;
 								}
 							}
@@ -512,12 +511,12 @@ public class KartMngImpl implements KartMng {
 		}*/
 		return lst;
     }
-	
+
 	/**
 	 * Получить distinct список всех услуг потенциально начисляемых в лиц.счете
 	 * @param tc - объект
 	 * @return
-	 * @throws EmptyServ 
+	 * @throws EmptyServ
 	 */
 	@Override
 	@Cacheable(cacheNames="KartMngImpl.getServAll", key="{#rqn, #calc.getHouse().getId(), #calc.getKart().getLsk() }")
@@ -531,7 +530,7 @@ public class KartMngImpl implements KartMng {
 		// лиц.счета
 		lst = checkServ(calc, calc.getKart(), lst, "Поставщик", 0);
 
-		// УБРАТЬ позже, эта проверка работает в ChrgThr TODO 
+		// УБРАТЬ позже, эта проверка работает в ChrgThr TODO
 		// удалить отключенные услуги по наборам тарифа
 		// города:
 		/*lst = checkServ(calc, calc.getArea(), lst, "Отключение", 1);
@@ -584,12 +583,12 @@ public class KartMngImpl implements KartMng {
 						if (Utl.getDiffYears(dtBrn, genDt) < 70) {
 							//временно зарег <70 лет
 							under70 = true;
-						}						
+						}
 					}
 				}
 			}
 		}
-		
+
 		if (above70owner && !above70 && !under70) {
 			return 0d; //льгота
 		} else if (above70owner && above70 && !under70) {
@@ -597,10 +596,10 @@ public class KartMngImpl implements KartMng {
 		} else {
 			return 1d; //нет льготы
 		}
-	                
+
 	}
 
-	
+
 	// все Id лицевых по определённому критерию
 /*	@Override
 	public List<ResultSet> findAllLsk(Integer houseId, Integer areaId, Integer tempLskId, Date dt1, Date dt2) {
@@ -635,5 +634,5 @@ public class KartMngImpl implements KartMng {
 	public PrivilegeServ getPrivilegeServ(Privilege priv, Serv serv) {
 		return persDao.getPrivilegeServ(priv.getId(), serv.getId());
 	}
-	
+
 }

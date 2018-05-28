@@ -3,6 +3,7 @@ package com.ric.bill.mm.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -12,21 +13,14 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ric.bill.MeterContains;
 import com.ric.bill.SumNodeVol;
-import com.ric.bill.Utl;
 import com.ric.bill.dao.MeterDAO;
 import com.ric.bill.dao.MeterLogDAO;
 import com.ric.bill.dto.MeterDTO;
-import com.ric.bill.excp.CyclicMeter;
 import com.ric.bill.mm.MeterLogMng;
 import com.ric.bill.model.ar.House;
 import com.ric.bill.model.ar.Kart;
@@ -39,8 +33,11 @@ import com.ric.bill.model.mt.MeterLogGraph;
 import com.ric.bill.model.mt.Vol;
 import com.ric.bill.model.sec.User;
 import com.ric.bill.model.tr.Serv;
-import com.ric.bill.Config;
-import java.util.Comparator;
+import com.ric.cmn.Utl;
+import com.ric.cmn.excp.CyclicMeter;
+
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Сервис обработки счетчиков
  * @author lev
@@ -65,10 +62,10 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param tp - Тип, если не указан - по всем
 	 * @return - искомый список
 	 */
-	//@Cacheable(cacheNames="MeterLogMngImpl.getAllMetLogByServTp", key="{ #rqn, #mm.getKo().getId(), #serv.getId(), #tp }") 
+	//@Cacheable(cacheNames="MeterLogMngImpl.getAllMetLogByServTp", key="{ #rqn, #mm.getKo().getId(), #serv.getId(), #tp }")
 	@Override
 	public List<MLogs> getAllMetLogByServTp(int rqn, MeterContains mm, Serv serv, String tp) {
-		List<MLogs> lstMlg = new ArrayList<MLogs>(0); 
+		List<MLogs> lstMlg = new ArrayList<MLogs>(0);
 		for (MLogs ml : mm.getMlog()) {
 			//по типу, если указано
 			if (tp == null || ml.getTp().getCd().equals(tp)) {
@@ -97,7 +94,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 							.filter(t -> checkExsMet(rqn, t, genDt, true)==true).findAny();
 		return mLog.isPresent();
 	}
-	
+
 	/**
 	 * проверить существование физ.счетчика (обычно для поиска счетчика ОДПУ)
 	 * @param rqn - номер запроса
@@ -115,7 +112,7 @@ public class MeterLogMngImpl implements MeterLogMng {
     		for (MeterExs e: m.getExs()) {
     			// по соотв.периоду
     			if (Utl.between(genDt, e.getDt1(), e.getDt2())) {
-    				
+
 	    			if (e.getPrc() > 0d) // есть поставка объема Lev: убрал 19.04.2018
     				//if (Utl.nvl(e.getTp(),0D).equals(0D)) // ПУ рабочий //TODO проверить!
 					 {
@@ -124,10 +121,10 @@ public class MeterLogMngImpl implements MeterLogMng {
     			}
     		}
     	}
-    	
+
     	if (isFindGrp) {
         	// не найдены физ.счетчики по данному логическому,
-        	// попробовать найти групповой счетчик, связанный с данным 
+        	// попробовать найти групповой счетчик, связанный с данным
         	// и поискать по нему физ.счетчики
         	MLogs grp = getLinkedNode(rqn, mLog, "ЛГрупп", genDt, true);
         	if (grp == null) {
@@ -140,23 +137,24 @@ public class MeterLogMngImpl implements MeterLogMng {
     	}
     	return false;
 	}
-	
+
 	/**
 	 * Получить объем, по ЛОГ СЧЕТЧИКУ, за период
 	 * @param mLog - узел
 	 * @param chngId - Id перерасчета (Integer - потому что chng.getId() - приведёт к NPE)
 	 * @param chng - перерасчет - сам перерасчет, чтобы не искать em.find
-	 * @param tp - тип распределения (здесь ТОЛЬКО для КЭША!) 
+	 * @param tp - тип распределения (здесь ТОЛЬКО для КЭША!)
 	 * @param dt1 - нач.период
 	 * @param dt2 - кон.период
 	 * @return - возвращаемый объем
 	 */
 	//@Cacheable(cacheNames="MeterLogMngImpl.getVolPeriod1", key="{ #rqn, #chngId, #mLog.getId(), #tp, #dt1, #dt2}")
-    public  SumNodeVol getVolPeriod(int rqn, Integer chngId, Chng chng, MLogs mLog, int tp, Date dt1, Date dt2) {
+    @Override
+	public  SumNodeVol getVolPeriod(int rqn, Integer chngId, Chng chng, MLogs mLog, int tp, Date dt1, Date dt2) {
 		SumNodeVol lnkVol = new SumNodeVol();
-		/* Java 8 */         	
+		/* Java 8 */
 		mLog.getVol().stream()  // ВАЖНО! ЗДЕСЬ нельзя parallelStream - получается непредсказуемый результат!!!
-	                .filter(t-> isGetVol(t, chng)) // по перерасчету 
+	                .filter(t-> isGetVol(t, chng)) // по перерасчету
 	            	.filter(t-> Utl.between(t.getDt1(), dt1, dt2) && //здесь фильтр берет даты снаружи!
 	        				    Utl.between(t.getDt2(), dt1, dt2))
 					.forEach(t -> {
@@ -169,7 +167,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 					    			lnkVol.setLimit(t.getVol1()); //здесь set вместо add (будет одно значение) (как правило для ЛОДН счетчиков)
 					    		}
 							});
-		
+
 		return lnkVol;
 	}
 
@@ -207,19 +205,19 @@ public class MeterLogMngImpl implements MeterLogMng {
 				// сохранить последний счетчик
 				lastMl = mLog;
 			}
-		} 
+		}
 		// сохранить номер ввода последнего счетчика
 		if (lastMlwithVol != null) {
 			amntSum.setEntry(lastMlwithVol.getEntry());
 		} else if (lastMl != null) {
 			amntSum.setEntry(lastMl.getEntry());
 		}
-		
+
 		//вернуть объект, содержащий объемы
 		return amntSum;
-		
+
 	}
-	
+
 	/**
 	 * Вернуть логический счетчик определенного типа, связанный с заданным
 	 * Если связано несколько - будет возвращён первый
@@ -230,15 +228,15 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param serv - услуга (может быть не указана)
 	 * @return лог.счетчик
 	 */
-	//@Cacheable(cacheNames = "MeterLogMngImpl.getLinkedNode", key="{#rqn, #mLog.getId(), #tp, #genDt, #isCheckServ }") 
+	//@Cacheable(cacheNames = "MeterLogMngImpl.getLinkedNode", key="{#rqn, #mLog.getId(), #tp, #genDt, #isCheckServ }")
 	@Override
 	public MLogs getLinkedNode(int rqn, MLogs mLog, String tp, Date genDt, boolean isCheckServ) {
 		MLogs lnkMLog = null;
-		//найти прямую связь (направленную внутрь или наружу, не важно) указанного счетчика со счетчиком указанного типа 
+		//найти прямую связь (направленную внутрь или наружу, не важно) указанного счетчика со счетчиком указанного типа
     	//сперва направленные внутрь
     	for (MeterLogGraph g : mLog.getInside()) {
 			if (Utl.between(genDt, g.getDt1(), g.getDt2())) {
-	    		if (g.getSrc().getTp().getCd().equals(tp) 
+	    		if (g.getSrc().getTp().getCd().equals(tp)
 	    				&& !isCheckServ? true : g.getSrc().getServ().equals(mLog.getServ()) ) {
 	    			//найдено
 	    			lnkMLog = g.getSrc();
@@ -250,7 +248,7 @@ public class MeterLogMngImpl implements MeterLogMng {
     	if (lnkMLog == null) {
 	    	for (MeterLogGraph g : mLog.getOutside()) {
 				if (Utl.between(genDt, g.getDt1(), g.getDt2())) {
-		    		if (g.getDst().getTp().getCd().equals(tp) 
+		    		if (g.getDst().getTp().getCd().equals(tp)
 		    				&& !isCheckServ? true : g.getDst().getServ().equals(mLog.getServ())) {
 		    			//найдено
 		    			lnkMLog = g.getSrc();
@@ -268,19 +266,19 @@ public class MeterLogMngImpl implements MeterLogMng {
      * @param tp - тип расчета
 	 * @param chngId - Id перерасчета
 	 * @param chng - перерасчет
-     * @return 
-     * @throws CyclicMeter 
+     * @return
+     * @throws CyclicMeter
      */
-	//@Cacheable(cacheNames = "MeterLogMngImpl.delNodeVol", key="{#rqn, #chngId, #mLog.getId(), #tp, #dt1, #dt2 }") TODO 25.04.2018 временно отключил 
+	//@Cacheable(cacheNames = "MeterLogMngImpl.delNodeVol", key="{#rqn, #chngId, #mLog.getId(), #tp, #dt1, #dt2 }") TODO 25.04.2018 временно отключил
 	@Override
-	public void delNodeVol(int rqn, Integer chngId, Chng chng, MLogs mLog, int tp, Date dt1, Date dt2) 
+	public void delNodeVol(int rqn, Integer chngId, Chng chng, MLogs mLog, int tp, Date dt1, Date dt2)
 			throws CyclicMeter {
 		//удалять итератором, иначе java.util.ConcurrentModificationException
 		for (Iterator<Vol> iterator = mLog.getVol().iterator(); iterator.hasNext();) {
 		    Vol vol = iterator.next();
-		    if (isGetVol(vol, chng) && // по перерасчету 
-		    			(vol.getTp().getCd().equals("Фактический объем") || 
-	    				vol.getTp().getCd().equals("Площадь и проживающие") || 
+		    if (isGetVol(vol, chng) && // по перерасчету
+		    			(vol.getTp().getCd().equals("Фактический объем") ||
+	    				vol.getTp().getCd().equals("Площадь и проживающие") ||
 	    				vol.getTp().getCd().equals("Лимит ОДН"))) {
 			    if (dt1.getTime() <= vol.getDt1().getTime() && dt2.getTime() >= vol.getDt2().getTime()) {  //здесь диапазон дат "снаружи"
 					iterator.remove();
@@ -291,12 +289,12 @@ public class MeterLogMngImpl implements MeterLogMng {
 		//найти все направления, с необходимым типом, указывающие в точку из других узлов, удалить их объемы рекурсивно
 		for (MeterLogGraph g : mLog.getInside()) {
 			//log.info("mlog.id={}", g.getId());
-			if (dt1.getTime() >= g.getDt1().getTime() && dt1.getTime() <= g.getDt2().getTime() || 
-				dt2.getTime() >= g.getDt1().getTime() && dt2.getTime() <= g.getDt2().getTime()	
+			if (dt1.getTime() >= g.getDt1().getTime() && dt1.getTime() <= g.getDt2().getTime() ||
+				dt2.getTime() >= g.getDt1().getTime() && dt2.getTime() <= g.getDt2().getTime()
 					) { //здесь диапазон дат "внутри" (чтобы хотя бы одна из заданных дат была внутри диапазона
-				
+
 				try {
-					if (tp==0 && g.getTp().getCd().equals("Расчетная связь") 
+					if (tp==0 && g.getTp().getCd().equals("Расчетная связь")
 							 || tp==1 && g.getTp().getCd().equals("Связь по площади и кол-во прож.")
 							 || tp==2 && g.getTp().getCd().equals("Расчетная связь ОДН")
 							 || tp==3 && g.getTp().getCd().equals("Расчетная связь пропорц.площади")) {
@@ -311,9 +309,9 @@ public class MeterLogMngImpl implements MeterLogMng {
 		}
 
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Получить лиц.счет, содержащий указанный счетчик
 	 * @param mLog - Счетчик
@@ -329,12 +327,12 @@ public class MeterLogMngImpl implements MeterLogMng {
 
 	/**
 	 * Использовать ли в выборке данный объем
-	 * @param vol - объем 
+	 * @param vol - объем
 	 * @param chng - перерасчет
 	 */
 	private boolean isGetVol(Vol vol, Chng chng) {
 		if (chng==null && vol.getChng()==null || // брать обычный объем, без перерасчетов
-			chng!=null && vol.getChng()!=null && vol.getChng().getId().equals(chng.getId())  
+			chng!=null && vol.getChng()!=null && vol.getChng().getId().equals(chng.getId())
 					   && chng.getTp().getCd().equals("Корректировка показаний ИПУ") || // брать перерасчетный объем для данного типа перерасчета
 			chng!=null && vol.getChng()==null && !chng.getTp().getCd().equals("Корректировка показаний ИПУ")) {// брать обычный объем для других типов перерасчетов
 			return true;
@@ -343,7 +341,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	}
 
 	/**
-	 * Получить средний объем по физическому счетчику, за последние cntPeriod периодов 
+	 * Получить средний объем по физическому счетчику, за последние cntPeriod периодов
 	 * Включая объемы по автоначислению.
 	 * mLog - лог.счетчик
 	 * cntPeriod - кол-во периодов ДО даты последней передачи показаний
@@ -366,12 +364,12 @@ public class MeterLogMngImpl implements MeterLogMng {
 		BigDecimal volD = new BigDecimal(vl/cntPeriod);
 		volD = volD.setScale(6, RoundingMode.HALF_UP);
 		vol = volD.doubleValue();
-		
+
 		return vol;
 	}
 
 	/**
-	 * Средний объём и кол-во месяцев спустя последней передачи показаний 
+	 * Средний объём и кол-во месяцев спустя последней передачи показаний
 	 * @author lev
 	 *
 	 */
@@ -379,11 +377,11 @@ public class MeterLogMngImpl implements MeterLogMng {
 		// средний объём
 		public Double vol;
 		// кол-во месяцев спустя последней передачи показаний
-		public int cnt; 
+		public int cnt;
 	}
 
 	/**
-	 * Получить средний объем по физическому счетчику, за последние cntPeriod периодов и кол-во месяцев спустя последней передачи показаний 
+	 * Получить средний объем по физическому счетчику, за последние cntPeriod периодов и кол-во месяцев спустя последней передачи показаний
 	 * ДО даты последней передачи показаний, когда счетчик стал неисправен (недопуск и т.п.)
 	 * Включая объемы по автоначислению.
 	 * mLog - лог.счетчик
@@ -408,15 +406,15 @@ public class MeterLogMngImpl implements MeterLogMng {
 			BigDecimal avgVolD = new BigDecimal(vl/cntPeriod);
 			avgVolD = avgVolD.setScale(6, RoundingMode.HALF_UP);
 			avgVol.vol = avgVolD.doubleValue();
-			// получить кол-во месяцев спустя последней передачи показаний 
+			// получить кол-во месяцев спустя последней передачи показаний
 			avgVol.cnt = (int) Utl.getDiffMonths(vol.getDt1(), dt);
 		}
-		
+
 		return avgVol;
 	}
 
 	/* Получить коэффициент к объему
-	 * Параметры образуют коэффициент, который будет умножен на базовый объем физ. счетчика 
+	 * Параметры образуют коэффициент, который будет умножен на базовый объем физ. счетчика
 	 * @param tp - статус счетчика
 	 * @param user - пользователь
 	 */
@@ -435,7 +433,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 			return 1D;
 		}
 		return 0D;
-		
+
 	}
 
 	/* Получить все счетчики для автоначисления, отсортированные по лицевому счету
@@ -450,12 +448,12 @@ public class MeterLogMngImpl implements MeterLogMng {
 		List<MeterDTO> lst = meterDao.getAllBrokenMeterByHouseServ(house, serv, dt2);
 		// добавить те, по которым не было передано показаний
 		lst.addAll(meterDao.getAllWoVolMeterByHouseServ(house, serv, dt1, dt2));
-		
+
 		Comparator<MeterDTO> byKartLsk = (e1, e2) -> e1
 				.getMeter().getMeterLog().getKart().compareTo(e2.getMeter().getMeterLog().getKart());
 		// отсортировать по лиц.счету
 		return lst.stream().sorted(byKartLsk).collect(Collectors.toList());
 	}
-	
-	
+
+
 }

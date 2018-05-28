@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ric.bill.Utl;
 import com.ric.bill.dao.TaskDAO;
 import com.ric.bill.mm.TaskMng;
 import com.ric.bill.model.exs.Eolink;
@@ -30,16 +29,18 @@ public class TaskMngImpl implements TaskMng {
     /**
      * Установить статус задания
      */
-    @Transactional
+    @Override
+	@Transactional
     public void setState(Task task, String state) {
     	Task foundTask = em.find(Task.class, task.getId());
 		foundTask.setState(state);
 	}
-    
+
     /**
      * Установить результат задания
      */
-    @Transactional
+    @Override
+	@Transactional
     public void setResult(Task task, String result) {
     	Task foundTask = em.find(Task.class, task.getId());
 		foundTask.setResult(result);
@@ -48,7 +49,8 @@ public class TaskMngImpl implements TaskMng {
     /**
      * Очистить результат в т.ч. дочерних заданий
      */
-    @Transactional
+    @Override
+	@Transactional
     public void clearAllResult(Task task) {
     	Task foundTask = em.find(Task.class, task.getId());
     	setResult(foundTask, null);
@@ -56,7 +58,7 @@ public class TaskMngImpl implements TaskMng {
     		setResult(t, null);
     	});
 	}
-	
+
 	/**
 	 * Установить идентификаторы объектов (если не заполненны)
 	 * @param eolink - Объект
@@ -64,6 +66,7 @@ public class TaskMngImpl implements TaskMng {
 	 * @param un - уникальный номер, полученный от ГИС
 	 * @param status - статус
 	 */
+	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public void setEolinkIdf(Eolink eo, String guid, String un, Integer status) {
 		if (eo.getGuid() == null) {
@@ -77,16 +80,17 @@ public class TaskMngImpl implements TaskMng {
 		}
 
 	}
-	
+
 	/**
 	 * Вернуть задание по ID родительского задания и транспортному GUID
 	 * @param - task - родительское задание
 	 * @param - tguid - транспортный GUID
 	 */
+	@Override
 	public Task getByTguid(Task task, String tguid) {
-		
+
 		return taskDao.getByTguid(task, tguid);
-		
+
 	}
-    
+
 }

@@ -9,17 +9,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.ric.bill.Storable;
-import com.ric.bill.Utl;
 import com.ric.bill.dao.ParDAO;
-import com.ric.bill.excp.EmptyServ;
-import com.ric.bill.excp.EmptyStorable;
-import com.ric.bill.excp.WrongGetMethod;
-import com.ric.bill.excp.WrongSetMethod;
 import com.ric.bill.mm.ParMng;
 import com.ric.bill.model.bs.Dw;
 import com.ric.bill.model.bs.Par;
 import com.ric.bill.model.fn.Chng;
 import com.ric.bill.model.fn.ChngVal;
+import com.ric.cmn.Utl;
+import com.ric.cmn.excp.EmptyServ;
+import com.ric.cmn.excp.EmptyStorable;
+import com.ric.cmn.excp.WrongGetMethod;
+import com.ric.cmn.excp.WrongSetMethod;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,8 +33,9 @@ public class ParMngImpl implements ParMng {
 
 	@Autowired
 	private ParDAO pDao;
-	
+
 	//получить параметр по его CD
+	@Override
 	public Par getByCD(int rqn, String cd) {
 		return pDao.getByCd(rqn, cd);
 	}
@@ -42,6 +43,7 @@ public class ParMngImpl implements ParMng {
 	/**
 	 * Узнать существует ли параметр по его CD
 	 */
+	@Override
 	@Cacheable(cacheNames="ParMngImpl.isExByCd", key="{#rqn, #cd }")
 	public boolean isExByCd(int rqn, String cd) {
 		Par p = getByCD(rqn, cd);
@@ -53,6 +55,7 @@ public class ParMngImpl implements ParMng {
 	}
 
 
+	@Override
 	@Cacheable(cacheNames="ParMngImpl.getBool1", key="{#rqn, #st.getKo().getId(), #cd, #genDt }")
 	public Boolean getBool(int rqn, Storable st, String cd, Date genDt) throws EmptyStorable {
 		if (st == null) {
@@ -92,6 +95,7 @@ public class ParMngImpl implements ParMng {
 		return null;
 	}
 
+	@Override
 	@Cacheable(cacheNames="ParMngImpl.getBool2", key="{#rqn, #st.getKo().getId(), #cd}")
 	public Boolean getBool(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
@@ -128,11 +132,11 @@ public class ParMngImpl implements ParMng {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * получить значение параметра типа Double объекта по CD свойства
 	 * внимание! дату важно передавать, а не получать из Calc.getGenDt(), так как она влияет на кэш!
-	 * 
+	 *
 	 * @param rqn -  номер запроса начисления
 	 * @param st - объект с интерфейсом Storable
 	 * @param cd - CD параметра
@@ -141,13 +145,14 @@ public class ParMngImpl implements ParMng {
 	 * @return - значение параметра
 	 * @throws EmptyStorable
 	 */
+	@Override
 	@Cacheable(cacheNames="ParMngImpl.getDbl1", key="{#rqn, #st.getKo().getId(), #cd, #genDt, #chng }")
 	public Double getDbl(int rqn, Storable st, String cd, Date genDt, Chng chng) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
 		}
 		Par par = getByCD(rqn, cd);
-		
+
 		if (chng != null && chng.getTp().getCd().equals("Изменение параметра объекта")) {
 			// перерасчет
 			ChngVal chngVal = getChngPar(st, chng, par, genDt);
@@ -156,7 +161,7 @@ public class ParMngImpl implements ParMng {
 				return chngVal.getVal();
 			}
 		}
-		
+
 		// начисление
 		try {
 			for (Dw d: st.getDw()) {
@@ -192,8 +197,9 @@ public class ParMngImpl implements ParMng {
 
 	/**
 	 * получить значение параметра типа Double объекта по CD свойства, без указания даты
-	 * @throws EmptyServ 
+	 * @throws EmptyServ
 	 */
+	@Override
 	@Cacheable(cacheNames="ParMngImpl.getDbl2", key="{#rqn, #st.getKo().getId(), #cd }")
 	public Double getDbl(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
@@ -227,6 +233,7 @@ public class ParMngImpl implements ParMng {
 	/**
 	 * получить значение параметра типа Double объекта по CD свойства, без указания даты
 	 */
+	@Override
 	@Cacheable(cacheNames="ParMngImpl.getDate", key="{#rqn, #st.getKo().getId(), #cd }")
 	public /*synchronized*/ Date getDate(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
@@ -264,12 +271,13 @@ public class ParMngImpl implements ParMng {
 	 * @param st - объект
 	 * @param cd - код параметра
 	 * @param dt - значение параметра
-	 * @throws EmptyStorable 
-	 * @throws WrongSetMethod 
+	 * @throws EmptyStorable
+	 * @throws WrongSetMethod
 	 */
+	@Override
 	public void setDate(int rqn, Storable st, String cd, Date dt) throws EmptyStorable, WrongSetMethod {
 		Boolean isSet=false;
-		
+
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
 		}
@@ -289,7 +297,7 @@ public class ParMngImpl implements ParMng {
 				}
 			}
 		}
-		
+
 		if (!isSet) {
 			throw new WrongSetMethod("Параметр "+cd+" не был установлен");
 		}
@@ -297,8 +305,9 @@ public class ParMngImpl implements ParMng {
 
 	/**
 	 * получить значение параметра типа String объекта по CD свойства
-	 * @throws EmptyStorable 
+	 * @throws EmptyStorable
 	 */
+	@Override
 	@Cacheable(cacheNames="ParMngImpl.getStr1", key="{ #rqn, #st.getKo().getId(), #cd, #genDt }")
 	public /*synchronized*/ String getStr(int rqn, Storable st, String cd, Date genDt) throws EmptyStorable {
 		if (st == null) {
@@ -332,11 +341,12 @@ public class ParMngImpl implements ParMng {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * получить значение параметра типа String объекта по CD свойства, без указания даты
-	 * @throws EmptyStorable 
+	 * @throws EmptyStorable
 	 */
+	@Override
 	@Cacheable(cacheNames="ParMngImpl.getStr2", key="{ #rqn, #st.getKo().getId(), #cd }")
 	public /*synchronized*/ String getStr(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
@@ -367,17 +377,18 @@ public class ParMngImpl implements ParMng {
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Получить параметр из перерасчета (не глядя на lsk!!!) 
+	 * Получить параметр из перерасчета (не глядя на lsk!!!)
 	 * @param st - объект
 	 * @param chng - перерасчет
 	 * @param par - параметр
 	 * @param genDt - дата
 	 * @return
 	 */
+	@Override
 	public ChngVal getChngPar(Storable st, Chng chng, Par par, Date genDt) {
-		
+
 			Optional<ChngVal> chngVal;
 			chngVal = chng.getChngLsk().stream()
 					.flatMap(t -> t.getChngVal().stream() // преобразовать в другую коллекцию
@@ -391,5 +402,5 @@ public class ParMngImpl implements ParMng {
 				return null;
 			}
 	}
-	
+
 }

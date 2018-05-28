@@ -1,5 +1,6 @@
 package com.ric.bill;
 
+import com.ric.cmn.Utl;
 
 /**
  * Объем по связанному узлу за период
@@ -11,16 +12,16 @@ public class SumNodeVol implements java.io.Serializable {
 
 	//значения за расчетный период:
 	// Объем
-	private Double vol; 
+	private Double vol;
 	// Площадь
-	private Double area; 
+	private Double area;
 	// Проживающие
-	private Double pers; 
+	private Double pers;
 	// Лимит ОДН (где есть)
-	private Double limit; 
+	private Double limit;
 	// Номер ввода
-	private Integer entry; 
-	
+	private Integer entry;
+
 	public SumNodeVol(){
 		setVol(new Double(0));
 		setArea(new Double(0));
@@ -47,7 +48,7 @@ public class SumNodeVol implements java.io.Serializable {
 
 	//добавить объем
 	public void addVol(Double vol) {
-		this.vol=this.vol+Utl.nvl(vol, 0d); 
+		this.vol=this.vol+Utl.nvl(vol, 0d);
 	}
 
 	public Double getArea() {
@@ -60,7 +61,7 @@ public class SumNodeVol implements java.io.Serializable {
 
 	//добавить площадь
 	public void addArea(Double area) {
-		this.area=this.area+Utl.nvl(area, 0d); 
+		this.area=this.area+Utl.nvl(area, 0d);
 	}
 
 	public Double getPers() {
@@ -70,10 +71,10 @@ public class SumNodeVol implements java.io.Serializable {
 	public void setPers(Double pers) {
 		this.pers = pers;
 	}
-	
+
 	//добавить кол-во проживающих
 	public void addPers(Double pers) {
-		this.pers=this.pers+Utl.nvl(pers, 0d); 
+		this.pers=this.pers+Utl.nvl(pers, 0d);
 	}
 
 	public Double getLimit() {

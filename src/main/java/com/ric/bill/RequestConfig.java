@@ -3,11 +3,11 @@ package com.ric.bill;
 import java.util.Date;
 
 import com.ric.bill.model.fn.Chng;
+import com.ric.cmn.Utl;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import javax.annotation.Generated;
 
 /**
  * Конфиг запроса
@@ -23,7 +23,7 @@ public class RequestConfig {
 	private Boolean isDist;
 	// перерасчет
 	private Chng chng;
-	
+
 	// даты текущего периода (могут быть зависимы от перерасчета)
 	Date curDt1;
 	Date curDt2;
@@ -31,13 +31,13 @@ public class RequestConfig {
 	double partDays;
 	// кол-во дней в периоде
 	double cntCurDays;
-	// Текущий период (для партицирования и проч.) 
+	// Текущий период (для партицирования и проч.)
 	String period;
-	// Период +1 месяц 
+	// Период +1 месяц
 	String periodNext;
-	// Период -1 месяц 
+	// Период -1 месяц
 	String periodBack;
-	
+
 	// номер запроса
 	private int rqn;
 
@@ -56,8 +56,8 @@ public class RequestConfig {
 		// установить текущий номер запроса
 		setRqn(rqn);
 		// основные настройки
-		
-		// установить тип операции 
+
+		// установить тип операции
     	if (tp.equals("0")) {
 			// начисление
     		setOperTp(0); //тип-начисление
@@ -81,7 +81,7 @@ public class RequestConfig {
 		} else {
 			// начисление
 		}
-		
+
     	// прочие настройки
 		if (operTp==0) {
 			//начисление
@@ -101,23 +101,23 @@ public class RequestConfig {
 	    	setCurDt1(chng.getDt1());
 	    	setCurDt2(chng.getDt2());
 		}
-		
+
 		//задать текущий период в виде ГГГГММ
 		setPeriod(Utl.getPeriodFromDate(getCurDt1()));
 
 		//кол-во дней в месяце
 		setCntCurDays(Utl.getCntDaysByDate(getCurDt1()));
-		
+
 		//доля одного дня в периоде
 		setPartDays(1/getCntCurDays());
-		
+
     	// период на 1 мес.вперед
 		setPeriodNext(Utl.addMonths(getPeriod(), 1));
     	// период на 1 мес.назад
 		setPeriodBack(Utl.addMonths(getPeriod(), -1));
-		
+
 		log.info("Установлены периоды:");
 		log.info("Текущий:{}, предыдущий:{}, будущий:{}", getPeriod(), getPeriodBack(), getPeriodNext());
 	}
-	
+
 }

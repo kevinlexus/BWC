@@ -20,10 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Repository;
 
-import com.ric.bill.ResultSet;
 import com.ric.bill.dao.HouseDAO;
 import com.ric.bill.model.ar.House;
 import com.ric.bill.model.bs.Org;
+import com.ric.cmn.ResultSet;
 
 
 

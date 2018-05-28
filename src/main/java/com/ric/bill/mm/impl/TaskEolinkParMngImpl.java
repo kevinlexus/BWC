@@ -5,25 +5,21 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.ric.bill.Config;
-import com.ric.bill.Utl;
 import com.ric.bill.dao.EolinkParDAO;
 import com.ric.bill.dao.TaskParDAO;
-import com.ric.bill.excp.WrongGetMethod;
 import com.ric.bill.mm.ParMng;
 import com.ric.bill.mm.TaskEolinkParMng;
 import com.ric.bill.model.bs.Par;
 import com.ric.bill.model.exs.EolinkPar;
 import com.ric.bill.model.exs.Task;
 import com.ric.bill.model.exs.TaskPar;
+import com.ric.cmn.excp.WrongGetMethod;
+
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -52,8 +48,9 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 	 * получить значение параметра типа Double задания по CD свойства
 	 * @param task - задание
 	 * @param parCd - CD параметра
-	 * @throws WrongGetMethod 
+	 * @throws WrongGetMethod
 	 */
+	@Override
 	public Double getDbl(Task task, String parCd) throws WrongGetMethod {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
@@ -61,7 +58,7 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 		} else if (par.getTp().equals("NM")) {
 			TaskPar tpar = taskParDao.getTaskPar(task, parCd);
 			if (tpar==null) {
-				// не найдено в taskParDao, искать в eolinkParDao 
+				// не найдено в taskParDao, искать в eolinkParDao
 				EolinkPar epar = eolinkParDao.getEolinkPar(task.getEolink(), parCd);
 				if (epar!= null) {
 					return epar.getN1();
@@ -70,7 +67,7 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 				// найдено в taskParDao
 				return tpar.getN1();
 			}
-			
+
 		} else {
 			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
 		}
@@ -82,8 +79,9 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 	 * получить значение параметра типа String задания по CD свойства
 	 * @param task - задание
 	 * @param parCd - CD параметра
-	 * @throws WrongGetMethod 
+	 * @throws WrongGetMethod
 	 */
+	@Override
 	public String getStr(Task task, String parCd) throws WrongGetMethod {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
@@ -91,7 +89,7 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 		} else if (par.getTp().equals("ST")) {
 			TaskPar tpar = taskParDao.getTaskPar(task, parCd);
 			if (tpar==null) {
-				// не найдено в taskParDao, искать в eolinkParDao 
+				// не найдено в taskParDao, искать в eolinkParDao
 				EolinkPar epar = eolinkParDao.getEolinkPar(task.getEolink(), parCd);
 				if (epar!= null) {
 					return epar.getS1();
@@ -100,7 +98,7 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 				// найдено в taskParDao
 				return tpar.getS1();
 			}
-			
+
 		} else {
 			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
 		}
@@ -111,8 +109,9 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 	 * получить значение параметра типа Date задания по CD свойства
 	 * @param task - задание
 	 * @param parCd - CD параметра
-	 * @throws WrongGetMethod 
+	 * @throws WrongGetMethod
 	 */
+	@Override
 	public Date getDate(Task task, String parCd) throws WrongGetMethod {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
@@ -120,7 +119,7 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 		} else if (par.getTp().equals("DT")) {
 			TaskPar tpar = taskParDao.getTaskPar(task, parCd);
 			if (tpar==null) {
-				// не найдено в taskParDao, искать в eolinkParDao 
+				// не найдено в taskParDao, искать в eolinkParDao
 				EolinkPar epar = eolinkParDao.getEolinkPar(task.getEolink(), parCd);
 				if (epar!= null) {
 					return epar.getD1();
@@ -129,7 +128,7 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 				// найдено в taskParDao
 				return tpar.getD1();
 			}
-			
+
 		} else {
 			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
 		}
@@ -140,8 +139,9 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 	 * получить значение параметра типа Boolean задания по CD свойства
 	 * @param task - задание
 	 * @param parCd - CD параметра
-	 * @throws WrongGetMethod 
+	 * @throws WrongGetMethod
 	 */
+	@Override
 	public Boolean getBool(Task task, String parCd) throws WrongGetMethod {
 		Par par = parMng.getByCD(-1, parCd);
 		if (par == null){
@@ -149,7 +149,7 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 		} else if (par.getTp().equals("BL")) {
 			TaskPar tpar = taskParDao.getTaskPar(task, parCd);
 			if (tpar==null) {
-				// не найдено в taskParDao, искать в eolinkParDao 
+				// не найдено в taskParDao, искать в eolinkParDao
 				EolinkPar epar = eolinkParDao.getEolinkPar(task.getEolink(), parCd);
 				if (epar!= null) {
 					if (epar.getN1() == 1D) {
@@ -166,18 +166,19 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 					return false;
 				}
 			}
-			
+
 		} else {
 			throw new WrongGetMethod("Параметр "+parCd+" имеет другой тип");
 		}
 		return null;
 	}
 
-	
+
 	/**
 	 * Переписать значения параметров из Task в Eolink, по завершению отправки в ГИС
 	 */
 	//@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
+	@Override
 	public void acceptPar(Task task) {
 		log.trace("Перемещение параметров по task.id={}, task.getTaskPar().size()={}", task.getId(), task.getTaskPar().size());
 		//task.getTaskPar().stream().forEach(d-> {
@@ -188,7 +189,7 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 			/*if (ep!=null) {
 				log.info("id={} tp={}", t.getId(), ep.getPar().getTp());
 			}*/
-			
+
 			if (ep==null) {
 				//Параметра нет, создать
 				ep = new EolinkPar(task.getEolink(), t.getPar(), t.getN1(), t.getS1(), t.getD1());
@@ -198,40 +199,40 @@ public class TaskEolinkParMngImpl implements TaskEolinkParMng {
 				if (ep.getPar().getTp().equals("NM")) {
 					Double eVal = ep.getN1();
 					Double tVal = t.getN1();
-					
-					if (eVal!=null && tVal!=null && !eVal.equals(tVal) || 
+
+					if (eVal!=null && tVal!=null && !eVal.equals(tVal) ||
 							eVal!=null && tVal==null || eVal==null && tVal!=null) {
 						ep.setN1(t.getN1());
 					}
 				} else if (ep.getPar().getTp().equals("BL")) {
 					Double eVal = ep.getN1();
 					Double tVal = t.getN1();
-					
-					if (eVal!=null && tVal!=null && !eVal.equals(tVal) || 
+
+					if (eVal!=null && tVal!=null && !eVal.equals(tVal) ||
 							eVal!=null && tVal==null || eVal==null && tVal!=null) {
 						ep.setN1(t.getN1());
 					}
 				} else if (ep.getPar().getTp().equals("ST")) {
 					String eVal = ep.getS1();
 					String tVal = t.getS1();
-					
-					if (eVal!=null && tVal!=null && !eVal.equals(tVal) || 
+
+					if (eVal!=null && tVal!=null && !eVal.equals(tVal) ||
 							eVal!=null && tVal==null || eVal==null && tVal!=null) {
 						ep.setS1(t.getS1());
 					}
 				} else if (ep.getPar().getTp().equals("DT")) {
 					Date eVal = ep.getD1();
 					Date tVal = t.getD1();
-					
-					if (eVal!=null && tVal!=null && !eVal.equals(tVal) || 
+
+					if (eVal!=null && tVal!=null && !eVal.equals(tVal) ||
 							eVal!=null && tVal==null || eVal==null && tVal!=null) {
 						ep.setD1(t.getD1());
 					}
 				}
 			}
-			
+
 		});
-		
+
 	}
 
 }

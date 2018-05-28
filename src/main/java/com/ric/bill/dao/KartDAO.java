@@ -3,9 +3,9 @@ package com.ric.bill.dao;
 import java.util.Date;
 import java.util.List;
 
-import com.ric.bill.ResultSet;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.ps.Pers;
+import com.ric.cmn.ResultSet;
 
 
 public interface KartDAO {

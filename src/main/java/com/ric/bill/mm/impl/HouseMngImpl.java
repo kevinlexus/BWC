@@ -7,8 +7,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-//import com.dic.bill.dao.KartDAO;
-import com.ric.bill.Utl;
 import com.ric.bill.dao.HouseDAO;
 import com.ric.bill.dao.KwDAO;
 import com.ric.bill.mm.HouseMng;
@@ -16,8 +14,8 @@ import com.ric.bill.model.ar.House;
 import com.ric.bill.model.ar.HouseSite;
 import com.ric.bill.model.ar.Kw;
 import com.ric.bill.model.bs.Org;
-import com.ric.bill.model.exs.Eolink;
 import com.ric.bill.model.oralv.Ko;
+import com.ric.cmn.Utl;
 
 /**
  * Сервис обслуживания Дома
@@ -72,7 +70,7 @@ public class HouseMngImpl implements HouseMng {
 	@Override
 	public Ko getKoByKwNum(Integer houseKlsk, String num) {
 		Kw kw = kwDao.getByNum(houseKlsk, num);
-		
+
 		if (kw != null) {
 			return kw.getKo();
 		} else {

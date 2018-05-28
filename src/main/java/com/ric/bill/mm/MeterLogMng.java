@@ -5,7 +5,6 @@ import java.util.List;
 import com.ric.bill.MeterContains;
 import com.ric.bill.SumNodeVol;
 import com.ric.bill.dto.MeterDTO;
-import com.ric.bill.excp.CyclicMeter;
 import com.ric.bill.mm.impl.MeterLogMngImpl.AvgVol;
 import com.ric.bill.model.ar.House;
 import com.ric.bill.model.ar.Kart;
@@ -15,6 +14,7 @@ import com.ric.bill.model.mt.Meter;
 import com.ric.bill.model.mt.Vol;
 import com.ric.bill.model.sec.User;
 import com.ric.bill.model.tr.Serv;
+import com.ric.cmn.excp.CyclicMeter;
 
 public interface MeterLogMng {
 

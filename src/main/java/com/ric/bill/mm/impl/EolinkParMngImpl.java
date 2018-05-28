@@ -14,12 +14,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ric.bill.dao.EolinkParDAO;
-import com.ric.bill.excp.WrongGetMethod;
 import com.ric.bill.mm.EolinkParMng;
 import com.ric.bill.mm.ParMng;
 import com.ric.bill.model.bs.Par;
 import com.ric.bill.model.exs.Eolink;
 import com.ric.bill.model.exs.EolinkPar;
+import com.ric.cmn.excp.WrongGetMethod;
 
 
 @Service

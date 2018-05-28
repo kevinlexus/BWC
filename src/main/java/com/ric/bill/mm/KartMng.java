@@ -4,10 +4,8 @@ import java.util.Date;
 import java.util.List;
 import com.ric.bill.Calc;
 import com.ric.bill.CntPers;
-import com.ric.bill.ResultSet;
 import com.ric.bill.Standart;
 import com.ric.bill.TarifContains;
-import com.ric.bill.excp.EmptyStorable;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.fn.PersPrivilege;
@@ -15,6 +13,8 @@ import com.ric.bill.model.fn.Privilege;
 import com.ric.bill.model.fn.PrivilegeServ;
 import com.ric.bill.model.ps.Pers;
 import com.ric.bill.model.tr.Serv;
+import com.ric.cmn.ResultSet;
+import com.ric.cmn.excp.EmptyStorable;
 
 public interface KartMng  {
 

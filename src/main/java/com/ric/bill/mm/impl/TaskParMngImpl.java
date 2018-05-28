@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ric.bill.dao.TaskParDAO;
-import com.ric.bill.excp.WrongGetMethod;
 import com.ric.bill.mm.ParMng;
 import com.ric.bill.mm.TaskParMng;
 import com.ric.bill.model.bs.Par;
@@ -22,6 +21,7 @@ import com.ric.bill.model.exs.Eolink;
 import com.ric.bill.model.exs.EolinkPar;
 import com.ric.bill.model.exs.Task;
 import com.ric.bill.model.exs.TaskPar;
+import com.ric.cmn.excp.WrongGetMethod;
 
 
 @Service

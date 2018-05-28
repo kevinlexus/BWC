@@ -2,10 +2,10 @@ package com.ric.bill.mm;
 
 import java.util.List;
 
-import com.ric.bill.excp.NotFoundUpperLevel;
-import com.ric.bill.excp.TooManyRecursiveCalls;
 import com.ric.bill.model.tr.Serv;
 import com.ric.bill.model.tr.ServTree;
+import com.ric.cmn.excp.NotFoundUpperLevel;
+import com.ric.cmn.excp.TooManyRecursiveCalls;
 
 public interface ServMng {
 	
