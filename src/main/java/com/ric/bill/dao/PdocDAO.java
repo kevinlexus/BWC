@@ -29,6 +29,7 @@ public interface PdocDAO extends JpaRepository<Pdoc, Integer> {
 			+ "join k.parent e " // подъезд
 			+ "join e.parent h on h.id=:eolinkId "  // дом
 			+ "where (p.status=0 and p.v=1 or p.status=1 and p.v=0) " // либо добавленные, но не загруженные, либо отмененные и не отмененные в ГИС
+			+ "and nvl(p.err,0) = 0 " // без ошибок загрузки
 			+ "order by p.cd")
 	  List<Pdoc> getForLoadByHouseWithEntry(@Param("eolinkId") Integer eolinkId);
 
@@ -41,6 +42,7 @@ public interface PdocDAO extends JpaRepository<Pdoc, Integer> {
 	@Query("select p from Pdoc p join p.eolink s " // лиц.счет
 			+ "join s.parent h on h.id=:eolinkId "  // дом
 			+ "where (p.status=0 and p.v=1 or p.status=1 and p.v=0) " // либо добавленные, но не загруженные, либо отмененные и не отмененные в ГИС
+			+ "and nvl(p.err,0) = 0 " // без ошибок загрузки
 			+ "order by p.cd")
 	  List<Pdoc> getForLoadByHouseWOEntry(@Param("eolinkId") Integer eolinkId);
 

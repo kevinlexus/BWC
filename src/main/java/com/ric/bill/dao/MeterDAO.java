@@ -18,4 +18,5 @@ public interface MeterDAO {
 	public Double getVolPeriod(Meter meter, Date dt1, Date dt2);
 	public List<Vol> getVolPeriodByHouse(House house, Serv serv, User user, Date dt1, Date dt2);
 	public void delHouseMeterVol(House house, Serv serv, User user, Date dt1, Date dt2);
+	//public List<User> testTransactDao();
 }

@@ -28,15 +28,20 @@ public interface AflowDAO extends JpaRepository<Aflow, AflowId> {
 	 * @param mg - период
 	 * @return
 	 */
-	@Query(value = "select t2.id as \"ulistId\", sum(t2.summa) as \"summa\", sum(t2.vol) as \"vol\", sum(price) as \"price\" from ( "
-			+ "select u.id, s.grp, sum(t.summa) as summa, sum(t.n1) as vol, min(t.n2) as price "
+	@Query(value = "select t2.id as \"ulistId\", sum(t2.summa) as \"summa\", sum(t2.vol) as \"vol\", "
+			+ "sum(price) as \"price\", sum(coeff) as \"coeff\", min(sqr) as \"sqr\" from ( "
+			+ "select u.id, s.grp, nvl(sum(t.summa),0) as summa, nvl(sum(t.n1),0) as vol, "
+			+ "nvl(min(t.n2),0) as price, nvl(min(t.n3),0) as coeff, nvl(min(t.n5),0) as sqr "
 		+ "from scott.a_flow@hp t "
 		+ "join exs.servgis s on t.fk_usl=s.fk_usl "
-		+ "join exs.u_list u on s.fk_list=u.id " 
+		+ "join exs.u_list u on s.fk_list=u.id "
 		+ "join exs.u_listtp tp on u.fk_listtp=tp.id "
 		+ "where t.lsk = ?1 and t.mg = ?2 "
 		+ "and NVL(tp.fk_eolink, ?3) = ?3 "
-		+ "and t.fk_type = 0 "
+		+ "and t.fk_type = 0 /*and t.fk_usl between '003' and '008'*/ "
+		+ "and t.fk_usl in  ('003', '004', '005', '006', '025', '031', "
+		+ "'033', '040', '042', '056', '058', '059')"
+		+ " and t.fk_usl not in (/*'013',*/'073') "
 		+ "group by u.id, s.grp) t2 "
 		+ "group by t2.id", nativeQuery = true)
 	List<SumChrgRec> getChrgGrp(String lsk, String period, Integer orgId);
@@ -71,7 +76,7 @@ public interface AflowDAO extends JpaRepository<Aflow, AflowId> {
 	@Query(value = "select sum(t.summap) from Aflow t "
 			+ "where t.type = 61 and t.kart.lsk = ?1 and t.mg = TO_CHAR(?2,'YYYYMM') and t.dt1=?2")
 	BigDecimal getPenAmnt(String lsk, Date dt);
-	
+
 	/**
 	 * Получить совокупную пеню по указанным, дополнительным услугам
 	 * @param lsk - лиц.счет

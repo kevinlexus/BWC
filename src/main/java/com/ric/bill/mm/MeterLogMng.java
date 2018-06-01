@@ -3,10 +3,12 @@ package com.ric.bill.mm;
 import java.util.Date;
 import java.util.List;
 
+import com.ric.bill.Calc;
 import com.ric.bill.MeterContains;
 import com.ric.bill.SumNodeVol;
 import com.ric.bill.dto.MeterDTO;
 import com.ric.bill.excp.CyclicMeter;
+import com.ric.bill.excp.EmptyStorable;
 import com.ric.bill.mm.impl.MeterLogMngImpl.AvgVol;
 import com.ric.bill.model.ar.House;
 import com.ric.bill.model.ar.Kart;
@@ -29,8 +31,8 @@ public interface MeterLogMng {
 	public List<MeterDTO> getAllMeterAutoVol(House house, Serv serv, Date dt1, Date dt2);
 	public Double getAvgVol(Meter meter, int cntPeriod, Date dt);
 	public AvgVol getAvgVolBeforeLastSend(Meter meter, int cntPeriod, Date dt);
-	public Double getVolCoeff(Double tp, User user);
-	public SumNodeVol getSumOutsideCntPersSqr(int rqn, Integer chngId, Chng chng, MLogs mlog, Date genDt);
+	public Double getVolCoeff(Integer tp, User user);
+	public SumNodeVol getSumOutsideCntPersSqr(Calc calc, Serv servChrg, MLogs mlog, Date genDt) throws EmptyStorable;
 	public void saveMeterVol(Meter meter, Double vol1, Chng chng, User user, Date dt1, Date dt2);
 	//public Integer getMonthsVol(Meter meter, Vol vol, Date dt);
 	//public void testTransact();

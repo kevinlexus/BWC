@@ -19,18 +19,18 @@ import com.ric.bill.model.fn.Chrg;
 public interface ChrgDAO extends JpaRepository<Chrg, Integer> {
 
 	/**
-	 * Получить сгруппированные записи начислений (полного начисления, без учета льгот), 
+	 * Получить сгруппированные записи начислений (полного начисления, без учета льгот),
 	 * связанных с услугой из ГИС ЖКХ по лиц.счету и периоду
 	 * @param lsk - лицевой счет
 	 * @param mg - период
 	 * @return
 	 */
 	@Query(value = "select t2.id as \"ulistId\", sum(t2.summa) as \"summa\", sum(t2.vol) as \"vol\", sum(price) as \"price\" from ( "
-			+ "select u.id, s.grp, sum(t.sum_full) as summa, sum(t.vol) as vol, min(t.price) as price "
+			+ "select u.id, s.grp, nvl(sum(t.sum_full),0) as summa, nvl(sum(t.vol),0) as vol, nvl(min(t.price),0) as price "
 		+ "from fn.chrg t "
 		+ "join ar.kart k on k.lsk=t.lsk and k.fk_klsk_obj = ?1 "
 		+ "join exs.servgis s on t.fk_serv=s.fk_serv "
-		+ "join exs.u_list u on s.fk_list=u.id " 
+		+ "join exs.u_list u on s.fk_list=u.id "
 		+ "join exs.u_listtp tp on u.fk_listtp=tp.id "
 		+ "where t.lsk = ?1 and t.period = ?2 "
 		+ "and NVL(tp.fk_eolink, ?3) = ?3 "
@@ -39,5 +39,5 @@ public interface ChrgDAO extends JpaRepository<Chrg, Integer> {
 		+ "group by t2.id", nativeQuery = true)
 	List<SumChrgRec> getChrgGrp(Integer klskId, Integer period, Integer orgId);
 
-	
+
 }

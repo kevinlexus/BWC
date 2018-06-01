@@ -156,7 +156,7 @@ public class Config {
 	private void setUp() throws EmptyStorable {
 		log.info("");
 		log.info("-----------------------------------------------------------------");
-		log.info("Версия модуля начисления - {}", "1.0.16");
+		log.info("Версия модуля начисления - {}", "1.0.17");
 
 		// Добавить path в Classpath, относительно нахождения Jar
 		try {

@@ -29,6 +29,7 @@ public interface NotifDAO extends JpaRepository<Notif, Integer> {
 			+ "join k.parent e " // подъезд
 			+ "join e.parent h on h.id=:eolinkId "  // дом
 			+ "where (n.status=0 and n.v=1 or n.status=1 and n.v=0) " // либо добавленные, но не загруженные, либо отмененные и не отмененные в ГИС
+			+ "and p.status=1 and nvl(n.err,0) = 0 " // по загруженному ПД и без ошибок при загрузке Извещения
 			+ "order by p.cd")
 	  List<Notif> getForLoadByHouseWithEntry(@Param("eolinkId") Integer eolinkId);
 
@@ -41,6 +42,7 @@ public interface NotifDAO extends JpaRepository<Notif, Integer> {
 	@Query("select n from Pdoc p join p.notif n join p.eolink s " // лиц.счет
 			+ "join s.parent h on h.id=:eolinkId "  // дом
 			+ "where (n.status=0 and n.v=1 or n.status=1 and n.v=0) " // либо добавленные, но не загруженные, либо отмененные и не отмененные в ГИС
+			+ "and p.status=1 and nvl(n.err,0) = 0 " // по загруженному ПД и без ошибок при загрузке Извещения
 			+ "order by p.cd")
 	  List<Notif> getForLoadByHouseWOEntry(@Param("eolinkId") Integer eolinkId);
 

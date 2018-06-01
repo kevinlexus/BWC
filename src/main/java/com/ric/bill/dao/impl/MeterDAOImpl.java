@@ -9,10 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.ric.cmn.Utl;
 import com.ric.bill.dao.MeterDAO;
 import com.ric.bill.dto.MeterDTO;
 import com.ric.bill.model.ar.House;
@@ -20,6 +17,7 @@ import com.ric.bill.model.mt.Meter;
 import com.ric.bill.model.mt.Vol;
 import com.ric.bill.model.sec.User;
 import com.ric.bill.model.tr.Serv;
+import com.ric.cmn.Utl;
 
 
 /**
@@ -35,11 +33,11 @@ public class MeterDAOImpl implements MeterDAO {
     @PersistenceContext
     private EntityManager em;
 
-	/* 
+	/*
 	 * Пример, как правильно выполнять запрос JPQL по связанным Enities
-	 * 
+	 *
 	 * Получить все исправные физические счетчики по действующим лиц.счетам дома (или всего фонда) и по услуге
-	 * по которым не были переданы показания в данном периоде 
+	 * по которым не были переданы показания в данном периоде
 	 * @param house - дом
 	 * @param serv - услуга
 	 * @param dt1 - начало периода
@@ -60,7 +58,7 @@ public class MeterDAOImpl implements MeterDAO {
 			+ "and :dt2 between e.dt1 and e.dt2 and nvl(e.tp,0) = 0 " // рабочие счетчики (по последней дате периода)
 			+ "and not exists (select v from Vol v where v.met.id=m.id and v.vol1 > 0 "
 			+ "and v.dt1 between :dt1 and :dt2 and v.dt2 between :dt1 and :dt2 "
-			+ "and v.tp.cd='Фактический объем' and v.user.cd <> 'GEN') " // не передан объем, не учитывая автоначисление 
+			+ "and v.tp.cd='Фактический объем' and v.user.cd <> 'GEN') " // не передан объем, не учитывая автоначисление
 			);
 		query.setParameter("servId", serv.getId());
 		if (house != null) {
@@ -73,11 +71,11 @@ public class MeterDAOImpl implements MeterDAO {
 		return query.getResultList();
 	}
 
-	
-	/* 
-	 * 
+
+	/*
+	 *
 	 * Получить все физические счетчики по действующим лиц.счетам дома (или всего фонда) и по услуге
-	 * которые неисправны (неповерены и т.п.) 
+	 * которые неисправны (неповерены и т.п.)
 	 * @param house - дом
 	 * @param serv - услуга
 	 * @param dt - дата на которую выбрать
@@ -105,7 +103,7 @@ public class MeterDAOImpl implements MeterDAO {
 		query.setParameter("dt", dt);
 		return query.getResultList();
 	}
-	
+
 /*	@SuppressWarnings("unchecked")
 	@Override
 	// TODO удалить позже, для тестов!
@@ -114,10 +112,10 @@ public class MeterDAOImpl implements MeterDAO {
 			+ "join com.ric.bill.model.mt.MeterLog g on m.meterLog.id=g.id "
 			+ "join com.ric.bill.model.ar.Kart k on k.id=g.kart.id");
 		return query.getResultList();
-		
+
 	}
 
-*/	/** 
+*/	/**
 	 * Получить последнее переданное показание по физическому счетчику,
 	 * в период его работоспособности, включая автоначисление
 	 * @param meter - физ.счетчик
@@ -138,12 +136,12 @@ public class MeterDAOImpl implements MeterDAO {
 			return (Vol) query.getSingleResult();
 		} catch (NoResultException e) {
 			  return null;
-		} 
+		}
 	}
 
-	/** 
+	/**
 	 * Получить объем по физическому счетчику,
-	 * в за период dt1-dt2, включая автоначисление. 
+	 * в за период dt1-dt2, включая автоначисление.
 	 * Только положительные значения!!! > 0
 	 * @param meter - физ.счетчик
 	 * @param dt1 - начало периода
@@ -151,7 +149,7 @@ public class MeterDAOImpl implements MeterDAO {
 	 */
 /*	@Override
 	public Double getVolPeriod(Meter meter, Date dt1, Date dt2) {
-		Query query =em.createQuery("select sum(v.vol1) from Meter m join m.vol v with m.id=v.met.id and v.vol1 > 0 " 
+		Query query =em.createQuery("select sum(v.vol1) from Meter m join m.vol v with m.id=v.met.id and v.vol1 > 0 "
 				+ "where v.dt1 between :dt1 and :dt2 "
 				+ "and v.dt2 between :dt1 and :dt2  "
 				+ "and m.id = :meterId");
@@ -162,12 +160,12 @@ public class MeterDAOImpl implements MeterDAO {
 			return (Double) query.getSingleResult();
 		} catch (NoResultException e) {
 			  return null;
-		} 
+		}
 	}
 */
-	/** 
+	/**
 	 * Получить объем по физическому счетчику,
-	 * включая автоначисление. 
+	 * включая автоначисление.
 	 * Только положительные значения!!! > 0
 	 * @param meter - физ.счетчик
 	 * @param dt1 - начало периода
@@ -177,10 +175,10 @@ public class MeterDAOImpl implements MeterDAO {
 	public Double getVolPeriod(Meter meter, Date dt1, Date dt2) {
 		Double vol = meter.getVol().stream().filter(t-> Utl.between(t.getDt1(), dt1, dt2) && Utl.between(t.getDt2(), dt1, dt2))
 							   .filter(t-> t.getVol1() > 0D).mapToDouble(t -> t.getVol1()).sum();
-				
+
 		return vol;
-/*  Lev: Пока не удалять запрос, может понадобиться в будущем, если начнет тормозить на stream()		
- * Query query =em.createQuery("select sum(v.vol1) from Meter m join m.vol v with m.id=v.met.id and v.vol1 > 0 " 
+/*  Lev: Пока не удалять запрос, может понадобиться в будущем, если начнет тормозить на stream()
+ * Query query =em.createQuery("select sum(v.vol1) from Meter m join m.vol v with m.id=v.met.id and v.vol1 > 0 "
 				+ "where v.dt1 between :dt1 and :dt2 "
 				+ "and v.dt2 between :dt1 and :dt2  "
 				+ "and m.id = :meterId");
@@ -191,12 +189,12 @@ public class MeterDAOImpl implements MeterDAO {
 			return (Double) query.getSingleResult();
 		} catch (NoResultException e) {
 			  return null;
-		}*/ 
+		}*/
 	}
 
-	/** 
+	/**
 	 * Получить объемы по физическим счетчикам,
-	 * внесенные пользователем за период  
+	 * внесенные пользователем за период
 	 * по дому (или всему фонду, если не заполнено)
 	 * по услуге (или по всем услугам, если не заполнено)
 	 * @param house - дом
@@ -234,7 +232,7 @@ public class MeterDAOImpl implements MeterDAO {
 	}
 
 	/**
-     * Удалить объемы по физическим счетчикам принадлежащим лиц.счетам дома (фонда), 
+     * Удалить объемы по физическим счетчикам принадлежащим лиц.счетам дома (фонда),
      * внесенные пользователем, по определенной услуге
      * @param house - дом
      * @param serv - услуга
@@ -255,7 +253,7 @@ public class MeterDAOImpl implements MeterDAO {
     	    	" t.fk_user=:userId "+
     	    	") "+
     	    	"and t.dt1 between :dt1 and :dt2 "+
-    	    	"and t.dt2 between :dt1 and :dt2" 
+    	    	"and t.dt2 between :dt1 and :dt2"
     			);
 		query.setParameter("dt1", dt1);
 		query.setParameter("dt2", dt2);
@@ -272,7 +270,7 @@ public class MeterDAOImpl implements MeterDAO {
 /*	@Override
     public List<User> testTransactDao() {
 		Query query =em.createQuery("select t from User t ");
-		return (List<User>) query.getResultList();
+		return query.getResultList();
 	}
 */
 }

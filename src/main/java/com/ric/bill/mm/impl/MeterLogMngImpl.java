@@ -21,14 +21,19 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ric.bill.Calc;
+import com.ric.bill.CntPers;
 import com.ric.bill.MeterContains;
 import com.ric.bill.SumNodeVol;
-import com.ric.cmn.Utl;
 import com.ric.bill.dao.MeterDAO;
 import com.ric.bill.dao.MeterLogDAO;
 import com.ric.bill.dto.MeterDTO;
 import com.ric.bill.excp.CyclicMeter;
+import com.ric.bill.excp.EmptyStorable;
+import com.ric.bill.mm.KartMng;
 import com.ric.bill.mm.MeterLogMng;
+import com.ric.bill.mm.ParMng;
+import com.ric.bill.mm.ServMng;
 import com.ric.bill.model.ar.House;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.fn.Chng;
@@ -40,6 +45,7 @@ import com.ric.bill.model.mt.MeterLogGraph;
 import com.ric.bill.model.mt.Vol;
 import com.ric.bill.model.sec.User;
 import com.ric.bill.model.tr.Serv;
+import com.ric.cmn.Utl;
 
 import lombok.extern.slf4j.Slf4j;
 /**
@@ -55,6 +61,12 @@ public class MeterLogMngImpl implements MeterLogMng {
 	private MeterLogDAO mDao;
 	@Autowired
 	private MeterDAO meterDao;
+	@Autowired
+	private ParMng parMng;
+	@Autowired
+	private KartMng kartMng;
+	@Autowired
+	private ServMng servMng;
 
 	@PersistenceContext
     private EntityManager em;
@@ -428,12 +440,12 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * @param user - пользователь
 	 */
 	@Override
-	public Double getVolCoeff(Double tp, User user) {
-		Double tpCheck = Utl.nvl(tp, 0D);
-		if (tpCheck.equals(1D)) {
+	public Double getVolCoeff(Integer tp, User user) {
+		Integer tpCheck = Utl.nvl(tp, 0);
+		if (tpCheck.equals(1)) {
 			// отключен счетчик, вернуть 0, без автоначисления
 			return 0D;
-		} else if (tpCheck.equals(0D))  {
+		} else if (tpCheck.equals(0))  {
 			// включен счетчик
 			return 1D;
 		} else if (user.getCd().equals("GEN"))  {
@@ -473,27 +485,47 @@ public class MeterLogMngImpl implements MeterLogMng {
 
 
 	/**
-	 * Получить Сумму кол-во проживающих и общую площадь (в доле указанного дня), всех счетчиков ЛИПУ,
-	 * достигаемых с помощью направленной наружу Прямой связи (без переходов через другие счетчики)
-	 * с типом "Связь по площади и кол-во прож.", для подсчета данных характеристик по всему Групповому счетчику mlog
+	 * Получить Сумму кол-во проживающих и общую площадь (в доле указанного дня), всех лицевых счетов,
+	 * достигаемых с помощью направленной наружу Прямой связи (без переходов через другие счетчики) группового счетчика,
+	 * с типом "Расчетная связь", для подсчета данных характеристик по всему Групповому счетчику mlog
 	 * @param mlog - Групповой счетчик
 	 * @param dt - дата подсчета
+	 * @throws EmptyStorable
 	 */
 	@Override
-	public SumNodeVol getSumOutsideCntPersSqr(int rqn, Integer chngId, Chng chng, MLogs mlog, Date genDt) {
+	public SumNodeVol getSumOutsideCntPersSqr(Calc calc, Serv servChrg, MLogs mlog, Date genDt) throws EmptyStorable {
+		int rqn = calc.getReqConfig().getRqn();
+		Chng chng = calc.getReqConfig().getChng();
 		SumNodeVol nodeVol = new SumNodeVol();
 
-		mlog.getOutside().stream()
+		List<MLogs> lst = mlog.getOutside().stream()
 			.filter(t->
 				Utl.between(genDt, t.getDt1(), t.getDt2()) &&
-					t.getTp().getCd().equals("Связь по площади и кол-во прож."))
+					t.getTp().getCd().equals("Расчетная связь"))
 			.filter(t-> t.getDst().getTp().getCd().equals("ЛИПУ"))
-			.forEach(t-> {
-				SumNodeVol vol = getVolPeriod(rqn, chngId, chng, t.getDst(), 1, genDt, genDt);
+			.map(t-> t.getDst())
+			.collect(Collectors.toList());
+
+		for (MLogs t : lst) {
+				// общая площадь, в доле дня
+				Double tmpArea = Utl.nvl(parMng.getDbl(rqn, t.getKart(), "Площадь.Общая", genDt, chng), 0d);
+				Double partArea = tmpArea
+						/ calc.getReqConfig().getCntCurDays();
+				log.info("для группового сч Mlog.id={}, взято из Kart.flsk={}, общ.площадь={}",
+						mlog.getId(), t.getKart().getFlsk(), tmpArea);
+				//проживающие, в доле дня
+				CntPers cntPers = kartMng.getCntPers(rqn, calc, t.getKart(), servChrg, genDt);
+				Double partPers = cntPers.cntForVol / calc.getReqConfig().getCntCurDays();
+				log.info("для группового сч Mlog.id={}, взято из Kart.flsk={}, кол-во прож.={}",
+						mlog.getId(), t.getKart().getFlsk(), cntPers.cntForVol);
+
 				// добавить кол-во прож. и общую площадь
-				nodeVol.addPers(vol.getPers());
-				nodeVol.addArea(vol.getArea());
-			});
+				nodeVol.addPers(partPers);
+				nodeVol.addArea(partArea);
+		}
+
+		log.info("Итого по групповому по дате={}, сч Mlog.id={}, кол-во прож.={}, общ.площадь={}",
+				genDt, mlog.getId(), nodeVol.getPers(), nodeVol.getArea());
 
 		return nodeVol;
 	}
@@ -553,6 +585,7 @@ public class MeterLogMngImpl implements MeterLogMng {
 	public void testTransact() {
 
 			String ip = null;
+
 			for (User user: meterDao.testTransactDao()) {
 				//log.info("old={}, new={}", ip, user.getIp());
 				if (ip!=null) {
@@ -560,15 +593,21 @@ public class MeterLogMngImpl implements MeterLogMng {
 				}
 				ip = user.getIp();
 
-				//log.info("user.id={}, user.ip={}", user.getId(), user.getIp());
+				log.info("user.id={}, user.ip={}", user.getId(), user.getIp());
 			}
 
+			//User user = em.find(User.class, 4);
+			//log.info("before ={}", user.getIp());
+
 			try {
-				Thread.sleep(200);
+				Thread.sleep(15000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			//em.clear();
+			User user2 = em.find(User.class, 4);
+			log.info("after ={}", user2.getIp());
 		}
-	*/
+*/
 }

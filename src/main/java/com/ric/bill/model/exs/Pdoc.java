@@ -79,6 +79,10 @@ public class Pdoc implements java.io.Serializable  {
 	@Column(name = "V", updatable = true, nullable = false)
 	private Integer v;
 
+	// Код ошибки, при загрузке ПД в ГИС (0-нет ошибки, 1-есть)
+	@Column(name = "ERR", updatable = true, nullable = false)
+	private Integer err;
+
 	@Override
 	public boolean equals(Object o) {
 	    if (this == o) return true;
