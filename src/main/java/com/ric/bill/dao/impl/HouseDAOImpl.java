@@ -20,10 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Repository;
 
+import com.ric.bill.ResultSet;
 import com.ric.bill.dao.HouseDAO;
 import com.ric.bill.model.ar.House;
 import com.ric.bill.model.bs.Org;
-import com.ric.cmn.ResultSet;
 
 
 
@@ -127,7 +127,7 @@ public class HouseDAOImpl implements HouseDAO {
 			List<ResultSet> lst = q.getResultList();
 			lstHouse = new ArrayList<House>();
 			for (ResultSet rs: lst) {
-				log.info("Найден дом: houseid="+rs.getId(), 2);
+//				log.info("Найден дом: houseid="+rs.getId(), 2);
 				lstHouse.add(em.find(House.class, rs.getId()));
 			}
 		} catch (Exception e) {

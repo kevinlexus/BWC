@@ -9,6 +9,9 @@ import javax.persistence.Table;
 
 import com.ric.bill.Simple;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Пользователь
  * 
@@ -17,6 +20,7 @@ import com.ric.bill.Simple;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "T_USER", schema="SEC")
+@Getter @Setter
 public class User implements java.io.Serializable, Simple {
 
 	@Id
@@ -27,25 +31,11 @@ public class User implements java.io.Serializable, Simple {
     @Column(name = "CD")
 	private String cd; // CD пользователя 
 
+    @Column(name = "IP")
+	private String ip; // Ip 
     
 	public User() {
 		super();
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getCd() {
-		return cd;
-	}
-
-	public void setCd(String cd) {
-		this.cd = cd;
 	}
 
 	public boolean equals(Object o) {

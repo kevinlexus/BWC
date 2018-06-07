@@ -1,6 +1,5 @@
 package com.ric.bill.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,47 +23,50 @@ public class EolinkDAOImpl implements EolinkDAO {
 	//EntityManager - EM нужен на каждый DAO или сервис свой!
     @PersistenceContext
     private EntityManager em;
-    
+
     //конструктор
-    public EolinkDAOImpl() { 
-    	
-    } 
-    
+    public EolinkDAOImpl() {
+
+    }
+
     //вернуть список необработанных действий
-    public List<Eolink> getAll() {
+    @Override
+	public List<Eolink> getAll() {
 			Query query =em.createQuery("from Eolink t");
 			return query.getResultList();
 	}
-    
+
     /**
      * Получить объект по GUID
      * @param guid - GUID
      * @return
      */
-    public Eolink getEolinkByGuid(String guid) {
+    @Override
+	public Eolink getEolinkByGuid(String guid) {
 		Query query =em.createQuery("select t from Eolink t where t.guid = :guid");
 		query.setParameter("guid", guid);
 		try {
 			return (Eolink) query.getSingleResult();
 		} catch (NoResultException e) {
 		  return null;
-		} 
+		}
 	}
 
-    
+
     /**
      * Получить объекты по типу, начиная с начальной точки иерархии
      * @param parent - начальная точка иерархии
      * @param tp - тип
      * @return
      */
-    public List<Eolink> getChildByTp(Eolink parent, String tp) {
+    @Override
+	public List<Eolink> getChildByTp(Eolink parent, String tp) {
     	List<Eolink> lst = parent.getChild().stream().filter(t -> t.getObjTp().getCd().equals(tp)).collect(Collectors.toList());
     	lst.addAll(parent.getChild().stream().flatMap(t -> getChildByTp(t, tp).stream()).collect(Collectors.toList()));
     	return lst;
 	}
-    
-    
+
+
     /**
      * Получить дочерние объекты по родительскому объекту
      * @param parent - родительский объект
@@ -85,7 +87,8 @@ public class EolinkDAOImpl implements EolinkDAO {
      * @param entry -  ENTRY из Квартплаты
      * @param tp -  тип объекта
      */
-	public Eolink getEolinkByReuKulNdTp(String reu, String kul, String nd, 
+	@Override
+	public Eolink getEolinkByReuKulNdTp(String reu, String kul, String nd,
 			String kw, String entry, String tp) {
 		Query query = null;
 		switch (tp) {
@@ -130,12 +133,13 @@ public class EolinkDAOImpl implements EolinkDAO {
 			return (Eolink) query.getSingleResult();
 		} catch (NoResultException e) {
 		  return null;
-		} 
+		}
 	}
 
 	/**
 	 * Получить все счетчики, по которым не сохранены показания в файл
 	 */
+	@Override
 	public List<Eolink> getValsNotSaved() {
 		Query query = em.createQuery("select t from Eolink t "
 				+ "join AddrTp b with b.cd ='СчетчикФизический' "
@@ -144,11 +148,11 @@ public class EolinkDAOImpl implements EolinkDAO {
 				+ "join Par a with a.cd = 'ГИС ЖКХ.Счетчик.СтатусОбработкиПоказания' "
 				+ "join EolinkPar p with p.eolink.id = t.id and p.par.id = a.id "
 				+ "where (p.n1 = 1) ");
-		return query.getResultList();		
+		return query.getResultList();
 	}
 
 	/**
-	 * Получить все объекты, определенного типа, по которым 
+	 * Получить все объекты, определенного типа, по которым
 	 * НЕТ созданных заданий определенного типа действия
 	 * @param eolTp - тип объекта
 	 * @param actTp - тип действия
@@ -166,7 +170,7 @@ public class EolinkDAOImpl implements EolinkDAO {
 		} else if (eolTp.equals("Дом")) {
 			query = em.createQuery("select e from Eolink e "
 					+ "join AddrTp b with e.objTp.id=b.id and b.cd =:eolTp "
-					+ "where e.guid is not null and e.id in (7350, 7343, 6440, 8003) " // TODO УБРАТЬ ВРЕМЕННЫЕ ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+					+ "where e.guid is not null and e.id in (7350, 7343, 6440, 7570, 8003) " // TODO УБРАТЬ ВРЕМЕННЫЕ ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 					+ "and e.parent is not null " // где есть организация
 					+ "and not exists (select t from TaskToTask t where t.child.eolink.id=e.id "
 					+ "and t.child.act.cd = :actTp and t.parent.cd = :parentCD) ");
@@ -174,6 +178,6 @@ public class EolinkDAOImpl implements EolinkDAO {
 		query.setParameter("eolTp", eolTp);
 		query.setParameter("actTp", actTp);
 		query.setParameter("parentCD", parentCD);
-		return query.getResultList();		
+		return query.getResultList();
 	}
 }

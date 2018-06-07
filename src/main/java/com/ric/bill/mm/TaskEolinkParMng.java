@@ -2,8 +2,8 @@ package com.ric.bill.mm;
 
 import java.util.Date;
 
+import com.ric.bill.excp.WrongGetMethod;
 import com.ric.bill.model.exs.Task;
-import com.ric.cmn.excp.WrongGetMethod;
 
 public interface TaskEolinkParMng {
 	public Double getDbl(Task task, String parCd) throws WrongGetMethod;

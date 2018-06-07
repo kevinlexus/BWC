@@ -10,15 +10,15 @@ import com.ric.bill.dto.PayordDTO;
 import com.ric.bill.dto.PayordFlowDTO;
 import com.ric.bill.dto.PayordGrpDTO;
 import com.ric.bill.dto.RepItemDTO;
+import com.ric.bill.excp.EmptyStorable;
+import com.ric.bill.excp.WrongDate;
+import com.ric.bill.excp.WrongExpression;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.bs.PeriodReports;
 import com.ric.bill.model.fn.Payord;
 import com.ric.bill.model.fn.PayordCmp;
 import com.ric.bill.model.fn.PayordFlow;
 import com.ric.bill.model.fn.PayordGrp;
-import com.ric.cmn.excp.EmptyStorable;
-import com.ric.cmn.excp.WrongDate;
-import com.ric.cmn.excp.WrongExpression;
 
 public interface PayordMng {
 

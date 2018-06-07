@@ -17,12 +17,12 @@ import javax.persistence.TemporalType;
 
 import org.springframework.stereotype.Repository;
 
+import com.ric.bill.ResultSet;
+import com.ric.bill.ResultSetLsk;
 import com.ric.bill.dao.KartDAO;
 import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.oralv.Ko;
 import com.ric.bill.model.ps.Pers;
-import com.ric.cmn.ResultSet;
-import com.ric.cmn.ResultSetLsk;
 
 
 @Repository

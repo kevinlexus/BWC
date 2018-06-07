@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Статусы работы физического счетчика, процент поставки услуги 
+ * Статусы работы физического счетчика, процент поставки услуги
  * @author lev
  *
  */
@@ -30,21 +30,21 @@ import lombok.Setter;
 public class MeterExs implements java.io.Serializable, Simple {
 
 	public MeterExs (){
-		
+
 	}
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", updatable = false, nullable = false)
 	private Integer id; //id
-	
+
 	// NOT USE поставка объема услуги в этот период. 1- полная поставка,  и т.д. на убывание. 1 = 100 % Временно вернул 24.04.2018 TODO! Убрать!!!
     @Column(name = "PERCENT", updatable = false, nullable = true)
-	private Double prc; 
+	private Double prc;
 
     // статус счетчика 0- рабочий, 1- отключен,	2- неисправный, 3- не прошел поверку, 4- отказ допуска
     @Column(name = "TP", updatable = false, nullable = true)
-	private Double tp; 
+	private Integer tp;
 
     // даты начала и окончания действия
     @Column(name = "DT1", updatable = false, nullable = true)
@@ -56,7 +56,7 @@ public class MeterExs implements java.io.Serializable, Simple {
     // физ.счетчик
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_METER", referencedColumnName="ID")
-	private Meter meter ; 
-    
+	private Meter meter ;
+
 }
 
