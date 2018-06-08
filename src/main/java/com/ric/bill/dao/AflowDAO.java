@@ -39,9 +39,10 @@ public interface AflowDAO extends JpaRepository<Aflow, AflowId> {
 		+ "where t.lsk = ?1 and t.mg = ?2 "
 		+ "and NVL(tp.fk_eolink, ?3) = ?3 "
 		+ "and t.fk_type = 0 /*and t.fk_usl between '003' and '008'*/ "
-		+ "and t.fk_usl in  ('003', '004', '005', '006', '025', '031', "
-		+ "'033', '040', '042', '056', '058', '059')"
-		+ " and t.fk_usl not in (/*'013',*/'073') "
+		+ "and t.fk_usl in  ('003', '004', '005', '006', '007', '008'/*, '011', '012', '013', '014'*/, "
+		+ "'025', '031', "
+		+ "'033', '040', '042', '056', '058', '059', '073')"
+		+ " /*and t.fk_usl not in ('013','073')*/ "
 		+ "group by u.id, s.grp) t2 "
 		+ "group by t2.id", nativeQuery = true)
 	List<SumChrgRec> getChrgGrp(String lsk, String period, Integer orgId);
