@@ -29,20 +29,21 @@ public interface AflowDAO extends JpaRepository<Aflow, AflowId> {
 	 * @return
 	 */
 	@Query(value = "select t2.id as \"ulistId\", sum(t2.summa) as \"summa\", sum(t2.vol) as \"vol\", "
-			+ "sum(price) as \"price\", sum(coeff) as \"coeff\", min(sqr) as \"sqr\" from ( "
+			+ "sum(price) as \"price\", min(sqr) as \"sqr\" from ( " // sum(coeff) as \"coeff\",
 			+ "select u.id, s.grp, nvl(sum(t.summa),0) as summa, nvl(sum(t.n1),0) as vol, "
-			+ "nvl(min(t.n2),0) as price, nvl(min(t.n3),0) as coeff, nvl(min(t.n5),0) as sqr "
+			+ "nvl(min(t.n2),0) as price, nvl(min(t.n5),0) as sqr " // nvl(min(t.n3),0) as coeff,
 		+ "from scott.a_flow@hp t "
 		+ "join exs.servgis s on t.fk_usl=s.fk_usl "
 		+ "join exs.u_list u on s.fk_list=u.id "
 		+ "join exs.u_listtp tp on u.fk_listtp=tp.id "
 		+ "where t.lsk = ?1 and t.mg = ?2 "
 		+ "and NVL(tp.fk_eolink, ?3) = ?3 "
-		+ "and t.fk_type = 0 /*and t.fk_usl between '003' and '008'*/ "
-		+ "and t.fk_usl in  ('003', '004', '005', '006', '007', '008'/*, '011', '012', '013', '014'*/, "
+		+ "and t.fk_type = 0 "
+		//+ "and (t.fk_usl between '003' and '059' or t.fk_usl='073') "
+/*		+ "and t.fk_usl in  ('003', '004', '005', '006', '007', '008', '011', '012', '013', '014', "
 		+ "'025', '031', "
 		+ "'033', '040', '042', '056', '058', '059', '073')"
-		+ " /*and t.fk_usl not in ('013','073')*/ "
+		+ " /*and t.fk_usl not in ('013','073')*/
 		+ "group by u.id, s.grp) t2 "
 		+ "group by t2.id", nativeQuery = true)
 	List<SumChrgRec> getChrgGrp(String lsk, String period, Integer orgId);

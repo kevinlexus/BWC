@@ -131,10 +131,10 @@ public class Ulist implements java.io.Serializable  {
 	@JoinColumn(name="PARENT_ID2", referencedColumnName="ID")
 	private Ulist parent2;
 
-	// Тип подготовки к импорту в ПД (null,0 - нет подготовки, 1 - умножить на коэфф)
+/*	// Тип подготовки к импорту в ПД (null,0 - нет подготовки, 1 - умножить на коэфф)
 	@Column(name = "PREP_TP", updatable = true, nullable = false)
 	private Integer prepTp;
-
+*/
 	@Override
 	public boolean equals(Object o) {
 	    if (this == o) return true;

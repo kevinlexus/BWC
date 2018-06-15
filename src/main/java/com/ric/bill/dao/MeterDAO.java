@@ -12,11 +12,10 @@ import com.ric.bill.model.tr.Serv;
 
 
 public interface MeterDAO {
-	public List<MeterDTO> getAllWoVolMeterByHouseServ(House house, Serv serv, Date dt1, Date dt2);
-	public List<MeterDTO> getAllBrokenMeterByHouseServ(House house, Serv serv, Date dt);
-	public Vol getLastVol(Meter meter);
-	public Double getVolPeriod(Meter meter, Date dt1, Date dt2);
-	public List<Vol> getVolPeriodByHouse(House house, Serv serv, User user, Date dt1, Date dt2);
-	public void delHouseMeterVol(House house, Serv serv, User user, Date dt1, Date dt2);
-	//public List<User> testTransactDao();
+	List<MeterDTO> getAllWoVolMeterByHouseServ(House house, Serv serv, Date dt1, Date dt2);
+	List<MeterDTO> getAllBrokenMeterByHouseServ(House house, Serv serv, Date dt);
+	Vol getLastVol(Meter meter, Date dt1);
+	Double getVolPeriod(Meter meter, Date dt1, Date dt2);
+	List<Vol> getVolPeriodByHouse(House house, Serv serv, User user, Date dt1, Date dt2);
+	void delHouseMeterVol(House house, Serv serv, User user, Date dt1, Date dt2);
 }

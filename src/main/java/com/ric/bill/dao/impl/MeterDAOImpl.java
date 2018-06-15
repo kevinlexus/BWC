@@ -117,11 +117,12 @@ public class MeterDAOImpl implements MeterDAO {
 
 */	/**
 	 * Получить последнее переданное показание по физическому счетчику,
-	 * в период его работоспособности, включая автоначисление
+	 * в период его работоспособности, включая автоначисление, не включая текущий период
 	 * @param meter - физ.счетчик
+	 * @param dt1 - дата начала текущего периода
 	 */
 	@Override
-	public Vol getLastVol(Meter meter) {
+	public Vol getLastVol(Meter meter, Date dt1) {
 		Query query =em.createQuery("select v from Meter m join Vol v with m.id=v.met.id where v.id = "
 				+ "(select max(o.id) from Meter t join Vol o "
 				+ "with t.id=o.met.id "
@@ -129,8 +130,10 @@ public class MeterDAOImpl implements MeterDAO {
 				+ "join t.exs e with t.id=e.meter.id "
 				+ "where o.dt1 between e.dt1 and e.dt2 " // рабочие счетчики на дату отправки объема
 				+ "and o.dt2 between e.dt1 and e.dt2 and nvl(e.tp,0) = 0 " // рабочие счетчики на дату отправки объема
+				+ "and o.dt2 < :dt1 " // не включая текущий период
 				+ "and t.id = :meterId) "
 				+ "and m.id = :meterId");
+		query.setParameter("dt1", dt1);
 		query.setParameter("meterId", meter.getId());
 		try {
 			return (Vol) query.getSingleResult();

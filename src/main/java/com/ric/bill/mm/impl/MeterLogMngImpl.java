@@ -129,8 +129,8 @@ public class MeterLogMngImpl implements MeterLogMng {
     			// по соотв.периоду
     			if (Utl.between(genDt, e.getDt1(), e.getDt2())) {
 
-	    			if (e.getPrc() > 0d) // есть поставка объема Lev: убрал 19.04.2018
-    				//if (Utl.nvl(e.getTp(),0D).equals(0D)) // ПУ рабочий //TODO проверить!
+	    			//if (e.getPrc() > 0d) // есть поставка объема Lev: убрал 19.04.2018
+    				if (!Utl.nvl(e.getTp(),0D).equals(1D)) // ПУ в любом статусе, кроме "Отключенный" ред. Lev: 13.06.18
 					 {
 	    				return true;
 	    			}
@@ -361,17 +361,17 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * Включая объемы по автоначислению.
 	 * mLog - лог.счетчик
 	 * cntPeriod - кол-во периодов ДО даты последней передачи показаний
-	 * dt - дата расчета (обычно последний день месяца)
+	 * dt1 - дата начала текущего периода
 	 */
 	@Override
-	public Double getAvgVol(Meter meter, int cntPeriod, Date dt) {
+	public Double getAvgVol(Meter meter, int cntPeriod, Date dt1) {
 		Double vol = null;
 		// получить дату -N периодов назад
-		Date backDateFirst = Utl.addMonths(dt, cntPeriod * -1);// текущий период здесь НЕ входит
+		Date backDateFirst = Utl.addMonths(dt1, cntPeriod * -1);// текущий период здесь НЕ входит
 		// получить первый день периода -N
 		Date backDateFirstDt = Utl.getFirstDate(backDateFirst);
 		// получить дату -1 период назад
-		Date backDateLast = Utl.addMonths(dt, -1);
+		Date backDateLast = Utl.addMonths(dt1, -1);
 		// получить последний день периода -1 назад
 		Date backDateLastDt = Utl.getLastDate(backDateLast);
 		// получить весь объем за период
@@ -402,19 +402,19 @@ public class MeterLogMngImpl implements MeterLogMng {
 	 * Включая объемы по автоначислению.
 	 * mLog - лог.счетчик
 	 * cntMonthBack - кол-во месяцев ДО даты последней передачи показаний, для вычисления среднего объема
-	 * dt - дата расчета (обычно последний день месяца)
+	 * dt1 - дата начала текущего периода
 	 */
 	@Override
-	public AvgVol getAvgVolBeforeLastSend(Meter meter, int cntMonthBack, Date dt) {
+	public AvgVol getAvgVolBeforeLastSend(Meter meter, int cntMonthBack, Date dt1) {
 		AvgVol avgVol = new AvgVol();
 		avgVol.vol = 0D;
 		avgVol.cnt = 0;
 		// получить последний переданный объем (в период исправного счетчика)
-		Vol vol = meterDao.getLastVol(meter);
+		Vol vol = meterDao.getLastVol(meter, dt1);
 		if (vol != null) {
-			log.info("Последний переданный объем: vol={}, dt1={}, dt2={}", vol.getVol1(), vol.getDt1(), vol.getDt2());
+			log.info("Последний переданный объем: vol={}, dt1={}, dt2={}", vol.getVol1(), Utl.getStrFromDate(vol.getDt1()), Utl.getStrFromDate(vol.getDt2()));
 			// получить кол-во месяцев спустя последней передачи показаний
-			avgVol.cnt = (int) Utl.getDiffMonths(vol.getDt1(), dt);
+			avgVol.cnt = (int) Utl.getDiffMonths(vol.getDt1(), dt1);
 			if (avgVol.cnt <= cntMonthBack) {
 				// кол-во периодов допустимо, для расчета по среднему
 				// получить дату -N периодов назад
@@ -423,7 +423,8 @@ public class MeterLogMngImpl implements MeterLogMng {
 				Date backDateFirstDt = Utl.getFirstDate(backDateFirst);
 				// получить весь объем за период
 				Double vl = meterDao.getVolPeriod(meter, backDateFirstDt, vol.getDt2());
-				log.info("Объем за весь период, когда счетчик был исправен(был доступ): vol={}, dt1={}, dt2={}", vl, backDateFirstDt, vol.getDt2());
+				log.info("Объем за весь период, когда счетчик был исправен(был доступ): vol={}, dt1={}, dt2={}", vl,
+						Utl.getStrFromDate(backDateFirstDt), Utl.getStrFromDate(vol.getDt2()));
 				// получить среднее арифм.
 				BigDecimal avgVolD = new BigDecimal(vl/cntMonthBack);
 				avgVolD = avgVolD.setScale(6, RoundingMode.HALF_UP);

@@ -1,11 +1,11 @@
 package com.ric.bill.dao.hotora;
 
-import java.math.BigDecimal;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.ric.bill.dto.SumSaldoRec;
 import com.ric.bill.model.hotora.scott.Saldo;
 import com.ric.bill.model.hotora.scott.SaldoId;
 
@@ -13,13 +13,16 @@ import com.ric.bill.model.hotora.scott.SaldoId;
 public interface SaldoDAO extends JpaRepository<Saldo, SaldoId> {
 
 	/**
-	 * Получить совокупное сальдо по лицевому счету
+	 * Получить сальдо по лицевому счету
 	 * @param lsk лицевой счет
-	 * @param period - период 
+	 * @param period - период
 	 * @return
 	 */
-	@Query("select sum(t.summa) from Saldo t "
-			+ "where t.kart.lsk = ?1 and t.mg = ?2")
-	  BigDecimal getAmntByLsk(String lsk, String period);
-	
+	@Query(value = "select sum(t.indebet) as \"indebet\", sum(t.inkredit) as \"inkredit\", "
+			+ "sum(t.outdebet) as \"outdebet\", sum(t.outkredit) as \"outkredit\", sum(t.payment) as \"payment\" "
+			+ "from SCOTT.XITOG2_S_LSK@HP t "
+			+ "where t.lsk = :lsk and t.mg = :period",
+			nativeQuery = true)
+	  SumSaldoRec getSaldoByLsk(@Param("lsk") String lsk, @Param("period") String period);
+
 }

@@ -42,7 +42,7 @@ public class Task implements java.io.Serializable  {
 
 
 	public Task(Eolink eolink, Task parent, Task master, String state, Lst act, String guid, String msgGuid,
-			String un, String result, Date crtDt, String tguid, Integer appTp,
+			String un, String result, Date crtDt, String tguid, //Integer appTp,
 			Integer fk_user, Integer errAckCnt) {
 		super();
 		this.eolink = eolink;
@@ -56,7 +56,7 @@ public class Task implements java.io.Serializable  {
 		this.result = result;
 		this.crtDt = crtDt;
 		this.tguid = tguid;
-		this.appTp = appTp;
+		//this.appTp = appTp;
 		this.fk_user = fk_user;
 		this.errAckCnt = errAckCnt;
 	}
@@ -166,9 +166,9 @@ public class Task implements java.io.Serializable  {
 	private String tguid;
 
 	// Тип информационной системы (0- "Квартплата", 1 - "Новая разработка")
-	@Column(name = "APP_TP", updatable = true, nullable = true)
+/*	@Column(name = "APP_TP", updatable = true, nullable = true)
 	private Integer appTp;
-
+*/
 	// Пользователь (специально не стал делать MANY TO ONE - так как возможно не будет таблицы, куда TO ONE)
 	@Column(name = "FK_USER", updatable = false, nullable = true)
 	private Integer fk_user;

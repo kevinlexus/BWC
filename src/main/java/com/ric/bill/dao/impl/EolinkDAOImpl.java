@@ -43,6 +43,7 @@ public class EolinkDAOImpl implements EolinkDAO {
      */
     @Override
 	public Eolink getEolinkByGuid(String guid) {
+    	//log.info("GUID={}", guid);
 		Query query =em.createQuery("select t from Eolink t where t.guid = :guid");
 		query.setParameter("guid", guid);
 		try {
