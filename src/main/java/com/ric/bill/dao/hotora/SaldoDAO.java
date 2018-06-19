@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.ric.bill.dto.SumSaldoRec;
 import com.ric.bill.model.hotora.scott.Saldo;
 import com.ric.bill.model.hotora.scott.SaldoId;
+import com.ric.dto.SumSaldoRec;
 
 @Repository
 public interface SaldoDAO extends JpaRepository<Saldo, SaldoId> {

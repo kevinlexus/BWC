@@ -15,6 +15,7 @@ import com.ric.bill.model.ar.Kart;
 import com.ric.bill.model.fn.Chng;
 import com.ric.bill.model.mt.MLogs;
 import com.ric.bill.model.mt.Meter;
+import com.ric.bill.model.oralv.Ko;
 import com.ric.bill.model.sec.User;
 import com.ric.bill.model.tr.Serv;
 
@@ -34,5 +35,6 @@ public interface MeterLogMng {
 	Double getVolCoeff(Integer tp, User user);
 	SumNodeVol getSumOutsideCntPersSqr(Calc calc, Serv servChrg, MLogs mlog, Date genDt) throws EmptyStorable;
 	void saveMeterVol(Meter meter, Double vol1, Chng chng, User user, Date dt1, Date dt2);
+	Ko getKoByLskNum(Ko koLsk, String num, String servCd);
 
 }

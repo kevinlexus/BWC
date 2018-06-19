@@ -7,6 +7,7 @@ import com.ric.bill.dto.MeterDTO;
 import com.ric.bill.model.ar.House;
 import com.ric.bill.model.mt.Meter;
 import com.ric.bill.model.mt.Vol;
+import com.ric.bill.model.oralv.Ko;
 import com.ric.bill.model.sec.User;
 import com.ric.bill.model.tr.Serv;
 
@@ -18,4 +19,5 @@ public interface MeterDAO {
 	Double getVolPeriod(Meter meter, Date dt1, Date dt2);
 	List<Vol> getVolPeriodByHouse(House house, Serv serv, User user, Date dt1, Date dt2);
 	void delHouseMeterVol(House house, Serv serv, User user, Date dt1, Date dt2);
+	List<Ko> getKoByLskNum(Ko koLsk, Serv serv, String num);
 }

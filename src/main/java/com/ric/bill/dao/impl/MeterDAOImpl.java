@@ -15,6 +15,7 @@ import com.ric.bill.dto.MeterDTO;
 import com.ric.bill.model.ar.House;
 import com.ric.bill.model.mt.Meter;
 import com.ric.bill.model.mt.Vol;
+import com.ric.bill.model.oralv.Ko;
 import com.ric.bill.model.sec.User;
 import com.ric.bill.model.tr.Serv;
 import com.ric.cmn.Utl;
@@ -103,6 +104,8 @@ public class MeterDAOImpl implements MeterDAO {
 		query.setParameter("dt", dt);
 		return query.getResultList();
 	}
+
+
 
 /*	@SuppressWarnings("unchecked")
 	@Override
@@ -270,7 +273,29 @@ public class MeterDAOImpl implements MeterDAO {
     	query.executeUpdate();
 	}
 
-/*	@Override
+    /**
+     * Получить список Ko счетчиков по Ko лиц.счета, услуге и номеру счетчика
+     * список - потому что неизвестно кол-во счетчиков с одним номером, по услуге и лиц.счету
+     * @param koLsk - Ко лиц.счета
+     * @param serv - услуга
+     * @param num - номер счетчика
+     */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Ko> getKoByLskNum(Ko koLsk, Serv serv, String num) {
+		Query query =em.createQuery("select m.ko from Meter m "
+				+ "join m.meterLog g "
+				+ "join g.kart k "
+				+ "join g.serv s "
+				+ "where k.ko.id=:klskId and s.id=:servId and m.factoryNum=:num");
+		query.setParameter("klskId", koLsk.getId());
+		query.setParameter("servId", serv.getId());
+		query.setParameter("num", num);
+		return query.getResultList();
+	}
+
+
+    /*	@Override
     public List<User> testTransactDao() {
 		Query query =em.createQuery("select t from User t ");
 		return query.getResultList();

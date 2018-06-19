@@ -27,6 +27,7 @@ import com.ric.bill.MeterContains;
 import com.ric.bill.SumNodeVol;
 import com.ric.bill.dao.MeterDAO;
 import com.ric.bill.dao.MeterLogDAO;
+import com.ric.bill.dao.ServDAO;
 import com.ric.bill.dto.MeterDTO;
 import com.ric.bill.excp.CyclicMeter;
 import com.ric.bill.excp.EmptyStorable;
@@ -43,6 +44,7 @@ import com.ric.bill.model.mt.MeterExs;
 import com.ric.bill.model.mt.MeterLog;
 import com.ric.bill.model.mt.MeterLogGraph;
 import com.ric.bill.model.mt.Vol;
+import com.ric.bill.model.oralv.Ko;
 import com.ric.bill.model.sec.User;
 import com.ric.bill.model.tr.Serv;
 import com.ric.cmn.Utl;
@@ -61,6 +63,8 @@ public class MeterLogMngImpl implements MeterLogMng {
 	private MeterLogDAO mDao;
 	@Autowired
 	private MeterDAO meterDao;
+	@Autowired
+	private ServDAO servDao;
 	@Autowired
 	private ParMng parMng;
 	@Autowired
@@ -529,6 +533,18 @@ public class MeterLogMngImpl implements MeterLogMng {
 				genDt, mlog.getId(), nodeVol.getPers(), nodeVol.getArea());
 
 		return nodeVol;
+	}
+
+
+	/**
+	 * Получить Ko счетчика, по Ko лиц.счета и номеру счетчика
+	 * @param koLsk - Ko лиц.счета
+	 * @param num - номер счетчика
+	 */
+	@Override
+	public Ko getKoByLskNum(Ko koLsk, String num, String servCd) {
+		Serv serv = servDao.getByCD(servCd);
+		return meterDao.getKoByLskNum(koLsk, serv, num).stream().findFirst().orElse(null);
 	}
 
 

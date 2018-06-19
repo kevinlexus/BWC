@@ -194,6 +194,9 @@ public class KartMngImpl implements KartMng {
 							cntPers.cntForVol++;
 							cntPers.cntFact++;
 							cntPers.persLst.add(p.getPers());
+							/*if (p.getPers().getId().equals(38693)) {
+								log.info("добавлено1 Pers.id={}", p.getPers().getId());
+							}*/
 						}
 					} else {
 						//не проверять временное отсутствие, считать проживающего
@@ -201,6 +204,9 @@ public class KartMngImpl implements KartMng {
 						cntPers.cntForVol++;
 						cntPers.cntFact++;
 						cntPers.persLst.add(p.getPers());
+						/*if (p.getPers().getId().equals(38693)) {
+							log.info("добавлено2 Pers.id={}", p.getPers().getId());
+						}*/
 					}
 					cntPers.cntEmpt++;
 				} else {
@@ -212,6 +218,9 @@ public class KartMngImpl implements KartMng {
 							cntPers.cntForVol++;
 							cntPers.cntFact++;
 							cntPers.persLst.add(p.getPers());
+							/*if (p.getPers().getId().equals(38693)) {
+								log.info("добавлено3 Pers.id={}", p.getPers().getId());
+							}*/
 						}
 						cntPers.cntEmpt++;
 					}
@@ -229,6 +238,9 @@ public class KartMngImpl implements KartMng {
 						cntPers.cntForVol++;
 						cntPers.cntFact++;
 						cntPers.persLst.add(p.getPers());
+						/*if (p.getPers().getId().equals(38693)) {
+							log.info("добавлено4 Pers.id={}", p.getPers().getId());
+						}*/
 					}
 				}
 			}
@@ -639,5 +651,6 @@ public class KartMngImpl implements KartMng {
 	public PrivilegeServ getPrivilegeServ(Privilege priv, Serv serv) {
 		return persDao.getPrivilegeServ(priv.getId(), serv.getId());
 	}
+
 
 }

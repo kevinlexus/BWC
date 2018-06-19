@@ -1,9 +1,11 @@
 package com.ric.bill.model.exs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Generated;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,8 +21,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
 import com.ric.bill.model.bs.AddrTp;
 import com.ric.bill.model.bs.Lst;
 import com.ric.bill.model.oralv.Ko;
@@ -28,12 +28,10 @@ import com.ric.bill.model.sec.User;
 
 import lombok.Getter;
 import lombok.Setter;
-import javax.annotation.Generated;
-import java.util.Collections;
 
 
 /**
- * Связанный объект 
+ * Связанный объект
  * @author lev
  *
  */
@@ -47,84 +45,44 @@ public class Eolink implements java.io.Serializable  {
 	}
 
 
-	// Конструктор
-	public Eolink(String reu, String kul, String nd, String kw, String lsk,
-			Integer entry, String usl, Integer idCnt, String guid, String un,
-			String cd, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, Eolink parent, User user, Integer status) {
-		super();
-		this.reu = reu;
-		this.kul = kul;
-		this.nd = nd;
-		this.kw = kw;
-		this.lsk = lsk;
-		this.entry = entry;
-		this.usl = usl;
-		this.idCnt = idCnt;
-		this.guid = guid;
-		this.un = un;
-		this.cd = cd;
-		this.objTp = objTp;
-		this.appTp = appTp;
-		this.objTpx = objTpx;
-		this.koObj = koObj;
-		this.parent = parent;
-		this.user = user;
-		this.status = status;
-	}
-
-	// Конструктор
-	public Eolink(String guid, String un,
-			String cd, AddrTp objTp, Integer appTp, Lst objTpx, Ko koObj, User user) {
-		super();
-		this.guid = guid;
-		this.un = un;
-		this.cd = cd;
-		this.objTp = objTp;
-		this.appTp = appTp;
-		this.objTpx = objTpx;
-		this.koObj = koObj;
-		this.user = user;
-	}
-
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EOLINK")
-	@SequenceGenerator(name="SEQ_EOLINK", sequenceName="EXS.SEQ_EOLINK", allocationSize=1)	
+	@SequenceGenerator(name="SEQ_EOLINK", sequenceName="EXS.SEQ_EOLINK", allocationSize=1)
     @Column(name = "id", unique=true, updatable = false, nullable = false)
 	private Integer id;
 
 	// РЭУ в системе "Квартплата"
 	@Column(name = "REU", updatable = true, nullable = true)
 	private String reu;
-	
-	// Улица в системе "Квартплата"
+
+	// улица в системе "Квартплата"
 	@Column(name = "KUL", updatable = true, nullable = true)
 	private String kul;
-	
-	// Дом в системе "Квартплата"
+
+	// дом в системе "Квартплата"
 	@Column(name = "ND", updatable = true, nullable = true)
 	private String nd;
-	
-	// Квартира в системе "Квартплата"
+
+	// квартира в системе "Квартплата"
 	@Column(name = "KW", updatable = true, nullable = true)
 	private String kw;
 
-	// Лиц.счет в системе "Квартплата"
+	// лиц.счет в системе "Квартплата"
 	@Column(name = "LSK", updatable = true, nullable = true)
 	private String lsk;
-	
-	// Подъезд в  системе "Квартплата"
+
+	// подъезд в  системе "Квартплата"
 	@Column(name = "ENTRY", updatable = true, nullable = true)
 	private Integer entry;
-	
-	// Услуга в системе "Квартплата" (для счетчика)
+
+	// услуга в системе "Квартплата" (для счетчика)
 	@Column(name = "USL", updatable = true, nullable = true)
 	private String usl;
-	
+
 	// ID Группового счетчика в системе "Квартплата" из таблицы a_flow.n1
 	@Column(name = "ID_CNT", updatable = true, nullable = true)
 	private Integer idCnt;
-	
+
 	// ID Группы счетчика в системе "Квартплата" из таблицы a_flow.n2
 	@Column(name = "ID_GRP", updatable = true, nullable = true)
 	private Integer idGrp;
@@ -132,8 +90,8 @@ public class Eolink implements java.io.Serializable  {
 	// GUID объекта во внешней системе
 	@Column(name = "GUID", updatable = true, nullable = true)
 	private String guid;
-	
-	// Уникальный номер объекта во внешней системе
+
+	// уникальный номер объекта во внешней системе
 	@Column(name = "UNIQNUM")
 	private String un;
 
@@ -141,21 +99,21 @@ public class Eolink implements java.io.Serializable  {
 	@Column(name = "CD", updatable = true, nullable = true)
 	private String cd;
 
-	// Тип объекта (например "Договор") (используется для обмена с "Квартплатой") 
+	// тип объекта (например "Договор") (используется для обмена с "Квартплатой")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_OBJTP", referencedColumnName="ID", updatable = false)
 	private AddrTp objTp;
-	
-	// Тип информационной системы (0- "Квартплата", 1 - "Новая разработка")
+
+	// тип информационной системы (0- "Квартплата", 1 - "Новая разработка")
 	@Column(name = "APP_TP", updatable = true, nullable = true)
 	private Integer appTp;
-	
-	// Расширенный тип объекта (например "Договор управления") (используется для обмена с "Квартплатой")
+
+	// расширенный тип объекта (например "Договор управления") (используется для обмена с "Квартплатой")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_OBJTPX", referencedColumnName="ID")
 	private Lst objTpx;
 
-	// Идентификатор объекта связанного с EOLINK, в новой разработке
+	// идентификатор объекта связанного с EOLINK, в новой разработке
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_KLSK_OBJ", referencedColumnName="ID")
 	private Ko koObj;
@@ -164,7 +122,7 @@ public class Eolink implements java.io.Serializable  {
 	//@Column(name = "FK_KLSK_OBJ")
 	//private Integer klsk;
 
-	// Родительский объект 
+	// родительский объект
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", nullable = true, updatable = true)
 	private Eolink parent;
@@ -173,30 +131,30 @@ public class Eolink implements java.io.Serializable  {
 	@Column(name = "OGRN", updatable = true, nullable = true)
 	private String ogrn;
 
-	// Пользователь создавший запись
+	// пользователь создавший запись
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_USER", referencedColumnName="ID")
 	private User user;
 
-	// Параметры
+	// параметры
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID")
 	private List<EolinkPar> eolinkPar = new ArrayList<EolinkPar>(0);
-	
-	// Дочерние объекты
+
+	// дочерние объекты
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
 	private List<Eolink> child = new ArrayList<Eolink>(0);
 
-	// Дочерние объекты, связанные через EOLXEOL	
+	// дочерние объекты, связанные через EOLXEOL
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "EXS.EOLXEOL", joinColumns = {
 			@JoinColumn(name = "FK_PARENT", nullable = false, updatable = false) },
 			inverseJoinColumns = { @JoinColumn(name = "FK_CHILD",
 					nullable = false, updatable = false) })
 	private List<Eolink> childLinked = new ArrayList<Eolink>(0);
-	
-	// Родительские объекты, связанные через EOLXEOL	
+
+	// родительские объекты, связанные через EOLXEOL
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "EXS.EOLXEOL", joinColumns = {
 			@JoinColumn(name = "FK_CHILD", nullable = false, updatable = false) },
@@ -214,21 +172,25 @@ public class Eolink implements java.io.Serializable  {
 	@JoinColumn(name="FK_CHILD", referencedColumnName="ID")
 	private List<EolinkToEolink> parentLinked = new ArrayList<EolinkToEolink>(0);
 */
-	// Статус, 0 - архивная запись, 1-активная запись
+	// статус, 0 - архивная запись, 1-активная запись
 	@Column(name = "STATUS", updatable = true, nullable = true)
 	private Integer status;
-	
+
 	// ID лиц.счета в системе "Квартплата" (Заполняется только для Лиц.счетов)
 	@Column(name = "C_LSK_ID", updatable = true, nullable = true)
 	private Integer cLskId;
 
-	// Дата создания
+	// дата создания
 	@Column(name = "DT_CRT", updatable = false)
 	private Date crtDt;
 
-	// Дата обновления
+	// дата обновления
 	@Column(name = "DT_UPD")
 	private Date updDt;
+
+	// примечание по объекту
+	@Column(name = "COMM", updatable = true, nullable = true)
+	private String comm;
 
 	@Generated("SparkTools")
 	private Eolink(Builder builder) {
@@ -260,8 +222,10 @@ public class Eolink implements java.io.Serializable  {
 		this.cLskId = builder.cLskId;
 		this.crtDt = builder.crtDt;
 		this.updDt = builder.updDt;
+		this.comm = builder.comm;
 	}
 
+	@Override
 	public boolean equals(Object o) {
 	    if (this == o) return true;
 	    if (o == null || !(o instanceof Eolink))
@@ -273,6 +237,7 @@ public class Eolink implements java.io.Serializable  {
 	    return getId().equals(other.getId());
 	}
 
+	@Override
 	public int hashCode() {
 	    if (getId() != null) {
 	        return getId().hashCode();
@@ -324,6 +289,7 @@ public class Eolink implements java.io.Serializable  {
 		private Integer cLskId;
 		private Date crtDt;
 		private Date updDt;
+		private String comm;
 
 		private Builder() {
 		}
@@ -465,6 +431,11 @@ public class Eolink implements java.io.Serializable  {
 
 		public Builder withUpdDt(Date updDt) {
 			this.updDt = updDt;
+			return this;
+		}
+
+		public Builder withComm(String comm) {
+			this.comm = comm;
 			return this;
 		}
 

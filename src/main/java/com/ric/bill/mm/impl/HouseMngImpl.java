@@ -7,8 +7,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-//import com.dic.bill.dao.KartDAO;
-import com.ric.cmn.Utl;
 import com.ric.bill.dao.HouseDAO;
 import com.ric.bill.dao.KwDAO;
 import com.ric.bill.mm.HouseMng;
@@ -18,6 +16,8 @@ import com.ric.bill.model.ar.Kw;
 import com.ric.bill.model.bs.Org;
 import com.ric.bill.model.exs.Eolink;
 import com.ric.bill.model.oralv.Ko;
+//import com.dic.bill.dao.KartDAO;
+import com.ric.cmn.Utl;
 
 /**
  * Сервис обслуживания Дома
@@ -72,12 +72,29 @@ public class HouseMngImpl implements HouseMng {
 	@Override
 	public Ko getKoByKwNum(Integer houseKlsk, String num) {
 		Kw kw = kwDao.getByNum(houseKlsk, num);
-		
+
 		if (kw != null) {
 			return kw.getKo();
 		} else {
 			return null;
 		}
 	}
+
+	/**
+	 * Получить Ko объект помещения
+	 * @param houseEol
+	 * @param num
+	 * @return
+	 */
+	@Override
+	public Ko getPremisKo(Eolink houseEol, String num) {
+		Ko premisKo = null;
+		// получить Ko помещения
+		if (houseEol.getKoObj()!=null) {
+			premisKo = getKoByKwNum(houseEol.getKoObj().getId(), num);
+		}
+		return premisKo;
+	}
+
 
 }

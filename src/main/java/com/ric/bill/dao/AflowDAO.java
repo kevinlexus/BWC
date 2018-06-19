@@ -9,9 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.ric.bill.dto.SumChrgRec;
-import com.ric.bill.dto.SumDebRec;
 import com.ric.bill.model.hotora.scott.Aflow;
 import com.ric.bill.model.hotora.scott.AflowId;
+import com.ric.dto.SumDebRec;
 
 /**
  * DAO сущности Aflow - начисления, долги (cтарая разработка)
