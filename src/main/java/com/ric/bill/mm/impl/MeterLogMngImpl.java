@@ -580,6 +580,8 @@ public class MeterLogMngImpl implements MeterLogMng {
 		qr.setParameter(7/*"P_USERNAME"*/, user.getCd());
 		qr.executeUpdate();//.execute();
 
+		log.info("Вызвана Java процедура с параметрами chngId={}, p_fk_meter={}, p_vol1={}", chng.getId(), meter.getId(), vol1);
+
 //		Пример, как вызывать процедуру с параметром, не удалять!
 //		StoredProcedureQuery qr = em.createStoredProcedureQuery("mt.P_METER.meter_vol_ins_upd3");
 //		qr.registerStoredProcedureParameter(1, Integer.class, ParameterMode.OUT);
