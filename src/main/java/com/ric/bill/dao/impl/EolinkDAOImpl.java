@@ -26,7 +26,7 @@ public class EolinkDAOImpl implements EolinkDAO {
 
     // ограничивать выборку домов (0-нет, 1- да)
     @Value("${restrictHouse}")
-	private Boolean restrictHouse;
+	private Integer restrictHouse;
 
     //конструктор
     public EolinkDAOImpl() {
