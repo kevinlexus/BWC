@@ -25,7 +25,7 @@ public class EolinkDAOImpl implements EolinkDAO {
     private EntityManager em;
 
     // ограничивать выборку домов (0-нет, 1- да)
-    @Value("${allHouses}")
+    @Value("${restrictHouse}")
 	private Boolean restrictHouse;
 
     //конструктор
