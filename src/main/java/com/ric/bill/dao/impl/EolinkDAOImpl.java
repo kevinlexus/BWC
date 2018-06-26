@@ -8,6 +8,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.ric.bill.dao.EolinkDAO;
@@ -20,9 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 public class EolinkDAOImpl implements EolinkDAO {
 
-	//EntityManager - EM нужен на каждый DAO или сервис свой!
     @PersistenceContext
     private EntityManager em;
+
+    // ограничивать выборку домов (0-нет, 1- да)
+    @Value("${allHouses}")
+	private Boolean restrictHouse;
 
     //конструктор
     public EolinkDAOImpl() {
@@ -172,14 +176,14 @@ public class EolinkDAOImpl implements EolinkDAO {
 			query = em.createQuery("select e from Eolink e "
 					+ "join AddrTp b with e.objTp.id=b.id and b.cd =:eolTp "
 					+ "where e.guid is not null "
-					//+ "where e.guid is not null and e.id in (7350, 7343, 6440, 7570, 8003) " // TODO УБРАТЬ ВРЕМЕННЫЕ ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-					//+ "and e.parent is not null " // где есть организация
+					+ "and (:restrictHouse=0 or :restrictHouse=1 and e.id in (7350, 7343, 6440, 7570, 8003)) " // TODO УБРАТЬ ВРЕМЕННЫЕ ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 					+ "and not exists (select t from TaskToTask t where t.child.eolink.id=e.id "
 					+ "and t.child.act.cd = :actTp and t.parent.cd = :parentCD) ");
 		}
 		query.setParameter("eolTp", eolTp);
 		query.setParameter("actTp", actTp);
 		query.setParameter("parentCD", parentCD);
+		query.setParameter("restrictHouse", restrictHouse);
 		return query.getResultList();
 	}
 }
