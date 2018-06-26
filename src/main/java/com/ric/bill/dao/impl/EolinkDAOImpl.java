@@ -179,11 +179,11 @@ public class EolinkDAOImpl implements EolinkDAO {
 					+ "and (:restrictHouse=0 or :restrictHouse=1 and e.id in (7350, 7343, 6440, 7570, 8003)) " // TODO УБРАТЬ ВРЕМЕННЫЕ ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 					+ "and not exists (select t from TaskToTask t where t.child.eolink.id=e.id "
 					+ "and t.child.act.cd = :actTp and t.parent.cd = :parentCD) ");
+			query.setParameter("restrictHouse", restrictHouse);
 		}
 		query.setParameter("eolTp", eolTp);
 		query.setParameter("actTp", actTp);
 		query.setParameter("parentCD", parentCD);
-		query.setParameter("restrictHouse", restrictHouse);
 		return query.getResultList();
 	}
 }
