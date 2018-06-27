@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ric.cmn.Utl;
 import com.ric.bill.dao.TaskDAO;
 import com.ric.bill.mm.TaskMng;
 import com.ric.bill.model.exs.Eolink;
@@ -21,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TaskMngImpl implements TaskMng {
 
-	//EntityManager - EM нужен на каждый DAO или сервис свой!
     @PersistenceContext
     private EntityManager em;
     @Autowired
@@ -30,15 +28,17 @@ public class TaskMngImpl implements TaskMng {
     /**
      * Установить статус задания
      */
+	@Override
     @Transactional
     public void setState(Task task, String state) {
     	Task foundTask = em.find(Task.class, task.getId());
 		foundTask.setState(state);
 	}
-    
+
     /**
      * Установить результат задания
      */
+	@Override
     @Transactional
     public void setResult(Task task, String result) {
     	Task foundTask = em.find(Task.class, task.getId());
@@ -48,6 +48,7 @@ public class TaskMngImpl implements TaskMng {
     /**
      * Очистить результат в т.ч. дочерних заданий
      */
+	@Override
     @Transactional
     public void clearAllResult(Task task) {
     	Task foundTask = em.find(Task.class, task.getId());
@@ -56,7 +57,7 @@ public class TaskMngImpl implements TaskMng {
     		setResult(t, null);
     	});
 	}
-	
+
 	/**
 	 * Установить идентификаторы объектов (если не заполненны)
 	 * @param eolink - Объект
@@ -64,6 +65,7 @@ public class TaskMngImpl implements TaskMng {
 	 * @param un - уникальный номер, полученный от ГИС
 	 * @param status - статус
 	 */
+	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public void setEolinkIdf(Eolink eo, String guid, String un, Integer status) {
 		if (eo.getGuid() == null) {
@@ -77,16 +79,37 @@ public class TaskMngImpl implements TaskMng {
 		}
 
 	}
-	
+
 	/**
 	 * Вернуть задание по ID родительского задания и транспортному GUID
 	 * @param - task - родительское задание
 	 * @param - tguid - транспортный GUID
 	 */
+	@Override
 	public Task getByTguid(Task task, String tguid) {
-		
+
 		return taskDao.getByTguid(task, tguid);
-		
+
 	}
-    
+
+	/**
+	 * Добавить в лог сообщение
+	 * @param task - задание
+	 * @param isStart - начало - окончание процесса
+	 * @param isSucc - успешно / с ошибкой
+	 */
+	@Override
+	public void logTask(Task task, boolean isStart, Boolean isSucc) {
+		if (isSucc!=null) {
+			log.info("******* Task.id={}, {}, {}, {}, {}",
+					task.getId(), task.getAct().getName(), task.getState(),
+					isStart?"Начало":"Окончание", isSucc?"Выполнено":"ОШИБКА");
+		} else {
+			log.info("******* Task.id={}, {}, {}",
+					task.getId(), task.getAct().getName(), task.getState(),
+					isStart?"Начало":"Окончание");
+		}
+	}
+
+
 }

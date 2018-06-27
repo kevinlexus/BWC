@@ -10,4 +10,5 @@ public interface TaskMng {
 	public void clearAllResult(Task task);
 	public void setEolinkIdf(Eolink eo, String guid, String un, Integer status);
 	public Task getByTguid(Task task, String tguid);
+	void logTask(Task task, boolean isStart, Boolean isSucc);
 }

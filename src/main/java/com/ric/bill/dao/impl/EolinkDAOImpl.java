@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.ric.bill.dao.EolinkDAO;
@@ -46,6 +47,7 @@ public class EolinkDAOImpl implements EolinkDAO {
      * @return
      */
     @Override
+    @Cacheable(cacheNames="EolinkDAOImpl.getEolinkByGuid", key="{#guid }")
 	public Eolink getEolinkByGuid(String guid) {
     	//log.info("GUID={}", guid);
 		Query query =em.createQuery("select t from Eolink t where t.guid = :guid");

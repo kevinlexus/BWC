@@ -128,11 +128,11 @@ public class Task implements java.io.Serializable  {
 	@Column(name = "CD")
 	private String cd;
 
-	// Статус обработки
+	// статус обработки
 	@Column(name = "STATE")
 	private String state;
 
-	// Заданное действие
+	// заданное действие
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="FK_ACT", referencedColumnName="ID")
 	private Lst act;
@@ -145,42 +145,46 @@ public class Task implements java.io.Serializable  {
 	@Column(name = "MSGGUID", updatable = true, nullable = true)
 	private String msgGuid;
 
-	// Уникальный номер объекта во внешней системе
+	// уникальный номер объекта во внешней системе
 	@Column(name = "UNIQNUM")
 	private String un;
 
-	// Результат отправки
+	// результат отправки
 	@Column(name = "RESULT")
 	private String result;
 
-	// Дата создания
+	// дата создания
 	@Column(name = "DT_CRT")
 	private Date crtDt;
 
-	// Дата обновления
+	// дата обновления
 	@Column(name = "DT_UPD")
 	private Date updDt;
 
-	// Транспортный GUID объекта
+	// транспортный GUID объекта
 	@Column(name = "TGUID", updatable = true, nullable = true)
 	private String tguid;
 
-	// Тип информационной системы (0- "Квартплата", 1 - "Новая разработка")
-/*	@Column(name = "APP_TP", updatable = true, nullable = true)
-	private Integer appTp;
-*/
-	// Пользователь (специально не стал делать MANY TO ONE - так как возможно не будет таблицы, куда TO ONE)
+	// пользователь (специально не стал делать MANY TO ONE - так как возможно не будет таблицы, куда TO ONE)
 	@Column(name = "FK_USER", updatable = false, nullable = true)
 	private Integer fk_user;
 
-	// Параметры
+	// параметры
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name="FK_TASK", referencedColumnName="ID")
 	private List<TaskPar> taskPar = new ArrayList<TaskPar>(0);
 
-	// Порядковый номер
+	// порядковый номер
 	@Column(name = "npp")
 	private String npp;
+
+	// приоритет - больше значение - выше приоритет обработки
+	@Column(name = "priority", updatable = false, nullable = true)
+	private Integer priority;
+
+	// уровень трассировки (0 - не трассировать в лог, 1 - только XML)
+	@Column(name = "trace", updatable = false, nullable = false)
+	private Integer trace;
 
 	@Override
 	public boolean equals(Object o) {

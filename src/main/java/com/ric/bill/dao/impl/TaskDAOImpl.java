@@ -28,13 +28,13 @@ public class TaskDAOImpl implements TaskDAO {
     }
 
     /**
-     * Вернуть список необработанных заданий
+     * Вернуть список необработанных заданий, отсортированных по приоритету
      */
     @Override
 	public List<Task> getAllUnprocessed() {
 			Query query =em.createQuery("select t from Task t left join t.master d "
 					+ "where t.state in ('INS','ACK','RPT') and t.parent is null "
-					+ "and (t.master is null or t.master.state in ('ACP')) order by t.id");
+					+ "and (t.master is null or t.master.state in ('ACP')) order by nvl(t.priority,0) desc, t.id");
 			return query.getResultList();
 	}
 
@@ -70,7 +70,8 @@ public class TaskDAOImpl implements TaskDAO {
      * @param addrTp - уточняющий тип объекта
      * @param addrTp - тип объекта
      */
-    public List<Task> getByTaskAddrTp(Task task, String addrTp, String addrTpx, Integer appTp) {
+    @Override
+	public List<Task> getByTaskAddrTp(Task task, String addrTp, String addrTpx, Integer appTp) {
     	Query query = null;
     	if (appTp.equals(0)) {
     		// "Квартплата"
