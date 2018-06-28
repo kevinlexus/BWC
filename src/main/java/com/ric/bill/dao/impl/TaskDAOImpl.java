@@ -97,8 +97,10 @@ public class TaskDAOImpl implements TaskDAO {
     			// заполнен уточняющий тип
     			if (addrTp.equals("Документ")) {
     				// TODO: Не проверял запрос! возможно не будет работать, доделать его!
-        			query =em.createQuery("from Task t where t.parent.id = :parentId and t.eolink.ko.addrTp.cd = :addrTp and t.eolink.ko.doc.tp = :addrTpx");
-        			query.setParameter("parentId", task.getParent().getId());
+        			query =em.createQuery("select t from Task t join t.eolink e join e.koObj ko "
+        					+ "where t.parent.id = :parentId and ko.addrTp.cd = :addrTp"
+        					+ "and ko.doc.tp=:addrTpx");
+        			query.setParameter("parentId", task.getId());
         			query.setParameter("addrTp", addrTp);
         			query.setParameter("addrTpx", addrTpx);
     			} else {
@@ -107,22 +109,23 @@ public class TaskDAOImpl implements TaskDAO {
 
     		} else {
     			// не заполнен уточняющий тип
-    			query =em.createQuery("from Task t where t.parent.id = :parentId and t.eolink.ko.addrTp.cd = :addrTp");
-    			query.setParameter("parentId", task.getParent().getId());
+    			log.info("parentId={}, addrTp={}", task.getId(), addrTp);
+    			query =em.createQuery("select t from Task t join t.eolink e join e.koObj ko "
+    					+ "where t.parent.id = :parentId and ko.addrTp.cd = :addrTp");
+    			query.setParameter("parentId", task.getId());
     			query.setParameter("addrTp", addrTp);
     		}
     	}
 
+		List<Task> lst;
+		try {
+			lst = query.getResultList();
+		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
+			// не найден результат
+			return null;
+		}
 
-			List<Task> lst;
-			try {
-				lst = query.getResultList();
-			} catch (org.springframework.dao.EmptyResultDataAccessException e) {
-				// не найден результат
-				return null;
-			}
-
-			return lst;
+		return lst;
 	}
 
 	/**
