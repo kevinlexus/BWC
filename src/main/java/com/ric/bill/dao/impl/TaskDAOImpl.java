@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.ric.bill.dao.TaskDAO;
@@ -58,6 +59,7 @@ public class TaskDAOImpl implements TaskDAO {
      * Вернуть задание по CD
      */
     @Override
+    @Cacheable(cacheNames="TaskDAOImpl.getByCd", key="{#cd }")
     public Task getByCd(String cd) {
 			Query query =em.createQuery("select t from Task t where t.cd=:cd");
 			query.setParameter("cd", cd);
@@ -115,12 +117,15 @@ public class TaskDAOImpl implements TaskDAO {
 
     		} else {
     			// не заполнен уточняющий тип
-    			log.info("parentId={}, addrTp={}", task.getId(), addrTp);
-    			query =em.createQuery("select t from Task t join t.eolink e join e.koObj ko "
+    			query =em.createQuery("from Task t where t.parent.id = :parentId and t.eolink.objTp.cd = :addrTp");
+    			query.setParameter("parentId", task.getId());
+    			query.setParameter("addrTp", addrTp);
+//    			log.info("parentId={}, addrTp={}", task.getId(), addrTp);
+/*    			query =em.createQuery("select t from Task t join t.eolink e join e.koObj ko "
     					+ "where t.parent.id = :parentId and ko.addrTp.cd = :addrTp");
     			query.setParameter("parentId", task.getId());
     			query.setParameter("addrTp", addrTp);
-    		}
+*/    		}
     	}
 
 		List<Task> lst;
