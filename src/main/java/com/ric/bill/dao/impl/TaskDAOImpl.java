@@ -15,6 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 
 
 
+/**
+ * DAO сущности Task
+ * @author lev
+ * @version 1.00
+ *
+ */
 @Slf4j
 @Repository
 public class TaskDAOImpl implements TaskDAO {
