@@ -47,7 +47,7 @@ public class EolinkDAOImpl implements EolinkDAO {
      * @return
      */
     @Override
-    @Cacheable(cacheNames="EolinkDAOImpl.getEolinkByGuid", key="{#guid }")
+    @Cacheable(cacheNames="EolinkDAOImpl.getEolinkByGuid", key="{#guid }", unless = "#result == null")
 	public Eolink getEolinkByGuid(String guid) {
     	//log.info("GUID={}", guid);
 		Query query =em.createQuery("select t from Eolink t where t.guid = :guid");
@@ -170,14 +170,14 @@ public class EolinkDAOImpl implements EolinkDAO {
 		Query query = null;
 		if (eolTp.equals("Организация")) {
 			query = em.createQuery("select e from Eolink e "
-					+ "join AddrTp b with e.objTp.id=b.id and b.cd =:eolTp "
-					+ "where "
+					+ "join e.objTp b "
+					+ "where b.cd =:eolTp and "
 					+ "not exists (select t from TaskToTask t where t.child.eolink.id=e.id "
 					+ "and t.child.act.cd = :actTp and t.parent.cd = :parentCD) ");
 		} else if (eolTp.equals("Дом")) {
 			query = em.createQuery("select e from Eolink e "
-					+ "join AddrTp b with e.objTp.id=b.id and b.cd =:eolTp  "
-					+ "where e.guid is not null "
+					+ "join e.objTp b "
+					+ "where b.cd =:eolTp and e.guid is not null "
 					+ "and (:restrictHouse=0 or :restrictHouse=1 and e.id in (7350, 7343, 6440, 7570, 8003)) " // TODO УБРАТЬ ВРЕМЕННЫЕ ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 					+ "and not exists (select t from TaskToTask t where t.child.eolink.id=e.id "
 					+ "and t.child.act.cd = :actTp and t.parent.cd = :parentCD) ");

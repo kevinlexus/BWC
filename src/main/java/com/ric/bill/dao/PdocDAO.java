@@ -21,7 +21,7 @@ public interface PdocDAO extends JpaRepository<Pdoc, Integer> {
 	/**
 	 * Получить список незагруженных ПД в ГИС по Дому, по помещениям в подъездах
 	 * отсортированно по номеру документа в биллинге
-	 * @param house - дом
+	 * @param eolinkId - Id дома
 	 * @return
 	 */
 	@Query("select p from Pdoc p join p.eolink s " // лиц.счет
@@ -29,20 +29,20 @@ public interface PdocDAO extends JpaRepository<Pdoc, Integer> {
 			+ "join k.parent e " // подъезд
 			+ "join e.parent h on h.id=:eolinkId "  // дом
 			+ "where (p.status=0 and p.v=1 or p.status=1 and p.v=0) " // либо добавленные, но не загруженные, либо отмененные и не отмененные в ГИС
-			+ "and nvl(p.err,0) = 0 " // без ошибок загрузки
+			//+ "and nvl(p.err,0) = 0 " // без ошибок загрузки -  пока убрал ред.16.08.2018
 			+ "order by p.cd")
 	  List<Pdoc> getForLoadByHouseWithEntry(@Param("eolinkId") Integer eolinkId);
 
 	/**
 	 * Получить список незагруженных ПД в ГИС по Дому, по помещениям без подъездов
 	 * отсортированно по номеру документа в биллинге
-	 * @param house - дом
+	 * @param eolinkId - ID дома
 	 * @return
 	 */
 	@Query("select p from Pdoc p join p.eolink s " // лиц.счет
 			+ "join s.parent h on h.id=:eolinkId "  // дом
 			+ "where (p.status=0 and p.v=1 or p.status=1 and p.v=0) " // либо добавленные, но не загруженные, либо отмененные и не отмененные в ГИС
-			+ "and nvl(p.err,0) = 0 " // без ошибок загрузки
+			//+ "and nvl(p.err,0) = 0 " // без ошибок загрузки -  пока убрал ред.16.08.2018
 			+ "order by p.cd")
 	  List<Pdoc> getForLoadByHouseWOEntry(@Param("eolinkId") Integer eolinkId);
 
@@ -54,4 +54,14 @@ public interface PdocDAO extends JpaRepository<Pdoc, Integer> {
 	@Query("select p from Pdoc p "
 			+ "where p.tguid = :tguid ")
 	  Pdoc getByTGUID(@Param("tguid") String tguid);
+
+	/**
+	 * Найти ПД по CD
+	 * @param cd - CD
+	 * @return
+	 */
+	@Query("select p from Pdoc p "
+			+ "where p.cd = :cd ")
+	Pdoc getByCD(@Param("cd") String cd);
+
 }

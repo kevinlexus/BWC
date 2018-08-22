@@ -25,7 +25,7 @@ public interface AflowDAO extends JpaRepository<Aflow, AflowId> {
 	/**
 	 * Получить сгруппированные записи начислений, связанных с услугой из ГИС ЖКХ по лиц.счету и периоду
 	 * @param lsk - лицевой счет
-	 * @param mg - период
+	 * @param period - период
 	 * @return
 	 */
 	@Query(value = "select t2.id as \"ulistId\", sum(t2.summa) as \"summa\", sum(t2.vol) as \"vol\", "

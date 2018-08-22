@@ -10,14 +10,16 @@ import com.ric.bill.model.exs.Ulist;
 public interface SumChrgRec {
 	// Id услуги из ГИС
 	Integer getUlistId();
-	// сумма
-	Double getSumma();
+	// начисление
+	Double getChrg();
+	// перерасчет
+	Double getChng();
 	// объем
 	Double getVol();
 	// цена
 	Double getPrice();
-	// вспомогательный коэффициент (например, чтобы перевести м2 в гигаКаллорию для отопления - для старой разработки (МП РИЦ))
-	//Double getCoeff();
+	// норматив (обычно - коэфф. для услуги повыш.коэфф)
+	Double getNorm();
 	// общая площадь (работает совместно с вспомогательным коэффициентом)
 	Double getSqr();
 	// услуга из справочника ГИС

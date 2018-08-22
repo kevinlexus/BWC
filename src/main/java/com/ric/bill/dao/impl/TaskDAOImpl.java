@@ -59,7 +59,7 @@ public class TaskDAOImpl implements TaskDAO {
      * Вернуть задание по CD
      */
     @Override
-    @Cacheable(cacheNames="TaskDAOImpl.getByCd", key="{#cd }")
+    @Cacheable(cacheNames="TaskDAOImpl.getByCd", key="{#cd }", unless = "#result == null")
     public Task getByCd(String cd) {
 			Query query =em.createQuery("select t from Task t where t.cd=:cd");
 			query.setParameter("cd", cd);

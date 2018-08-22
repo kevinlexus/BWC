@@ -31,7 +31,7 @@ public class ServDAOImpl implements ServDAO {
 	 * @return
 	 */
 	@Override
-	@Cacheable(cacheNames="ServDAOImpl.findMain", key="{#serv.getId() }")
+	@Cacheable(cacheNames="ServDAOImpl.findMain", key="{#serv.getId() }", unless = "#result == null")
 	public synchronized Serv getMain(Serv serv) {
 		Query query =em.createQuery("from Serv t where t.servOdn=:serv");
 		query.setParameter("serv", serv);

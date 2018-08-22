@@ -20,7 +20,7 @@ public class ParDAOImpl implements ParDAO {
     private EntityManager em;
     
 	@SuppressWarnings("unchecked")
-	@Cacheable(cacheNames="ParDAOImpl.getByCd", key="{#rqn, #cd }")
+	@Cacheable(cacheNames="ParDAOImpl.getByCd", key="{#rqn, #cd }", unless = "#result == null")
 	public Par getByCd(int rqn, String cd) {
 		Query query =em.createQuery("from Par t where t.cd = :cd");
 		query.setParameter("cd", cd);

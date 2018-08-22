@@ -27,7 +27,7 @@ public class LstMngImpl implements LstMng {
 	@Autowired
 	private KoDAO koDao;
 
-	@Cacheable("LstMngImpl.getByCD") //здесь кэш работает очень эффективно, не убирать!
+	@Cacheable(cacheNames="LstMngImpl.getByCD", unless = "#result == null") //здесь кэш работает очень эффективно, не убирать!
 	public Lst getByCD(String cd) {
 		return lstDao.getByCD(cd);
 	}

@@ -41,9 +41,9 @@ public class TaskParMngImpl implements TaskParMng {
 
 	/**
 	 * получить значение параметра типа Boolean связанного объекта по CD свойства
-	 * @param eolink - связанный объект
+	 * @param task - задание
 	 * @param parCd - CD параметра
-	 * @throws WrongGetMethod 
+	 * @throws WrongGetMethod
 	 */
 	public Boolean getBool(Task task, String parCd) throws WrongGetMethod {
 		Par par = parMng.getByCD(-1, parCd);
@@ -67,14 +67,14 @@ public class TaskParMngImpl implements TaskParMng {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * установить значение параметра типа Boolean связанного объекта по CD свойства
 	 * в случае отсутствия - создать
-	 * @param eolink - связанный объект
+	 * @param task - задание
 	 * @param parCd - CD параметра
 	 * @param val - значение
-	 * @throws WrongGetMethod 
+	 * @throws WrongGetMethod
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public void setBool(Task task, String parCd, Boolean val) throws WrongGetMethod {
@@ -91,7 +91,7 @@ public class TaskParMngImpl implements TaskParMng {
 					val1 = 0D;
 				}
 			}
-			
+
 			if (ap!= null) {
 				// сохранить значение
 				ap.setN1(val1);
@@ -105,12 +105,12 @@ public class TaskParMngImpl implements TaskParMng {
 		}
 	}
 
-	
+
 	/**
 	 * получить значение параметра типа Double задания по CD свойства
 	 * @param task - задание
 	 * @param parCd - CD параметра
-	 * @throws WrongGetMethod 
+	 * @throws WrongGetMethod
 	 */
 	public Double getDbl(Task task, String parCd) throws WrongGetMethod {
 		Par par = parMng.getByCD(-1, parCd);
@@ -132,7 +132,7 @@ public class TaskParMngImpl implements TaskParMng {
 	 * @param task - задание
 	 * @param parCd - CD параметра
 	 * @param val - значение параметра
-	 * @throws WrongGetMethod 
+	 * @throws WrongGetMethod
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public Double setDbl(Task task, String parCd, Double val) throws WrongGetMethod {
@@ -159,7 +159,7 @@ public class TaskParMngImpl implements TaskParMng {
 	 * получить значение параметра типа String задания по CD свойства
 	 * @param task - задание
 	 * @param parCd - CD параметра
-	 * @throws WrongGetMethod 
+	 * @throws WrongGetMethod
 	 */
 	public String getStr(Task task, String parCd) throws WrongGetMethod {
 		Par par = parMng.getByCD(-1, parCd);
@@ -181,7 +181,7 @@ public class TaskParMngImpl implements TaskParMng {
 	 * @param task - задание
 	 * @param parCd - CD параметра
 	 * @param val - значение параметра
-	 * @throws WrongGetMethod 
+	 * @throws WrongGetMethod
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public Double setStr(Task task, String parCd, String val) throws WrongGetMethod {
@@ -203,12 +203,12 @@ public class TaskParMngImpl implements TaskParMng {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * получить значение параметра типа Date задания по CD свойства
 	 * @param task - задание
 	 * @param parCd - CD параметра
-	 * @throws WrongGetMethod 
+	 * @throws WrongGetMethod
 	 */
 	public Date getDate(Task task, String parCd) throws WrongGetMethod {
 		Par par = parMng.getByCD(-1, parCd);
@@ -230,7 +230,7 @@ public class TaskParMngImpl implements TaskParMng {
 	 * @param task - задание
 	 * @param parCd - CD параметра
 	 * @param val - значение параметра
-	 * @throws WrongGetMethod 
+	 * @throws WrongGetMethod
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public Double setDate(Task task, String parCd, Date val) throws WrongGetMethod {
@@ -252,5 +252,5 @@ public class TaskParMngImpl implements TaskParMng {
 		}
 		return null;
 	}
-	
+
 }

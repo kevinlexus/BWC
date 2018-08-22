@@ -28,6 +28,7 @@ import com.ric.bill.model.sec.User;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 
 /**
@@ -38,6 +39,7 @@ import lombok.Setter;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "EOLINK", schema="EXS")
+@DynamicUpdate
 @Getter @Setter
 public class Eolink implements java.io.Serializable  {
 
@@ -146,6 +148,11 @@ public class Eolink implements java.io.Serializable  {
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID")
 	private List<Eolink> child = new ArrayList<Eolink>(0);
 
+	// платежные документы (для уровня Лицевой счет)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name="FK_EOLINK", referencedColumnName="ID")
+	private List<Pdoc> pdoc = new ArrayList<Pdoc>(0);
+
 	// дочерние объекты, связанные через EOLXEOL
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "EXS.EOLXEOL", joinColumns = {
@@ -182,7 +189,7 @@ public class Eolink implements java.io.Serializable  {
 
 	// дата создания
 	@Column(name = "DT_CRT", updatable = false)
-	private Date crtDt;
+	private Date dtCrt;
 
 	// дата обновления
 	@Column(name = "DT_UPD")
@@ -220,7 +227,7 @@ public class Eolink implements java.io.Serializable  {
 		this.parentLinked = builder.parentLinked;
 		this.status = builder.status;
 		this.cLskId = builder.cLskId;
-		this.crtDt = builder.crtDt;
+		this.dtCrt = builder.crtDt;
 		this.updDt = builder.updDt;
 		this.comm = builder.comm;
 	}

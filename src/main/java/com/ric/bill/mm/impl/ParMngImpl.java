@@ -42,7 +42,7 @@ public class ParMngImpl implements ParMng {
 	/**
 	 * Узнать существует ли параметр по его CD
 	 */
-	@Cacheable(cacheNames="ParMngImpl.isExByCd", key="{#rqn, #cd }")
+	@Cacheable(cacheNames="ParMngImpl.isExByCd", key="{#rqn, #cd }", unless = "#result == null")
 	public boolean isExByCd(int rqn, String cd) {
 		Par p = getByCD(rqn, cd);
 		if (p != null) {
@@ -53,7 +53,7 @@ public class ParMngImpl implements ParMng {
 	}
 
 
-	@Cacheable(cacheNames="ParMngImpl.getBool1", key="{#rqn, #st.getKo().getId(), #cd, #genDt }")
+	@Cacheable(cacheNames="ParMngImpl.getBool1", key="{#rqn, #st.getKo().getId(), #cd, #genDt }", unless = "#result == null")
 	public Boolean getBool(int rqn, Storable st, String cd, Date genDt) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
@@ -92,7 +92,7 @@ public class ParMngImpl implements ParMng {
 		return null;
 	}
 
-	@Cacheable(cacheNames="ParMngImpl.getBool2", key="{#rqn, #st.getKo().getId(), #cd}")
+	@Cacheable(cacheNames="ParMngImpl.getBool2", key="{#rqn, #st.getKo().getId(), #cd}", unless = "#result == null")
 	public Boolean getBool(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
@@ -141,7 +141,7 @@ public class ParMngImpl implements ParMng {
 	 * @return - значение параметра
 	 * @throws EmptyStorable
 	 */
-	@Cacheable(cacheNames="ParMngImpl.getDbl1", key="{#rqn, #st.getKo().getId(), #cd, #genDt, #chng }")
+	@Cacheable(cacheNames="ParMngImpl.getDbl1", key="{#rqn, #st.getKo().getId(), #cd, #genDt, #chng }", unless = "#result == null")
 	public Double getDbl(int rqn, Storable st, String cd, Date genDt, Chng chng) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
@@ -194,7 +194,7 @@ public class ParMngImpl implements ParMng {
 	 * получить значение параметра типа Double объекта по CD свойства, без указания даты
 	 * @throws EmptyServ 
 	 */
-	@Cacheable(cacheNames="ParMngImpl.getDbl2", key="{#rqn, #st.getKo().getId(), #cd }")
+	@Cacheable(cacheNames="ParMngImpl.getDbl2", key="{#rqn, #st.getKo().getId(), #cd }", unless = "#result == null")
 	public Double getDbl(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
@@ -227,7 +227,7 @@ public class ParMngImpl implements ParMng {
 	/**
 	 * получить значение параметра типа Double объекта по CD свойства, без указания даты
 	 */
-	@Cacheable(cacheNames="ParMngImpl.getDate", key="{#rqn, #st.getKo().getId(), #cd }")
+	@Cacheable(cacheNames="ParMngImpl.getDate", key="{#rqn, #st.getKo().getId(), #cd }", unless = "#result == null")
 	public /*synchronized*/ Date getDate(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
@@ -299,7 +299,7 @@ public class ParMngImpl implements ParMng {
 	 * получить значение параметра типа String объекта по CD свойства
 	 * @throws EmptyStorable 
 	 */
-	@Cacheable(cacheNames="ParMngImpl.getStr1", key="{ #rqn, #st.getKo().getId(), #cd, #genDt }")
+	@Cacheable(cacheNames="ParMngImpl.getStr1", key="{ #rqn, #st.getKo().getId(), #cd, #genDt }", unless = "#result == null")
 	public /*synchronized*/ String getStr(int rqn, Storable st, String cd, Date genDt) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");
@@ -337,7 +337,7 @@ public class ParMngImpl implements ParMng {
 	 * получить значение параметра типа String объекта по CD свойства, без указания даты
 	 * @throws EmptyStorable 
 	 */
-	@Cacheable(cacheNames="ParMngImpl.getStr2", key="{ #rqn, #st.getKo().getId(), #cd }")
+	@Cacheable(cacheNames="ParMngImpl.getStr2", key="{ #rqn, #st.getKo().getId(), #cd }", unless = "#result == null")
 	public /*synchronized*/ String getStr(int rqn, Storable st, String cd) throws EmptyStorable {
 		if (st == null) {
 			throw new EmptyStorable("Параметр st = null");

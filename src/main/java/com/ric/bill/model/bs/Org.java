@@ -24,7 +24,7 @@ import lombok.Setter;
 
 /**
  * Организация
- * 
+ *
  *
  */
 @SuppressWarnings("serial")
@@ -39,20 +39,20 @@ public class Org extends Base implements java.io.Serializable, Storable {
 
 	// CD
 	@Column(name = "CD", updatable = false, nullable = false)
-	private String cd; 
+	private String cd;
 
 	// наименование
     @Column(name = "NAME")
-	private String name; 
+	private String name;
 
 	// ИНН
     @Column(name = "INN")
 	private String inn;
-    
+
 	// БИК
     @Column(name = "BIK")
 	private String bik;
-    
+
 	// расчетный счет
     @Column(name = "R_SCH")
 	private String operAcc;
@@ -61,16 +61,16 @@ public class Org extends Base implements java.io.Serializable, Storable {
 	@JoinColumn(name="FK_ORG", referencedColumnName="ID")
 	@BatchSize(size = 50)
 	private List<OrgTp> orgTp = new ArrayList<OrgTp>(0);
-    
+
 	// Взято на обслуживание в новую программу
 	@Type(type= "org.hibernate.type.NumericBooleanType")
 	@Column(name = "MNT", nullable = true)
 	private Boolean isMnt;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PARENT_ID", referencedColumnName="ID", updatable = false)
 	private Org parent;
-	
+
 	@Override
 	public boolean equals(Object o) {
 	    if (this == o) return true;

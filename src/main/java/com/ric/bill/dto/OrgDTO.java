@@ -21,5 +21,7 @@ public class OrgDTO extends BaseDTO {
 	String bik;
 	// расчетный счет в банке
 	String operAcc;
-	
+	// расчетный счет для ГИС ЖКХ
+	String operAccGis;
+
 }

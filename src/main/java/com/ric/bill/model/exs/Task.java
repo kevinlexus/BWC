@@ -135,7 +135,7 @@ public class Task implements java.io.Serializable  {
 
 	// дата создания
 	@Column(name = "DT_CRT")
-	private Date crtDt;
+	private Date dtCrt;
 
 	// дата обновления
 	@Column(name = "DT_UPD")
@@ -184,7 +184,7 @@ public class Task implements java.io.Serializable  {
 		this.msgGuid = builder.msgGuid;
 		this.un = builder.un;
 		this.result = builder.result;
-		this.crtDt = builder.crtDt;
+		this.dtCrt = builder.crtDt;
 		this.updDt = builder.updDt;
 		this.tguid = builder.tguid;
 		this.fk_user = builder.fk_user;
