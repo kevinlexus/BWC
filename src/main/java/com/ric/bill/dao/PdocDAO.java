@@ -46,6 +46,20 @@ public interface PdocDAO extends JpaRepository<Pdoc, Integer> {
 			+ "order by p.cd")
 	  List<Pdoc> getForLoadByHouseWOEntry(@Param("eolinkId") Integer eolinkId);
 
+
+	/**
+	 * Получить список Загруженных ПД в ГИС по Дому, по помещениям в подъездах
+	 * @param eolinkId - Id дома
+	 * @return
+	 */
+	@Query("select p from Pdoc p join p.eolink s " // лиц.счет
+			+ "join s.parent k " // квартира
+			+ "join k.parent e " // подъезд
+			+ "join e.parent h on h.id=:eolinkId "  // дом
+			+ "where (p.status=1 and p.v=1) " // загруженные ПД
+			+ "order by p.cd")
+	List<Pdoc> getForCheckNotifByHouseWithEntry(@Param("eolinkId") Integer eolinkId);
+
 	/**
 	 * Найти ПД по TGUID
 	 * @param tguid - транспортный GUID

@@ -1,5 +1,6 @@
 package com.ric.bill.model.exs;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -92,6 +93,22 @@ public class Pdoc implements java.io.Serializable  {
 	@Column(name = "COMM", updatable = true, nullable = true)
 	private String comm;
 
+	// импортрируется в ГИС: сумма долга по ПД
+	@Column(name = "SUMMA_IN", updatable = true, nullable = true)
+	private BigDecimal summaIn;
+
+	// импортрируется в ГИС: сумма пени по ПД
+	@Column(name = "PENYA_IN", updatable = true, nullable = true)
+	private BigDecimal penyaIn;
+
+	// экспортируется из ГИС: сумма долга по ПД
+	@Column(name = "SUMMA_OUT", updatable = true, nullable = true)
+	private BigDecimal summaOut;
+
+	// экспортируется из ГИС: сумма пени по ПД
+	@Column(name = "PENYA_OUT", updatable = true, nullable = true)
+	private BigDecimal penyaOut;
+
 	@Override
 	public boolean equals(Object o) {
 	    if (this == o) return true;
@@ -142,6 +159,14 @@ public class Pdoc implements java.io.Serializable  {
         private String result;
 		// комментарий импорта-экспорта
         private String comm;
+		// импортрируется в ГИС: сумма долга по ПД
+        private BigDecimal summaIn;
+		// импортрируется в ГИС: сумма пени по ПД
+        private BigDecimal penyaIn;
+		// экспортируется из ГИС: сумма долга по ПД
+        private BigDecimal summaOut;
+		// экспортируется из ГИС: сумма пени по ПД
+        private BigDecimal penyaOut;
 
 		private PdocBuilder() {
 		}
@@ -215,6 +240,26 @@ public class Pdoc implements java.io.Serializable  {
 			return this;
 		}
 
+		public PdocBuilder withSummaIn(BigDecimal summaIn) {
+			this.summaIn = summaIn;
+			return this;
+		}
+
+		public PdocBuilder withPenyaIn(BigDecimal penyaIn) {
+			this.penyaIn = penyaIn;
+			return this;
+		}
+
+		public PdocBuilder withSummaOut(BigDecimal summaOut) {
+			this.summaOut = summaOut;
+			return this;
+		}
+
+		public PdocBuilder withPenyaOut(BigDecimal penyaOut) {
+			this.penyaOut = penyaOut;
+			return this;
+		}
+
 		public Pdoc build() {
 			Pdoc pdoc = new Pdoc();
 			pdoc.setId(id);
@@ -230,6 +275,10 @@ public class Pdoc implements java.io.Serializable  {
 			pdoc.setErr(err);
 			pdoc.setResult(result);
 			pdoc.setComm(comm);
+			pdoc.setSummaIn(summaIn);
+			pdoc.setPenyaIn(penyaIn);
+			pdoc.setSummaOut(summaOut);
+			pdoc.setPenyaOut(penyaOut);
 			return pdoc;
 		}
 	}

@@ -8,6 +8,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import com.ric.cmn.Utl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
@@ -34,12 +35,34 @@ public class EolinkDAOImpl implements EolinkDAO {
 
     }
 
+/*
     //вернуть список необработанных действий
     @Override
 	public List<Eolink> getAll() {
 			Query query =em.createQuery("from Eolink t");
 			return query.getResultList();
 	}
+
+*/
+    /**
+     * Получить объект дом по параметрам
+     * @param kul - код улицы
+     * @param nd - номер дома
+     * @return
+     */
+    @Override
+    public Eolink getEolinkHouseByKulNd(String kul, String nd) {
+        Query query =em.createQuery("select t from com.ric.bill.model.exs.Eolink t " +
+                "join t.objTp tp where tp.cd=:tp and t.kul = :kul and t.nd=:nd");
+        query.setParameter("tp", "Дом");
+        query.setParameter("kul", kul);
+        query.setParameter("nd", nd);
+        try {
+            return (Eolink) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 
     /**
      * Получить объект по GUID
@@ -50,7 +73,7 @@ public class EolinkDAOImpl implements EolinkDAO {
     @Cacheable(cacheNames="EolinkDAOImpl.getEolinkByGuid", key="{#guid }", unless = "#result == null")
 	public Eolink getEolinkByGuid(String guid) {
     	//log.info("GUID={}", guid);
-		Query query =em.createQuery("select t from Eolink t where t.guid = :guid");
+		Query query =em.createQuery("select t from com.ric.bill.model.exs.Eolink t where t.guid = :guid");
 		query.setParameter("guid", guid);
 		try {
 			return (Eolink) query.getSingleResult();
@@ -87,7 +110,7 @@ public class EolinkDAOImpl implements EolinkDAO {
 
     /**
      * Получить объект по reu,kul,nd
-     * @param reu - REU из Квартплаты
+     * @param reu - REU из Квартплаты - если не заполнен, не будет учитываться в запросе!
      * @param kul - KUL из Квартплаты
      * @param nd -  ND из Квартплаты
      * @param kw -  KW из Квартплаты
@@ -100,7 +123,8 @@ public class EolinkDAOImpl implements EolinkDAO {
 		Query query = null;
 		switch (tp) {
 		case "Дом":
-			query =em.createQuery("select t from Eolink t where t.reu = :reu and "
+			query =em.createQuery("select t from Eolink t where " +
+                    "t.reu=decode(:reu,null, t.reu, :reu) and "//  не работает NVL - сделал DECODE
 					+ "t.kul=:kul and t.nd=:nd and t.objTp.cd = :tp");
 			query.setParameter("reu", reu);
 			query.setParameter("kul", kul);
@@ -109,7 +133,8 @@ public class EolinkDAOImpl implements EolinkDAO {
 			break;
 
 		case "Квартира":
-			query =em.createQuery("select t from Eolink t where t.reu = :reu and "
+			query =em.createQuery("select t from Eolink t where " +
+                    "t.reu=decode(:reu,null, t.reu, :reu) and "//  не работает NVL - сделал DECODE
 					+ "t.kul=:kul and t.nd=:nd and t.kw=:kw and t.objTp.cd = :tp");
 			query.setParameter("reu", reu);
 			query.setParameter("kul", kul);
@@ -119,7 +144,8 @@ public class EolinkDAOImpl implements EolinkDAO {
 			break;
 
 		case "Подъезд":
-			query =em.createQuery("select t from Eolink t where t.reu = :reu and "
+			query =em.createQuery("select t from Eolink t where " +
+                    "t.reu=decode(:reu,null, t.reu, :reu) and "//  не работает NVL - сделал DECODE
 					+ "t.kul=:kul and t.nd=:nd and t.entry=:entry and t.objTp.cd = :tp");
 			query.setParameter("reu", reu);
 			query.setParameter("kul", kul);
@@ -129,7 +155,9 @@ public class EolinkDAOImpl implements EolinkDAO {
 			break;
 
 		case "Организация":
-			query =em.createQuery("select t from Eolink t where t.reu = :reu and t.objTp.cd = :tp");
+			query =em.createQuery("select t from Eolink t where " +
+                    "t.reu=decode(:reu,null, t.reu, :reu) and "  //не работает NVL - сделал DECODE
+                    + "t.objTp.cd = :tp");
 			query.setParameter("reu", reu);
 			query.setParameter("tp", tp);
 			break;
